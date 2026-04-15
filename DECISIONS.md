@@ -228,3 +228,23 @@
   - tenants/JT_PERSONAL/bot_runtime_profile.md
 - **related_entity_ids:** []
 - **next_review_at:** null
+
+### decision_12
+- **id:** decision_channel_surfaces_canonical_live_mapping
+- **title:** Use `tenants/JT_PERSONAL/channel_surfaces.md` as the canonical live bot-to-surface mapping
+- **domain:** system
+- **status:** active
+- **decision_date:** 2026-04-15
+- **owner:** Jonathon
+- **summary:** `tenants/JT_PERSONAL/channel_surfaces.md` is the canonical live mapping artifact for JT7 bot identities to tenant-scoped conversation surfaces under one shared platform.
+- **why:** The system needed one explicit artifact that defines the live mapping layer between bot identities, surface roles, default agents, handoff targets, and primary platform entry.
+- **implications:**
+  - `jt7_platform_bot` is the primary inbound platform entry and control plane in the canonical mapping
+  - all other bots are defined as domain worker surfaces under one shared engine
+  - runtime wiring should bind to this artifact rather than inferring mapping from broader architecture docs
+- **related_files:**
+  - tenants/JT_PERSONAL/channel_surfaces.md
+  - CURRENT.md
+  - docs/openclaw-thread-routing-config-spec.md
+- **related_entity_ids:** []
+- **next_review_at:** null

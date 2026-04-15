@@ -31,7 +31,7 @@
 
 ## Required Next Moves
 - **required_next_moves:**
-  - finish propagating the 5-surface model into current-state, decision, and roadmap artifacts
+  - bind the canonical `tenants/JT_PERSONAL/channel_surfaces.md` mapping into runtime configuration and verify live surface resolution
   - define the remaining routing, handoff, and shared-context schemas/modules required for runtime implementation
   - map live Telegram/OpenClaw surfaces to `jt7_platform_bot`, `jt7_job_ops_bot`, `jrt7_life_bot`, `jt7_ta_knowledge_bot`, and `jt7_tasks_bot`
   - continue separate runtime proof-of-life work for Gmail → Sheets without letting platform docs fork from execution truth
@@ -42,6 +42,7 @@
   - ops/focus.md
   - DECISIONS.md
   - tenants/JT_PERSONAL/bot_surfaces.md
+  - tenants/JT_PERSONAL/channel_surfaces.md
   - tenants/JT_PERSONAL/surface_policies.md
   - docs/three-bot-surface-model.md
   - docs/openclaw-thread-routing-config-spec.md
