@@ -91,12 +91,30 @@ This keeps repo ownership explicit and reduces cross-surface confusion.
 - curated synthesis artifacts
 
 ### Secondary repos
-- shared context bundles from platform, job ops, or life
+- shared context bundles from platform, job ops, life, or tasks
 - markdown research notes
 - source document mirrors
 
 ### Repo role
 - source of truth for transcript intelligence, reusable synthesis, and structured knowledge retrieval
+
+---
+
+## jt7_tasks_bot
+
+### Primary repos
+- Notion tasks workspace
+- Google Tasks lists
+- execution queue views
+- follow-through logs
+
+### Secondary repos
+- shared context bundles from platform, job ops, life, or knowledge
+- calendar-derived action refs
+- markdown action summaries
+
+### Repo role
+- source of truth for task capture, queue state, and execution follow-through across domains
 
 ---
 

@@ -31,11 +31,13 @@ This acts as the operational use-case map for routing and personalization.
 - execute recruiter follow-up workflow
 - perform life-domain execution
 - perform transcript-ingestion execution
+- own task queue execution
 
 ### Handoff targets
 - live operational work -> jt7_job_ops_bot
 - life operations -> jrt7_life_bot
 - knowledge ingestion / synthesis -> jt7_ta_knowledge_bot
+- task capture / execution tracking -> jt7_tasks_bot
 
 ---
 
@@ -53,7 +55,7 @@ This acts as the operational use-case map for routing and personalization.
 ### Secondary use cases
 - summarize operational state for platform
 - provide operational constraints back to platform
-- supply evidence bundles to knowledge when useful
+- supply evidence bundles to knowledge or tasks when useful
 
 ### Disallowed use cases
 - redesign schemas
@@ -61,11 +63,13 @@ This acts as the operational use-case map for routing and personalization.
 - reconfigure OpenClaw runtime
 - redefine tenant policies
 - own life-system execution
+- own generalized task-system governance
 
 ### Handoff targets
 - architecture/system design -> jt7_platform_bot
 - life-domain work -> jrt7_life_bot
 - transcript/knowledge work -> jt7_ta_knowledge_bot
+- task capture / follow-through work -> jt7_tasks_bot
 
 ---
 
@@ -80,7 +84,7 @@ This acts as the operational use-case map for routing and personalization.
 
 ### Secondary use cases
 - summarize life-domain state for platform
-- receive relevant context from platform or job ops
+- receive relevant context from platform, job ops, or tasks
 
 ### Disallowed use cases
 - redesign schemas
@@ -93,6 +97,7 @@ This acts as the operational use-case map for routing and personalization.
 - architecture/system design -> jt7_platform_bot
 - live job-search work -> jt7_job_ops_bot
 - knowledge capture / synthesis -> jt7_ta_knowledge_bot
+- execution queue tracking -> jt7_tasks_bot
 
 ---
 
@@ -107,7 +112,7 @@ This acts as the operational use-case map for routing and personalization.
 
 ### Secondary use cases
 - summarize patterns back to platform
-- provide retrieval bundles to job ops or life
+- provide retrieval bundles to job ops, life, or tasks
 
 ### Disallowed use cases
 - redesign platform runtime
@@ -119,6 +124,35 @@ This acts as the operational use-case map for routing and personalization.
 - architecture/system design -> jt7_platform_bot
 - live job-search execution -> jt7_job_ops_bot
 - life-domain execution -> jrt7_life_bot
+- task capture / execution tracking -> jt7_tasks_bot
+
+---
+
+## jt7_tasks_bot
+
+### Primary use cases
+- capture tasks
+- normalize tasks
+- manage execution queue
+- update task status
+- track follow-through
+- maintain actionable next-step lists
+
+### Secondary use cases
+- receive action bundles from all other surfaces
+- summarize execution status back to other surfaces
+
+### Disallowed use cases
+- redesign platform runtime
+- directly mutate live job-state without routing
+- own life-domain execution
+- own transcript-intelligence architecture
+
+### Handoff targets
+- architecture/system design -> jt7_platform_bot
+- live job-search execution -> jt7_job_ops_bot
+- life-domain execution -> jrt7_life_bot
+- transcript/knowledge work -> jt7_ta_knowledge_bot
 
 ---
 

@@ -187,18 +187,19 @@
 - **next_review_at:** null
 
 ### decision_10
-- **id:** decision_four_surface_target_model_platform_job_ops_life_knowledge
-- **title:** Adopt platform, job ops, life, and TA knowledge as the active surface set
+- **id:** decision_five_surface_target_model_platform_job_ops_life_knowledge_tasks
+- **title:** Adopt platform, job ops, life, TA knowledge, and tasks as the active surface set
 - **domain:** system
 - **status:** active
 - **decision_date:** 2026-04-15
 - **owner:** Jonathon
-- **summary:** The active JT7 target model uses four conversation surfaces: platform, job ops, life, and TA knowledge. The previously assumed planning bot is not part of the current live target model.
-- **why:** Jonathon explicitly replaced the earlier 4-bot idea and defined the required active set.
+- **summary:** The active JT7 target model uses five conversation surfaces: platform, job ops, life, TA knowledge, and tasks. The previously assumed planning bot is not part of the current live target model.
+- **why:** Jonathon explicitly added `JT7 Tasks` after defining the earlier active set and now has tokens for all active bot surfaces.
 - **implications:**
   - planning-centric artifacts must be updated or deprecated
-  - tenant config and docs must align to the new surface set
-  - platform remains the control plane while the other three surfaces operate as workers
+  - tenant config and docs must align to the five-surface set
+  - platform remains the control plane while the other four surfaces operate as workers
+  - tasks becomes the dedicated execution-queue and follow-through surface
 - **related_files:**
   - CURRENT.md
   - tenants/JT_PERSONAL/bot_surfaces.md

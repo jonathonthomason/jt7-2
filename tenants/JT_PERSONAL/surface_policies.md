@@ -55,11 +55,13 @@ This file defines:
 - coordinate_personal_admin
 - ingest_transcript_knowledge
 - summarize_ta_learnings
+- manage_tasks
 
 ### Handoff triggers
 - request is live job-search operational work
 - request is life-operations work
 - request is knowledge ingestion or transcript synthesis work
+- request is task execution or queue management work
 
 ### Approval triggers
 - platform config mutation with external effect
@@ -105,11 +107,13 @@ This file defines:
 - support_wellness_tracking
 - ingest_transcript_knowledge
 - build_knowledge_base
+- manage_task_queue
 
 ### Handoff triggers
 - request becomes architectural or configuration-heavy
 - request belongs to life domain
 - request belongs to knowledge domain
+- request belongs to tasks domain
 
 ### Approval triggers
 - externally risky write actions
@@ -118,11 +122,11 @@ This file defines:
 
 ### Shared-context rules
 - may receive architecture constraints from platform
-- may send operational summaries to platform, life, or knowledge when relevant
+- may send operational summaries to platform, life, knowledge, or tasks when relevant
 - should default to `summary_only`
 
 ### Enforcement behavior
-- do not perform architecture, life, or knowledge work in-thread
+- do not perform architecture, life, knowledge, or task work in-thread
 - route instead of drifting
 
 ---
@@ -151,25 +155,27 @@ This file defines:
 - redesign_tenant_policy
 - ingest_transcript_knowledge
 - build_ta_reference_system
+- manage_task_queue
 
 ### Handoff triggers
 - request becomes architectural or runtime-config heavy
 - request becomes live job-search operational work
 - request becomes transcript, learning, or TA knowledge work
+- request becomes task queue or execution-tracking work
 
 ### Approval triggers
 - life-domain action would trigger high-impact external mutation
 - request attempts to override another locked surface domain
 
 ### Shared-context rules
-- may receive summaries from platform, job ops, or knowledge
+- may receive summaries from platform, job ops, knowledge, or tasks
 - may share scoped life context with other surfaces
 - default transfer mode is `summary_only`
 - explicit full-context requests may use `shared_explicit`
 
 ### Enforcement behavior
 - act as a dedicated life operations surface
-- do not silently absorb platform, job ops, or knowledge ownership
+- do not silently absorb platform, job ops, knowledge, or tasks ownership
 
 ---
 
@@ -197,18 +203,20 @@ This file defines:
 - redesign_tenant_policy
 - manage_routines
 - own_job_pipeline_execution
+- manage_task_queue
 
 ### Handoff triggers
 - request becomes platform architecture or routing design
 - request becomes live job-search operational work
 - request becomes life operations execution
+- request becomes task execution or tracking work
 
 ### Approval triggers
 - knowledge action would overwrite trusted source material at scale
 - request attempts to operate outside explicit knowledge scope
 
 ### Shared-context rules
-- may receive summaries and evidence from platform, job ops, or life
+- may receive summaries and evidence from platform, job ops, life, or tasks
 - may share structured knowledge bundles back to other surfaces
 - default transfer mode is `summary_only`
 - explicit full-context requests may use `shared_explicit`
@@ -216,6 +224,53 @@ This file defines:
 ### Enforcement behavior
 - act as a dedicated knowledge surface
 - do not silently become a general strategist or platform owner
+
+---
+
+## Policy: jt7_tasks_bot
+
+### Surface
+- bot_surface_id: jt7_tasks_bot
+- default_domain: tasks
+- lock_state: scoped
+- enforcement_mode: guided
+
+### In-scope intents
+- capture_task
+- normalize_task
+- manage_task_queue
+- update_task_status
+- assign_due_dates
+- track_follow_through
+- review_execution_queue
+
+### Out-of-scope intents
+- redefine_platform_architecture
+- update_live_application_state
+- reconfigure_openclaw_runtime
+- redesign_tenant_policy
+- ingest_transcript_knowledge
+- manage_routines
+
+### Handoff triggers
+- request becomes platform architecture or routing design
+- request becomes live job-search operational work
+- request becomes life operations execution
+- request becomes transcript or TA knowledge work
+
+### Approval triggers
+- task-domain action would trigger high-impact external mutation
+- request attempts to override another surface’s locked ownership
+
+### Shared-context rules
+- may receive summaries from all other surfaces
+- may share scoped execution bundles back to all other surfaces
+- default transfer mode is `summary_only`
+- explicit full-context requests may use `shared_explicit`
+
+### Enforcement behavior
+- act as the dedicated task execution surface
+- do not silently absorb platform, job ops, life, or knowledge ownership
 
 ---
 
@@ -251,6 +306,7 @@ This file defines:
 - job_ops -> workflow_orchestrator
 - life -> workflow_orchestrator
 - knowledge -> workflow_orchestrator
+- tasks -> workflow_orchestrator
 
 ---
 

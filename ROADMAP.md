@@ -84,5 +84,5 @@
 
 ## Immediate Focus
 - **Current execution target:** JT7-R2.6.3
-- **Phase goal:** activate the unified four-surface platform model in runtime-safe form while continuing toward a trustworthy Gmail → Processing → Sheets end-to-end loop
-- **Why now:** the platform structure has been refactored around one shared core and four surfaces; the next gap is runtime activation and verification, not more surface ambiguity
+- **Phase goal:** activate the unified five-surface platform model in runtime-safe form while continuing toward a trustworthy Gmail → Processing → Sheets end-to-end loop
+- **Why now:** the platform structure has been refactored around one shared core and five surfaces; the next gap is runtime activation and verification, not more surface ambiguity

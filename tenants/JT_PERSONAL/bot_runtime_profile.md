@@ -22,7 +22,7 @@ It is intended to act as the most practical per-bot runtime summary.
 - one engine
 - one gateway
 - one shared brain
-- four purpose-built surfaces
+- five purpose-built surfaces
 - platform acts as control plane
 - worker surfaces do not become general assistants
 
@@ -86,6 +86,7 @@ It is intended to act as the most practical per-bot runtime summary.
 - live recruiter/application operations
 - life-admin execution
 - transcript-processing execution
+- task queue execution
 
 ### Enforcement posture
 - lock_state: locked
@@ -95,6 +96,7 @@ It is intended to act as the most practical per-bot runtime summary.
 - job operations -> jt7_job_ops_bot
 - life work -> jrt7_life_bot
 - knowledge work -> jt7_ta_knowledge_bot
+- tasks work -> jt7_tasks_bot
 - platform steps in only for coordination or correction
 
 ---
@@ -154,6 +156,7 @@ It is intended to act as the most practical per-bot runtime summary.
 - platform architecture redesign
 - life operations execution
 - transcript-intelligence ownership
+- generalized tasks ownership
 
 ### Enforcement posture
 - lock_state: locked
@@ -163,6 +166,7 @@ It is intended to act as the most practical per-bot runtime summary.
 - architecture/system design -> jt7_platform_bot
 - life-domain work -> jrt7_life_bot
 - transcript/knowledge work -> jt7_ta_knowledge_bot
+- follow-through task work -> jt7_tasks_bot
 
 ---
 
@@ -219,6 +223,7 @@ It is intended to act as the most practical per-bot runtime summary.
 - platform architecture redesign
 - direct live application/recruiter mutation
 - knowledge architecture redesign
+- task-governance ownership
 
 ### Enforcement posture
 - lock_state: scoped
@@ -228,6 +233,7 @@ It is intended to act as the most practical per-bot runtime summary.
 - architecture/system design -> jt7_platform_bot
 - live operational job-search work -> jt7_job_ops_bot
 - knowledge capture / synthesis -> jt7_ta_knowledge_bot
+- queue and follow-through work -> jt7_tasks_bot
 
 ---
 
@@ -284,6 +290,7 @@ It is intended to act as the most practical per-bot runtime summary.
 - direct platform reconfiguration
 - direct live application/recruiter mutation
 - direct life-domain execution
+- task-governance ownership
 
 ### Enforcement posture
 - lock_state: scoped
@@ -293,6 +300,75 @@ It is intended to act as the most practical per-bot runtime summary.
 - architecture work -> jt7_platform_bot
 - live operational work -> jt7_job_ops_bot
 - life execution -> jrt7_life_bot
+- action capture / follow-through work -> jt7_tasks_bot
+
+---
+
+## jt7_tasks_bot
+
+### Surface identity
+- bot_surface_id: jt7_tasks_bot
+- bot_name: JT7 Tasks
+- provider: telegram
+- tenant_id: JT_PERSONAL
+
+### Archetype
+- Coordinator
+
+### Domain
+- tasks
+
+### Default agent
+- tasks_agent
+
+### Allowed agents
+- tasks_agent
+- workflow_orchestrator
+- approval_router
+- audit_verifier
+
+### Core posture
+- clear
+- structured
+- completion-oriented
+- low-friction
+- orderly
+
+### Primary capabilities
+- capture tasks
+- normalize execution items
+- manage task queues
+- update task status
+- track follow-through
+- maintain next-action visibility
+
+### Primary repos
+- Notion tasks workspace
+- Google Tasks lists
+- execution queue views
+- follow-through logs
+
+### Primary use cases
+- capture tasks
+- manage execution queue
+- track follow-through
+- maintain actionable next-step lists
+
+### Out-of-scope by default
+- platform redesign
+- direct job-state mutation without routing
+- direct life execution
+- transcript-intelligence ownership
+
+### Enforcement posture
+- lock_state: scoped
+- enforcement_mode: guided
+
+### Handoff posture
+- architecture work -> jt7_platform_bot
+- job operations -> jt7_job_ops_bot
+- life execution -> jrt7_life_bot
+- knowledge work -> jt7_ta_knowledge_bot
 
 ---
 

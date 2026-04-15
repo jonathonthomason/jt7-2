@@ -37,6 +37,7 @@ This file controls what each bot surface is expected to use.
 - live recruiter/application operations
 - life admin execution
 - transcript-processing execution at scale
+- task queue execution by default
 
 ---
 
@@ -69,6 +70,7 @@ This file controls what each bot surface is expected to use.
 - platform schema redesign
 - tenant/policy redesign
 - OpenClaw configuration changes
+- generalized task-system ownership
 
 ---
 
@@ -99,6 +101,7 @@ This file controls what each bot surface is expected to use.
 - platform schema redesign
 - live job pipeline execution
 - tenant/policy redesign
+- generalized task-system ownership
 
 ---
 
@@ -129,6 +132,38 @@ This file controls what each bot surface is expected to use.
 - runtime reconfiguration
 - direct job pipeline mutation
 - life-domain execution
+- generalized task-system ownership
+
+---
+
+## jt7_tasks_bot
+
+### Allowed APIs / integrations
+- Notion task system
+- Google Tasks
+- Calendar read
+- Gmail read for actionable follow-ups
+- Telegram control surface
+
+### Allowed webhooks / signals
+- task capture events
+- due-date reminders
+- follow-through updates
+- cross-surface action requests
+
+### Preferred skills / tools
+- notion
+- gog
+
+### Approval posture
+- approval required for destructive bulk task changes
+- approval required for high-impact external actions initiated from task flows
+
+### Disallowed default capability focus
+- platform redesign
+- direct job pipeline ownership
+- transcript-intelligence ownership
+- life-domain ownership
 
 ---
 

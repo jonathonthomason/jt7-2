@@ -106,6 +106,26 @@ This file is the config-style source of truth for:
 - purpose: transcripts, synthesis, research memory, learned patterns, knowledge structuring
 - notes: knowledge worker surface for TA and transcript-intelligence work
 
+### jt7_tasks_bot
+- bot_surface_id: jt7_tasks_bot
+- tenant_id: JT_PERSONAL
+- provider: telegram
+- bot_id: jt7_tasks_bot
+- bot_name: JT7 Tasks
+- default_domain: tasks
+- default_agent_id: tasks_agent
+- allowed_agent_ids:
+  - tasks_agent
+  - workflow_orchestrator
+  - approval_router
+  - audit_verifier
+- escalation_agent_id: workflow_orchestrator
+- handoff_mode: summary_only
+- lock_state: scoped
+- status: active
+- purpose: task capture, task management, follow-through tracking, execution queue control
+- notes: task execution worker surface
+
 ---
 
 ## Cross-Surface Rules
@@ -166,6 +186,13 @@ This file is the config-style source of truth for:
 - learning patterns and reference material
 - domain knowledge retrieval support
 
+### Tasks Bot owns
+- task capture and normalization
+- task status updates
+- due-date and queue management
+- cross-domain follow-through tracking
+- actionable execution lists
+
 ---
 
 ## Activation Order
@@ -173,6 +200,7 @@ This file is the config-style source of truth for:
 2. jt7_job_ops_bot
 3. jrt7_life_bot
 4. jt7_ta_knowledge_bot
+5. jt7_tasks_bot
 
 ---
 
