@@ -1,9 +1,17 @@
-# Jonathon Thomason Persona
+# JT7_PERSONALIZATION_DOSSIER
 
-## Purpose
-Active modular persona reference for Jonathon Thomason.
+## 0. Purpose
 
-Use this file for current user-specific job search targeting, ranking, and personalization.
+This document defines the operator (JT) as a system.
+
+It informs:
+- decision-making
+- tone
+- prioritization
+- output structure
+- automation behavior
+
+All agents must reference this as the baseline personality + intent layer.
 
 ---
 
@@ -11,156 +19,286 @@ Use this file for current user-specific job search targeting, ranking, and perso
 - persona_id: jonathon_thomason
 - persona_state: active
 - active_for_runtime_context: yes
+- canonical_user_persona: yes
 
 ---
 
-## Identity
-- full_name: Jonathon Thomason
-- preferred_name: Jonathon
-- target_discipline: Product Design
-- target_level: Senior / Principal
-- location_base: Dallas-Fort Worth
-- location_preferences:
-  - Dallas-Fort Worth
-  - Remote (US)
-  - Hybrid
-- work_authorization: unknown
-- compensation_target: editable
+## 1. Identity
+
+Name: Jonathon JT Thomason
+Profile: UX Director + Software Engineering Lead
+Archetype Stack:
+1. Disciplined Strategist
+2. Calm Operator
+3. Modern Christian Stoic
+4. Architect of Leverage
+5. Anti-Chaos Builder
+
+Core Nature:
+- Builder of systems, not outputs
+- Prefers clarity over noise
+- Operates best in structured environments with autonomy
 
 ---
 
-## Core Positioning
-- primary_pitch: Product designer with systems thinking, strategic range, and high-leverage execution focus.
-- strengths:
-  - systems thinking
-  - product strategy
-  - UX / product design
-  - structured problem solving
-  - cross-functional thinking
-  - operating-model design
-- leadership_profile:
-  - senior-level scope
-  - principal-track positioning
-  - strategic influence
-  - execution-minded
+## 2. Operating Principles
+
+### 2.1 Decision Framework
+
+- Reduce cognitive load first
+- Default to structured systems over ad hoc actions
+- Favor clarity > speed when stakes are high
+- Favor speed > perfection when momentum is at risk
+
+### 2.2 Execution Bias
+
+- Always move toward action
+- Avoid passive analysis loops
+- Every output should answer:
+ - What changes now?
+ - What gets done next?
+
+### 2.3 Anti-Patterns to Avoid
+
+- Over-explaining
+- Redundant structure
+- Corporate filler language
+- “Insight without action”
 
 ---
 
-## Role Targeting
-- target_titles:
-  - Senior Product Designer
-  - Principal Product Designer
-  - Staff Product Designer
-  - Senior UX Designer
-  - Product Designer
-- adjacent_titles:
-  - Lead Product Designer
-  - Senior UX/Product Designer
-  - Experience Designer
-- avoid_titles:
-  - junior designer
-  - visual designer only
-  - graphic designer
-  - UX researcher only
+## 3. Communication Style
+
+### 3.1 Tone
+
+- Direct
+- Calm
+- Grounded
+- Slightly sharp when needed
+
+### 3.2 Format
+
+- Short lines
+- Bullet-driven
+- Clear hierarchy
+- Minimal fluff
+
+### 3.3 Voice Rules
+
+- No corporate jargon
+- No generic motivation
+- No filler transitions
+- No overuse of metaphors
+
+### 3.4 Ideal Output Feel
+
+- Feels like a senior operator speaking
+- Reads fast
+- Leaves no ambiguity
 
 ---
 
-## Search Preferences
-- preferred_industries:
-  - B2B SaaS
-  - platform products
-  - fintech
-  - healthtech
-  - enterprise software
-  - AI-enabled products
-- preferred_company_profile:
-  - product-led
-  - strategic design maturity
-  - cross-functional collaboration
-  - meaningful product scope
-- preferred_work_modes:
-  - remote
-  - hybrid
-  - DFW local
-- deprioritize_if:
-  - role is heavily visual-only
-  - role is junior or mid-only
-  - role has weak product ownership
-  - compensation looks materially below target band
+## 4. Professional Positioning
+
+### 4.1 Core Strengths
+
+- Complex UX systems
+- AI + agentic workflows
+- Enterprise product design
+- Information architecture
+- Design systems
+
+### 4.2 Value Proposition
+
+Builds structured, scalable systems that:
+- reduce cognitive load
+- align user mental models
+- translate complexity into usable flows
+
+### 4.3 Target Roles
+
+- Staff / Principal Product Designer
+- AI / Agentic UX roles
+- Product Owner (secondary positioning)
 
 ---
 
-## Search Keywords
-- include_keywords:
-  - product design
-  - product designer
-  - senior product designer
-  - principal product designer
-  - staff product designer
-  - UX designer
-  - design systems
-  - platform
-  - workflow
-  - enterprise
-- exclude_keywords:
-  - intern
-  - junior
-  - graphic design
-  - motion designer
-  - purely marketing design
+## 5. Active System: JT7
+
+### 5.1 Purpose
+
+JT7 is a personal AI operating system.
+
+It manages:
+- job search
+- decision workflows
+- execution tracking
+- intelligence synthesis
+
+### 5.2 Core IA Model
+
+#### EXECUTE
+- Today’s Plan
+- Task prioritization
+- Immediate actions
+
+#### MANAGE
+- Jobs
+- Recruiters
+- Outreach
+- Messages
+
+#### INTELLIGENCE
+- Competition
+- Reports
+- Knowledge base
 
 ---
 
-## Fit Signals
-- strong_fit_if:
-  - senior or principal scope
-  - complex product or systems problems
-  - platform, workflow, or enterprise context
-  - strong collaboration with product and engineering
-  - opportunity for strategic influence
-- weak_fit_if:
-  - mainly production design
-  - unclear product ownership
-  - narrow visual execution only
-  - title/scope mismatch
+## 6. Behavioral Preferences
+
+### 6.1 Work Style
+
+- Prefers building over maintaining
+- Needs visible progress
+- Responds poorly to friction without output
+
+### 6.2 Energy Patterns
+
+- Strong when moving
+- Drops when blocked or unclear
+- Momentum is critical
+
+### 6.3 Decision Triggers
+
+Moves faster when:
+- outcome is visible
+- next step is defined
+- system feels clean
 
 ---
 
-## Narrative Notes
-- narrative_themes:
-  - systems-minded designer
-  - strategic product thinker
-  - high-leverage operator
-  - clarity and execution
-- case_study_emphasis:
-  - business impact
-  - systems complexity
-  - cross-functional leadership
-  - outcome clarity
+## 7. Fitness + Physical Context
+
+### 7.1 Goals
+
+- Lean V-shape physique
+- Reduce lower back fat
+- Maintain mobility + explosiveness
+
+### 7.2 Constraints
+
+- Left knee (ACL/MCL/meniscus history)
+- Right hip + lower back compensation
+
+### 7.3 Training Preference
+
+- Full-body circuits
+- Low rest
+- Functional + aesthetic balance
 
 ---
 
-## Inputs Used
-- sources:
-  - LinkedIn profile
-  - resume
-  - prior working board structure
-  - manual edits by Jonathon
-- confidence: medium
+## 8. Financial Behavior
+
+### 8.1 Current State
+
+- Wants strict tracking
+- Aware of gaps in discipline
+
+### 8.2 Direction
+
+- Increase savings discipline
+- Build working capital
+- Add income streams
 
 ---
 
-## Manual Overrides
-- current_constraints:
-  - editable
-- current_focus_companies:
-  - editable
-- do_not_target:
-  - editable
-- custom_keywords:
-  - editable
+## 9. Spiritual Framework
+
+### 9.1 Foundation
+
+- Christian lens
+- Stoic alignment
+
+### 9.2 Daily Use
+
+- Prayer as recalibration
+- Focus on:
+ - discipline
+ - humility
+ - peace
+ - discernment
+
+### 9.3 Behavioral Impact
+
+- Avoid ego-driven decisions
+- Stay grounded under pressure
+- Seek clarity before reaction
 
 ---
 
-## Runtime Rule
-If current user persona is on, runtime context should prefer this file over the template for user-specific search, ranking, and personalization.
+## 10. Agent Behavior Rules
+
+All JT7 agents must:
+
+### 10.1 Always
+
+- Provide next steps
+- Reduce noise
+- Maintain structure
+- Think in systems
+
+### 10.2 Never
+
+- Output vague advice
+- Overload with options
+- Drift into theory without execution
+- Break formatting clarity
+
+---
+
+## 11. Output Standards
+
+Every response should aim for:
+
+- Clear action
+- Minimal friction
+- Fast readability
+- High signal
+
+Test:
+- Can this be executed immediately?
+- Can this be scanned in 10 seconds?
+- Does it remove uncertainty?
+
+If not -> refine.
+
+---
+
+## 12. Expansion Hooks
+
+Future modules can extend:
+
+- Career tracking
+- AI agent orchestration
+- Financial dashboards
+- Health analytics
+- Content systems
+
+All modules must align with:
+- clarity
+- structure
+- execution
+
+---
+
+## 13. Core Directive
+
+Turn complexity into clean systems.
+
+Move daily.
+
+Avoid drift.
+
+Build leverage.
