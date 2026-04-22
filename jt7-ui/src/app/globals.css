@@ -1,0 +1,55 @@
+@import "tailwindcss";
+
+:root {
+  --background: #0b0b0c;
+  --surface: #121214;
+  --surface-elevated: #16161a;
+  --border: #1e1e22;
+  --foreground: #eaeaf0;
+  --muted: #9a9aa3;
+  --cold: #6b7280;
+  --applied: #3b82f6;
+  --recruiter: #8b5cf6;
+  --screening: #d97706;
+  --interviewing: #f97316;
+  --offer: #22c55e;
+  --rejected: #ef4444;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-surface-elevated: var(--surface-elevated);
+  --color-border: var(--border);
+  --color-foreground: var(--foreground);
+  --color-muted: var(--muted);
+  --font-sans: var(--font-inter);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+}
+
+button,
+input {
+  font: inherit;
+}
+
+.status-cold { color: var(--cold); }
+.status-applied { color: var(--applied); }
+.status-recruiter { color: var(--recruiter); }
+.status-screening { color: var(--screening); }
+.status-interviewing { color: var(--interviewing); }
+.status-offer { color: var(--offer); }
+.status-rejected { color: var(--rejected); }

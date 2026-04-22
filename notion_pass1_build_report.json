@@ -1,0 +1,35 @@
+{
+  "pages": {
+    "JT Command Center": "33e2ef93-c492-818d-8852-d0117ed61a15",
+    "Life OS": "33e2ef93-c492-8156-80e5-cd240bbe02b5",
+    "Daily Command": "33e2ef93-c492-8111-8606-f036911450aa",
+    "Goals & Roadmap": "33e2ef93-c492-813d-ad7a-f4208cf33220",
+    "Job Search HQ": "33e2ef93-c492-813b-9807-fcfe5e1f8ff7",
+    "Business Lab": "33e2ef93-c492-8140-a5fb-e142958ff98c",
+    "Community App Lab": "33e2ef93-c492-8172-b46e-dac549907307",
+    "Wellness / Faith / Sobriety": "33e2ef93-c492-8165-ba5d-e8ded6608758",
+    "Finance / Investing": "33e2ef93-c492-81d0-bbfa-eef7dbc8f499",
+    "Agent Control Center": "33e2ef93-c492-8113-97b7-d1f573cca459",
+    "Inbox / Capture": "33e2ef93-c492-8164-8716-c102d6beec97",
+    "Reviews & Planning": "33e2ef93-c492-81ba-817f-ebb9fe28c5c7",
+    "Reference / SOPs": "33e2ef93-c492-815b-bf75-d6e91c6b3cbc"
+  },
+  "databases": {
+    "Areas of Life": "33e2ef93-c492-8172-bb05-ee35c15e57a3",
+    "Goals": "33e2ef93-c492-8116-a8b9-f8e5517c6baa",
+    "Milestones": "33e2ef93-c492-817b-9e63-e6bb9a832b4b",
+    "Projects": "33e2ef93-c492-8186-97e8-db1093224d40",
+    "Tasks": "33e2ef93-c492-81fe-9535-c89db3ba32d6",
+    "Habits / Routines": "33e2ef93-c492-813a-8ff0-df480934120b",
+    "Agent Registry": "33e2ef93-c492-8197-b61d-c062460a4d9b",
+    "Agent Runs / Logs": "33e2ef93-c492-817f-a19e-ef4ba7ea923a",
+    "Opportunities / Job Pipeline": "33e2ef93-c492-8197-b978-c89a58b8ba3f",
+    "Companies / Targets": "33e2ef93-c492-81e4-8bc2-d8e13a3e3bf5",
+    "Contacts": "33e2ef93-c492-8116-bafc-d418fb948f5b",
+    "Business Ideas / Ventures": "33e2ef93-c492-812a-bf77-e56b8901e44b",
+    "Product Modules": "33e2ef93-c492-8113-a6e6-d89c790ee9c5",
+    "Finance Items": "33e2ef93-c492-81f9-8bdc-f07d89413fd8",
+    "Reflections / Journal": "33e2ef93-c492-8187-804a-d3f862bb4d92",
+    "SOPs / Playbooks": "33e2ef93-c492-817e-93f8-ef57f5764dd9"
+  }
+}
