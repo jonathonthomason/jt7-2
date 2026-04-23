@@ -12,3 +12,6 @@ Keep all logic, modules, components, and data files aligned across local runtime
 - Google Drive remains the mirrored access and backup layer for selected code-adjacent docs and reference artifacts
 - modules, components, mock data, and logic files should be structured so they can run locally without depending on Drive
 - Drive copies must never become the only copy of important app logic or modular reference files
+- tracker CRUD must synchronize across Google Sheets, local mirror state, and git-tracked local files
+- Google Sheets is the live tracker truth; local and git are synchronized mirrors of tracker state
+- scheduled JT7 runtime passes must enforce the Sheets -> local mirror -> git sequence on meaningful tracker changes

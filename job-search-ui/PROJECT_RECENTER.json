@@ -1,0 +1,211 @@
+{
+  "project_name": "job-search-ui",
+  "project_path": "/Users/jtemp/.openclaw/workspace/job-search-ui",
+  "summary": "Local React + TypeScript + Vite MVP job-search app with MSW-backed mock data, React Router routes, demo auth, and a protected dashboard shell. Build works, but exact runtime verification and Playwright proof-of-life are not yet fully stable.",
+  "status": {
+    "working": [
+      "React Query global provider is active",
+      "MSW is wired into app startup",
+      "Jobs list route fetches mock data",
+      "Job detail route fetches a single mock job",
+      "Companies route exists",
+      "Sign-in route exists",
+      "Protected dashboard route logic exists",
+      "Build succeeds"
+    ],
+    "partial": [
+      "Local dev runtime has worked but is affected by port contention",
+      "Preview runtime has worked but exact verification has not stayed clean",
+      "Playwright config and smoke test exist but proof is incomplete"
+    ],
+    "broken": [
+      "Playwright smoke verification is not cleanly passing"
+    ],
+    "unverified": [
+      "Stable exact-port dev verification on 5173",
+      "Stable exact-port preview verification on 4173",
+      "Automated browser proof of click-through from jobs list to detail"
+    ]
+  },
+  "stack": {
+    "framework": "React",
+    "language": "TypeScript",
+    "build_tool": "Vite",
+    "router": "react-router-dom",
+    "testing": [
+      "Vitest",
+      "Playwright"
+    ],
+    "mocking": "MSW with local JSON fixtures",
+    "ports": {
+      "dev": 5173,
+      "preview": 4173
+    }
+  },
+  "features": [
+    {
+      "name": "Jobs list",
+      "status": "working",
+      "description": "Fetches and renders job links from MSW mock API data."
+    },
+    {
+      "name": "Job detail",
+      "status": "working",
+      "description": "Fetches and renders a single mock job by ID."
+    },
+    {
+      "name": "Company route",
+      "status": "working",
+      "description": "Renders a simple company slug page."
+    },
+    {
+      "name": "Demo auth",
+      "status": "working",
+      "description": "Uses demo_auth in localStorage to gate protected routes."
+    },
+    {
+      "name": "Protected dashboard",
+      "status": "working",
+      "description": "Redirects signed-out users to sign-in and renders placeholder dashboard content when signed in."
+    },
+    {
+      "name": "Mock API",
+      "status": "working",
+      "description": "Intercepts /api/jobs and /api/jobs/:jobId through MSW."
+    },
+    {
+      "name": "Playwright smoke test",
+      "status": "partial",
+      "description": "Config and test file exist, but clean pass is not established."
+    }
+  ],
+  "routes": [
+    {
+      "path": "/jobs",
+      "status": "working"
+    },
+    {
+      "path": "/jobs/:jobId",
+      "status": "working"
+    },
+    {
+      "path": "/companies/:slug",
+      "status": "working"
+    },
+    {
+      "path": "/auth/sign-in",
+      "status": "working"
+    },
+    {
+      "path": "/app/dashboard",
+      "status": "working"
+    },
+    {
+      "path": "*",
+      "status": "working"
+    }
+  ],
+  "key_files": [
+    {
+      "path": "package.json",
+      "why": "Defines scripts, dependencies, and test commands."
+    },
+    {
+      "path": "vite.config.ts",
+      "why": "Defines runtime and preview port configuration."
+    },
+    {
+      "path": ".env",
+      "why": "Enables MSW."
+    },
+    {
+      "path": "src/main.tsx",
+      "why": "Bootstraps MSW and the React Query provider."
+    },
+    {
+      "path": "src/App.tsx",
+      "why": "Contains active routes and UI logic."
+    },
+    {
+      "path": "src/mocks/browser.ts",
+      "why": "Sets up the MSW worker."
+    },
+    {
+      "path": "src/mocks/handlers.ts",
+      "why": "Defines mock API endpoints."
+    },
+    {
+      "path": "src/mocks/fixtures/jobs.json",
+      "why": "Stores current job fixture data."
+    },
+    {
+      "path": "playwright.config.ts",
+      "why": "Defines preview-backed browser test config."
+    },
+    {
+      "path": "tests/smoke.spec.ts",
+      "why": "Smoke test for the Jobs page."
+    },
+    {
+      "path": "docs/mvp-build-brief.md",
+      "why": "Current MVP source-of-truth brief."
+    },
+    {
+      "path": "docs/local-git-drive-rules.md",
+      "why": "Defines local, git, and Drive alignment rules."
+    }
+  ],
+  "runtime": {
+    "dev_command": "npm run dev",
+    "preview_command": "npm run preview",
+    "test_command": "npm run test:e2e",
+    "working_urls": [
+      "http://127.0.0.1:5173/jobs",
+      "http://127.0.0.1:4173/jobs"
+    ],
+    "last_verified": [
+      "npm run build passed",
+      "preview server has started locally",
+      "Playwright smoke test file exists but passing proof is incomplete"
+    ]
+  },
+  "blockers": [
+    "Port contention on 5173 and 4173 has caused unstable verification",
+    "Playwright smoke verification is not yet cleanly passing",
+    "Exact end-to-end locked-port MVP proof remains incomplete"
+  ],
+  "next_steps": [
+    "Stabilize dev startup on port 5173 with no conflicting process",
+    "Stabilize preview startup on port 4173 with no conflicting process",
+    "Re-run and fix Playwright smoke until it passes cleanly",
+    "Confirm browser click-through from jobs list to job detail",
+    "Expand mock fixture and UI from markdown-guided logic for jobs, recruiters, and related tracking entities"
+  ],
+  "roadmap": {
+    "phase_1": [
+      "Stabilize MVP runtime",
+      "Pass smoke verification",
+      "Lock proof-of-life sequence"
+    ],
+    "phase_2": [
+      "Expand jobs UI",
+      "Add recruiter and company views",
+      "Improve auth and app shell"
+    ],
+    "phase_3": [
+      "Add tracking entities",
+      "Support applications and recruiters",
+      "Increase structured mock data coverage"
+    ],
+    "phase_4": [
+      "Expand dashboard modules",
+      "Build operator-facing views",
+      "Improve command and overview surfaces"
+    ],
+    "phase_5": [
+      "Connect real JT7 ingestion",
+      "Add Gmail and Sheets-backed flows",
+      "Add integration and deployment hardening"
+    ]
+  }
+}

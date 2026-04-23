@@ -1,0 +1,74 @@
+{
+  "timezone": "America/Chicago",
+  "schedule": [
+    {
+      "runId": "morning_run",
+      "label": "Morning run",
+      "time": "08:30",
+      "isEnabled": true,
+      "chain": [
+        "EMAIL_SIGNAL_SCAN",
+        "CALENDAR_SIGNAL_SCAN",
+        "JOB_BOARD_SIGNAL_SCAN",
+        "SIGNAL_CLASSIFICATION",
+        "PIPELINE_STATE_SYNC",
+        "PIPELINE_UPDATE",
+        "LOCAL_MIRROR_SYNC",
+        "GIT_COMMIT_SYNC",
+        "ACTION_GENERATION",
+        "PRIORITY_SURFACING",
+        "PASS_LOGGER"
+      ],
+      "lastRunAt": "2026-04-22T20:11:16.034602-05:00",
+      "nextRunAt": "2026-04-23T08:30:00-05:00",
+      "lastStatus": "complete",
+      "lastSummary": "Full JT7 chain completed"
+    },
+    {
+      "runId": "midday_run",
+      "label": "Midday run",
+      "time": "12:30",
+      "isEnabled": true,
+      "chain": [
+        "EMAIL_SIGNAL_SCAN",
+        "CALENDAR_SIGNAL_SCAN",
+        "JOB_BOARD_SIGNAL_SCAN",
+        "SIGNAL_CLASSIFICATION",
+        "PIPELINE_STATE_SYNC",
+        "PIPELINE_UPDATE",
+        "LOCAL_MIRROR_SYNC",
+        "GIT_COMMIT_SYNC",
+        "ACTION_GENERATION",
+        "PRIORITY_SURFACING",
+        "PASS_LOGGER"
+      ],
+      "lastRunAt": "2026-04-22T20:11:16.034602-05:00",
+      "nextRunAt": "2026-04-23T12:30:00-05:00",
+      "lastStatus": "complete",
+      "lastSummary": "Full JT7 chain completed"
+    },
+    {
+      "runId": "evening_run",
+      "label": "Evening run",
+      "time": "18:00",
+      "isEnabled": true,
+      "chain": [
+        "EMAIL_SIGNAL_SCAN",
+        "CALENDAR_SIGNAL_SCAN",
+        "JOB_BOARD_SIGNAL_SCAN",
+        "SIGNAL_CLASSIFICATION",
+        "PIPELINE_STATE_SYNC",
+        "PIPELINE_UPDATE",
+        "LOCAL_MIRROR_SYNC",
+        "GIT_COMMIT_SYNC",
+        "ACTION_GENERATION",
+        "PRIORITY_SURFACING",
+        "PASS_LOGGER"
+      ],
+      "lastRunAt": "2026-04-22T20:11:16.034602-05:00",
+      "nextRunAt": "2026-04-23T18:00:00-05:00",
+      "lastStatus": "complete",
+      "lastSummary": "Full JT7 chain completed"
+    }
+  ]
+}
