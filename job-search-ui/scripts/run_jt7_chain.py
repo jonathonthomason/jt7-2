@@ -39,15 +39,15 @@ JOB_HINTS = [
     'linkedin', 'indeed', 'greenhouse', 'workday', 'schedule', 'screen', 'offer', 'rejection'
 ]
 CLASSIFICATION_RULES = [
-    ('interview_scheduling', [r'interview', r'schedule', r'availability', r'calendar invite', r'meet with']),
+    ('interview_scheduling', [r'\binterview\b', r'schedule(?:d|ing)?', r'availability', r'calendar invite', r'meet with']),
     ('reschedule', [r'reschedule', r're-schedule', r'move .* interview', r'new time']),
     ('cancellation', [r'cancelled', r'canceled', r'withdrawn', r'no longer moving forward with interview']),
     ('rejection', [r'not moving forward', r'other candidates', r'regret to inform', r'unfortunately']),
     ('application_confirmation', [r'application received', r'thanks for applying', r'we received your application', r'application for']),
-    ('recruiter_outreach', [r'recruiter', r'talent acquisition', r'talent partner', r'would love to connect', r'interested in your background']),
+    ('recruiter_outreach', [r'\brecruiter\b', r'talent acquisition', r'talent partner', r'would love to connect', r'interested in your background']),
     ('hiring_manager_communication', [r'hiring manager', r'manager review', r'manager would like to']),
     ('follow_up_opportunity', [r'follow up', r'checking in', r'next steps', r'following up']),
-    ('job_alert', [r'you may be a fit for', r'is hiring for', r'new jobs', r'actively recruiting']),
+    ('job_alert', [r'you may be a fit for', r'is hiring for', r'new jobs', r'actively recruiting', r'job alert']),
 ]
 LINKEDIN_ROLE_RE = re.compile(r'You may be a fit for\s+(?P<company>.+?)’s\s+(?P<role>.+?)(?:\s+role|\s+-)', re.IGNORECASE)
 INDEED_ROLE_RE = re.compile(r'(?P<company>.+?) is hiring for (?P<role>.+?)\.', re.IGNORECASE)
@@ -260,6 +260,15 @@ def classify_signal(subject, sender, labels, body=''):
             'review_needed': False,
         }
 
+    if 'invitations@linkedin.com' in (sender or '').lower() and 'connect' in haystack:
+        return {
+            'signal_type': 'ignore_noise',
+            'summary': subject[:160],
+            'confidence': 0.92,
+            'auto_update_allowed': False,
+            'review_needed': False,
+        }
+
     for candidate, patterns in CLASSIFICATION_RULES:
         if any(re.search(pattern, haystack, re.IGNORECASE) for pattern in patterns):
             signal_type = candidate
@@ -313,13 +322,20 @@ def extract_entities(subject, sender, snippet=''):
     elif app:
         role = app.group('role').strip(' .')
 
-    if not company and sender_name:
-        cleaned = sender_name.strip()
-        if any(token in cleaned.lower() for token in ['recruit', 'talent', 'linkedin', 'indeed']):
+    normalized_sender = (sender_name or '').strip()
+    if not company and normalized_sender:
+        cleaned = normalized_sender
+        lowered = cleaned.lower()
+        if 'talent acquisition' in lowered or 'recruiter' in lowered or 'talent partner' in lowered:
             company = cleaned
+        elif lowered in {'linkedin job alerts', 'linkedin', 'indeed', 'mail'}:
+            company = ''
 
-    if not company and domain and domain not in {'gmail.com', 'googlemail.com', 'linkedin.com', 'indeed.com'}:
+    if not company and domain and domain not in {'gmail.com', 'googlemail.com', 'linkedin.com', 'indeed.com', 'mail.linkedin.com'}:
         company = domain.split('.')[0].replace('-', ' ').title()
+
+    if company in {'LinkedIn', 'Indeed', 'Mail', 'LinkedIn Job Alerts'} and not role:
+        company = ''
 
     return {
         'company': company,
@@ -580,7 +596,11 @@ def is_job_related(parsed):
     ]).lower()
     if parsed['classification']['signal_type'] == 'ignore_noise':
         return False
-    return any(hint in combined for hint in JOB_HINTS) or bool(parsed.get('company') or parsed.get('role'))
+    if not any(hint in combined for hint in JOB_HINTS) and not (parsed.get('company') or parsed.get('role')):
+        return False
+    if 'linkedin.com' in parsed.get('sender_email', '').lower() and 'connect' in combined and not parsed.get('role'):
+        return False
+    return True
 
 
 def gmail_scan_and_update(run_at):
@@ -645,7 +665,8 @@ def gmail_scan_and_update(run_at):
                 parsed['company'] = choose_company_from_context(parsed, {normalize_company(r['values'].get('company', '')): r for r in jobs_rows}) or parsed['company']
                 company_jobs = [r for r in jobs_rows if normalize_company(r['values'].get('company', '')) == normalize_company(parsed['company'])]
                 parsed['role'] = choose_role_from_context(parsed, company_jobs) or parsed['role']
-                if classification['auto_update_allowed'] and (parsed['company'] or parsed['role']):
+                create_allowed = classification['auto_update_allowed'] and bool(parsed['company'] and (parsed['role'] or classification['signal_type'] in {'recruiter_outreach', 'follow_up_opportunity', 'application_confirmation'}))
+                if create_allowed:
                     new_job = make_job_row(parsed, recruiter_id, job_ids, new_jobs, classification)
                     new_jobs.append(new_job)
                     linked_job_id = new_job[0]
