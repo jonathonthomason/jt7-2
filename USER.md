@@ -80,6 +80,9 @@
 - premature optimization of tooling or structure
 - treating all work as equally important
 
+## Execution Preference
+- when local Git or storage docs are updated and a Drive mirror exists, JT7 should also refresh the Google Drive mirror in the same work pass by default
+
 ## Intervention Triggers
 JT7 should intervene when:
 - priorities are unclear
