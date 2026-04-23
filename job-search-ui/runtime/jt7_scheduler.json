@@ -19,10 +19,10 @@
         "PRIORITY_SURFACING",
         "PASS_LOGGER"
       ],
-      "lastRunAt": "2026-04-22T20:58:35.974450-05:00",
-      "nextRunAt": "2026-04-23T08:30:00-05:00",
-      "lastStatus": "complete",
-      "lastSummary": "Full JT7 chain completed"
+      "lastRunAt": "2026-04-23T09:39:11.795327-05:00",
+      "nextRunAt": "2026-04-24T08:30:00-05:00",
+      "lastStatus": "failed",
+      "lastSummary": "Command '['gog', 'sheets', 'get', '1acPkcUQFDIVNY0sgMo7ZsVzEnBKIbjU2veEjDFRu0Ks', 'ReviewQueue!A1:Z1000', '--json']' returned non-zero exit status 1."
     },
     {
       "runId": "midday_run",
@@ -42,10 +42,10 @@
         "PRIORITY_SURFACING",
         "PASS_LOGGER"
       ],
-      "lastRunAt": "2026-04-22T20:58:35.974450-05:00",
+      "lastRunAt": "2026-04-23T09:39:11.795327-05:00",
       "nextRunAt": "2026-04-23T12:30:00-05:00",
-      "lastStatus": "complete",
-      "lastSummary": "Full JT7 chain completed"
+      "lastStatus": "failed",
+      "lastSummary": "Command '['gog', 'sheets', 'get', '1acPkcUQFDIVNY0sgMo7ZsVzEnBKIbjU2veEjDFRu0Ks', 'ReviewQueue!A1:Z1000', '--json']' returned non-zero exit status 1."
     },
     {
       "runId": "evening_run",
@@ -65,10 +65,10 @@
         "PRIORITY_SURFACING",
         "PASS_LOGGER"
       ],
-      "lastRunAt": "2026-04-22T20:58:35.974450-05:00",
+      "lastRunAt": "2026-04-23T09:39:11.795327-05:00",
       "nextRunAt": "2026-04-23T18:00:00-05:00",
-      "lastStatus": "complete",
-      "lastSummary": "Full JT7 chain completed"
+      "lastStatus": "failed",
+      "lastSummary": "Command '['gog', 'sheets', 'get', '1acPkcUQFDIVNY0sgMo7ZsVzEnBKIbjU2veEjDFRu0Ks', 'ReviewQueue!A1:Z1000', '--json']' returned non-zero exit status 1."
     }
   ]
 }

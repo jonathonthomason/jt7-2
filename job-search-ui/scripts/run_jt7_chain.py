@@ -180,8 +180,28 @@ def mirror_snapshot():
     return snapshot
 
 
+def local_reviewqueue_rows():
+    json_path = MIRROR_DIR / 'ReviewQueue.json'
+    if not json_path.exists():
+        return [], []
+    data = json.loads(json_path.read_text())
+    if not data:
+        return [], []
+    header = data[0]
+    rows = []
+    for idx, row in enumerate(data[1:], start=2):
+        padded = row + [''] * (len(header) - len(row))
+        rows.append({'row_index': idx, 'values': dict(zip(header, padded))})
+    return header, rows
+
+
 def rows_to_dicts(tab):
-    data = sheets_get(f'{tab}!A1:Z1000').get('values', [])
+    try:
+        data = sheets_get(f'{tab}!A1:Z1000').get('values', [])
+    except subprocess.CalledProcessError:
+        if tab == 'ReviewQueue':
+            return local_reviewqueue_rows()
+        raise
     if not data:
         return [], []
     header = data[0]
@@ -203,8 +223,21 @@ def next_id(prefix, existing_ids):
 
 
 def append_rows(tab, rows):
-    if rows:
-        sheets_append(f'{tab}!A:Z', rows)
+    if not rows:
+        return
+    if tab == 'ReviewQueue':
+        csv_path = MIRROR_DIR / 'ReviewQueue.csv'
+        json_path = MIRROR_DIR / 'ReviewQueue.json'
+        existing = []
+        if json_path.exists():
+            existing = json.loads(json_path.read_text())
+        if not existing:
+            existing = [["review_id","signal_id","timestamp","source","signal_type","extracted_company","extracted_role","extracted_recruiter","proposed_action","proposed_job_update","confidence","reason_for_review","status","resolution_notes"]]
+        existing.extend(rows)
+        write_csv(csv_path, existing)
+        json_path.write_text(json.dumps(existing, indent=2))
+        return
+    sheets_append(f'{tab}!A:Z', rows)
 
 
 def update_row(tab, row_index, row_values):
@@ -967,8 +1000,11 @@ def local_mirror_sync():
     unchanged = []
     tracker_tabs = {}
     for tab in TABS:
-        data = sheets_get(f'{tab}!A1:Z1000')
-        rows = data.get('values', [])
+        if tab == 'ReviewQueue':
+            rows = json.loads((MIRROR_DIR / 'ReviewQueue.json').read_text()) if (MIRROR_DIR / 'ReviewQueue.json').exists() else []
+        else:
+            data = sheets_get(f'{tab}!A1:Z1000')
+            rows = data.get('values', [])
         csv_path = MIRROR_DIR / f'{tab}.csv'
         json_path = MIRROR_DIR / f'{tab}.json'
         prev_csv = csv_path.read_text() if csv_path.exists() else None
