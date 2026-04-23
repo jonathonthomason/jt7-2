@@ -50,6 +50,9 @@ Gmail logic feeds these task modules:
 - PRIORITY_SURFACING
 - PASS_LOGGER
 
+It also enforces the Gmail thread state model and label system defined in:
+- `docs/gmail-organization-rules.md`
+
 ---
 
 ## Inbound Signal Sources
