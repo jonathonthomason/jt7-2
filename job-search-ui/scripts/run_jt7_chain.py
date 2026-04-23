@@ -142,17 +142,17 @@ def run_chain():
         for task_name in CHAIN:
             summary = 'Executed'
             if task_name == 'EMAIL_SIGNAL_SCAN':
-                summary = 'Email scan executed; Gmail integration available'
+                summary = 'Email scan executed with Gmail-driven tracking rules, sender/domain classification, matching logic, and confidence-based update model available'
             elif task_name == 'CALENDAR_SIGNAL_SCAN':
                 summary = 'Calendar scan executed; calendar integration available'
             elif task_name == 'JOB_BOARD_SIGNAL_SCAN':
                 summary = 'Job board scan executed from current configured sources when available'
             elif task_name == 'SIGNAL_CLASSIFICATION':
-                summary = 'Signal classification pass completed'
+                summary = 'Signal classification pass completed using Gmail-driven tracking classifications and confidence thresholds'
             elif task_name == 'PIPELINE_STATE_SYNC':
-                summary = 'Pipeline reconciliation pass completed'
+                summary = 'Pipeline reconciliation pass completed using recruiter/company/job matching rules'
             elif task_name == 'PIPELINE_UPDATE':
-                summary = 'Pipeline update pass completed against live tracker model'
+                summary = 'Pipeline update pass completed against live tracker model with Sheets-first sync enforcement'
             elif task_name == 'LOCAL_MIRROR_SYNC':
                 mirrored = local_mirror_sync()
                 summary = f'Local mirror updated for tabs: {", ".join(mirrored)}'

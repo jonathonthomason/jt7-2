@@ -15,3 +15,4 @@ Keep all logic, modules, components, and data files aligned across local runtime
 - tracker CRUD must synchronize across Google Sheets, local mirror state, and git-tracked local files
 - Google Sheets is the live tracker truth; local and git are synchronized mirrors of tracker state
 - scheduled JT7 runtime passes must enforce the Sheets -> local mirror -> git sequence on meaningful tracker changes
+- Gmail-driven tracker updates must follow the same Sheets -> local mirror -> git sequence

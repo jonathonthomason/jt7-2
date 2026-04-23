@@ -90,8 +90,9 @@ Sheets remains authoritative live operational truth.
 ## Task Modules
 ### EMAIL_SIGNAL_SCAN
 - reads Gmail for job-related signals
-- captures recruiter replies, confirmations, rejections, interview scheduling, follow-ups
-- outputs to Signals
+- captures recruiter replies, confirmations, rejections, interview scheduling, reschedules, cancellations, follow-ups, hiring-manager communication, and application receipts
+- applies Gmail-driven tracking rules from `docs/gmail-driven-tracking-rules.md`
+- outputs to Signals and downstream tracker writes when allowed
 
 ### CALENDAR_SIGNAL_SCAN
 - reads calendar for interviews, recruiter calls, and follow-ups
