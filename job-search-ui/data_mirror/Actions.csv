@@ -14,3 +14,6 @@ action_012,job_013,LinkedIn Job Alerts,Review opportunity and decide whether to 
 action_013,job_014,LinkedIn Job Alerts,Review opportunity and decide whether to apply,Signal type: job_alert,medium,open,2026-04-22T20:54:10.322840-05:00,,JT7
 action_014,job_015,American Airlines Talent Acquisition,Reply to recruiter outreach,Signal type: recruiter_outreach,high,open,2026-04-22T20:54:10.322840-05:00,,JT7
 action_015,job_016,GitHub,Review opportunity and decide whether to apply,Signal type: job_alert,medium,open,2026-04-22T20:54:10.322840-05:00,,JT7
+action_016,job_017,Thomson Reuters,Send follow-up response,Signal type: follow_up_opportunity,medium,open,2026-04-22T20:58:35.974450-05:00,,JT7
+action_017,job_018,Thomson Reuters,Send follow-up response,Signal type: follow_up_opportunity,medium,open,2026-04-22T20:58:35.974450-05:00,,JT7
+action_018,job_019,American Airlines,Reply to recruiter outreach,Signal type: recruiter_outreach,high,open,2026-04-22T20:58:35.974450-05:00,,JT7

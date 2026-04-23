@@ -36,7 +36,8 @@ TABS = ['Jobs', 'Recruiters', 'Competition', 'Signals', 'Actions', 'TaskRuns', '
 JOB_LABEL_QUERY = 'label:Folders/Jobs'
 JOB_HINTS = [
     'application', 'interview', 'recruiter', 'hiring', 'candidate', 'job', 'role',
-    'linkedin', 'indeed', 'greenhouse', 'workday', 'schedule', 'screen', 'offer', 'rejection'
+    'linkedin', 'indeed', 'greenhouse', 'workday', 'schedule', 'screen', 'offer', 'rejection',
+    'talent acquisition', 'next steps', 'actively recruiting', 'message replied'
 ]
 CLASSIFICATION_RULES = [
     ('interview_scheduling', [r'\binterview\b', r'schedule(?:d|ing)?', r'availability', r'calendar invite', r'meet with']),
@@ -50,7 +51,9 @@ CLASSIFICATION_RULES = [
     ('job_alert', [r'you may be a fit for', r'is hiring for', r'new jobs', r'actively recruiting', r'job alert']),
 ]
 LINKEDIN_ROLE_RE = re.compile(r'You may be a fit for\s+(?P<company>.+?)’s\s+(?P<role>.+?)(?:\s+role|\s+-)', re.IGNORECASE)
+LINKEDIN_SIMPLE_ROLE_RE = re.compile(r'(?P<role>[A-Z][A-Za-z0-9&/() ,\-]+?)\s+at\s+(?P<company>[A-Z][A-Za-z0-9&/() .\-]+)$', re.IGNORECASE)
 INDEED_ROLE_RE = re.compile(r'(?P<company>.+?) is hiring for (?P<role>.+?)\.', re.IGNORECASE)
+THOMSON_REUTERS_RE = re.compile(r'Job opportunity[-: ]+(.+?) with Thomson Reuters', re.IGNORECASE)
 APPLICATION_RE = re.compile(r'(?:application|applied) (?:for|to)?\s*(?P<role>[A-Z][A-Za-z0-9&/\- ,]+)', re.IGNORECASE)
 EMAIL_RE = re.compile(r'[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}', re.IGNORECASE)
 
@@ -308,17 +311,27 @@ def extract_entities(subject, sender, snippet=''):
     domain = extract_domain(sender)
 
     linkedin = LINKEDIN_ROLE_RE.search(subject or '')
+    linkedin_simple = LINKEDIN_SIMPLE_ROLE_RE.search(subject or '')
     indeed = INDEED_ROLE_RE.search(subject or '')
+    thomson = THOMSON_REUTERS_RE.search(subject or '')
     app = APPLICATION_RE.search(subject or '')
 
     if linkedin:
         company = linkedin.group('company').strip()
         role = linkedin.group('role').strip(' -')
         source = 'linkedin_email'
+    elif linkedin_simple and 'linkedin' in (sender_email or '').lower():
+        company = linkedin_simple.group('company').strip()
+        role = linkedin_simple.group('role').strip()
+        source = 'linkedin_email'
     elif indeed:
         company = indeed.group('company').strip()
         role = indeed.group('role').strip()
         source = 'indeed_email'
+    elif thomson:
+        company = 'Thomson Reuters'
+        role = thomson.group(1).strip()
+        source = 'gmail'
     elif app:
         role = app.group('role').strip(' .')
 
@@ -326,9 +339,13 @@ def extract_entities(subject, sender, snippet=''):
     if not company and normalized_sender:
         cleaned = normalized_sender
         lowered = cleaned.lower()
-        if 'talent acquisition' in lowered or 'recruiter' in lowered or 'talent partner' in lowered:
+        if 'american airlines talent acquisition' in lowered:
+            company = 'American Airlines'
+        elif 'thomson reuters' in (subject or '').lower() or 'thomson reuters' in lowered:
+            company = 'Thomson Reuters'
+        elif 'talent acquisition' in lowered or 'recruiter' in lowered or 'talent partner' in lowered:
             company = cleaned
-        elif lowered in {'linkedin job alerts', 'linkedin', 'indeed', 'mail'}:
+        elif lowered in {'linkedin job alerts', 'linkedin', 'indeed', 'mail', 'linkedin news'}:
             company = ''
 
     if not company and domain and domain not in {'gmail.com', 'googlemail.com', 'linkedin.com', 'indeed.com', 'mail.linkedin.com'}:

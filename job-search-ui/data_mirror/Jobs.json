@@ -270,5 +270,53 @@
     "",
     "linkedin_email",
     "Created from job_alert Gmail signal thread:19db314223336eb7 | signal job_alert from linkedin_email thread:19db314223336eb7"
+  ],
+  [
+    "job_017",
+    "Thomson Reuters",
+    "Senior UX Product Designer",
+    "",
+    "Cold",
+    "recruiter_021",
+    "2026-04-22 13:50",
+    "Respond to outreach",
+    "",
+    "",
+    "",
+    "",
+    "gmail",
+    "Created from follow_up_opportunity Gmail signal thread:19db58b5849bdc81"
+  ],
+  [
+    "job_018",
+    "Thomson Reuters",
+    "Senior UX Product Designer",
+    "",
+    "Cold",
+    "recruiter_022",
+    "2026-04-22 9:14",
+    "Respond to outreach",
+    "",
+    "",
+    "",
+    "",
+    "gmail",
+    "Created from follow_up_opportunity Gmail signal thread:19db58b5849bdc81"
+  ],
+  [
+    "job_019",
+    "American Airlines",
+    "",
+    "",
+    "Recruiter Contacted",
+    "recruiter_032",
+    "2026-04-21 22:10",
+    "Respond to outreach",
+    "",
+    "",
+    "",
+    "",
+    "gmail",
+    "Created from recruiter_outreach Gmail signal thread:19db32a8fd702f7b"
   ]
 ]
