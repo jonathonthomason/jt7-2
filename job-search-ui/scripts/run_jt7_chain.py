@@ -39,6 +39,18 @@ JOB_HINTS = [
     'linkedin', 'indeed', 'greenhouse', 'workday', 'schedule', 'screen', 'offer', 'rejection',
     'talent acquisition', 'next steps', 'actively recruiting', 'message replied'
 ]
+NEWSLETTER_NOISE_PATTERNS = [
+    r'linkedin news',
+    r'newsletter',
+    r'messaging-digest',
+    r'newsletters-noreply',
+    r'editors-noreply',
+    r'take control\. build a career ai can.t replace',
+    r'token remorse',
+    r'meta starts tracking employee laptops',
+    r'just messaged you',
+]
+GENERIC_COMPANY_BLOCKLIST = {'linkedin job alerts', 'linkedin', 'indeed', 'mail', 'em'}
 CLASSIFICATION_RULES = [
     ('interview_scheduling', [r'\binterview\b', r'schedule(?:d|ing)?', r'availability', r'calendar invite', r'meet with']),
     ('reschedule', [r'reschedule', r're-schedule', r'move .* interview', r'new time']),
@@ -263,6 +275,15 @@ def classify_signal(subject, sender, labels, body=''):
             'review_needed': False,
         }
 
+    if any(re.search(pattern, haystack, re.IGNORECASE) for pattern in NEWSLETTER_NOISE_PATTERNS):
+        return {
+            'signal_type': 'ignore_noise',
+            'summary': subject[:160],
+            'confidence': 0.94,
+            'auto_update_allowed': False,
+            'review_needed': False,
+        }
+
     if 'invitations@linkedin.com' in (sender or '').lower() and 'connect' in haystack:
         return {
             'signal_type': 'ignore_noise',
@@ -351,7 +372,7 @@ def extract_entities(subject, sender, snippet=''):
     if not company and domain and domain not in {'gmail.com', 'googlemail.com', 'linkedin.com', 'indeed.com', 'mail.linkedin.com'}:
         company = domain.split('.')[0].replace('-', ' ').title()
 
-    if company in {'LinkedIn', 'Indeed', 'Mail', 'LinkedIn Job Alerts'} and not role:
+    if normalize_text(company) in GENERIC_COMPANY_BLOCKLIST and not role:
         company = ''
 
     return {
@@ -613,9 +634,13 @@ def is_job_related(parsed):
     ]).lower()
     if parsed['classification']['signal_type'] == 'ignore_noise':
         return False
+    if any(re.search(pattern, combined, re.IGNORECASE) for pattern in NEWSLETTER_NOISE_PATTERNS):
+        return False
     if not any(hint in combined for hint in JOB_HINTS) and not (parsed.get('company') or parsed.get('role')):
         return False
     if 'linkedin.com' in parsed.get('sender_email', '').lower() and 'connect' in combined and not parsed.get('role'):
+        return False
+    if normalize_text(parsed.get('company', '')) in GENERIC_COMPANY_BLOCKLIST and not parsed.get('role'):
         return False
     return True
 
