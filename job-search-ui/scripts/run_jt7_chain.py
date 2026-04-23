@@ -32,7 +32,7 @@ CHAIN = [
     'PASS_LOGGER',
 ]
 RUN_TIMES = ['08:30', '12:30', '18:00']
-TABS = ['Jobs', 'Recruiters', 'Competition', 'Signals', 'Actions', 'TaskRuns', 'Lookup']
+TABS = ['Jobs', 'Recruiters', 'Competition', 'Signals', 'Actions', 'ReviewQueue', 'TaskRuns', 'Lookup']
 JOB_LABEL_QUERY = 'label:Folders/Jobs'
 JOB_HINTS = [
     'application', 'interview', 'recruiter', 'hiring', 'candidate', 'job', 'role',
@@ -441,6 +441,7 @@ def fetch_runtime_state():
     recruiters_header, recruiters_rows = rows_to_dicts('Recruiters')
     signals_header, signals_rows = rows_to_dicts('Signals')
     actions_header, actions_rows = rows_to_dicts('Actions')
+    review_header, review_rows = rows_to_dicts('ReviewQueue')
     taskruns_header, taskruns_rows = rows_to_dicts('TaskRuns')
     return {
         'jobs_header': jobs_header,
@@ -451,6 +452,8 @@ def fetch_runtime_state():
         'signals_rows': signals_rows,
         'actions_header': actions_header,
         'actions_rows': actions_rows,
+        'review_header': review_header,
+        'review_rows': review_rows,
         'taskruns_header': taskruns_header,
         'taskruns_rows': taskruns_rows,
     }
@@ -551,7 +554,17 @@ def make_job_row(parsed, recruiter_id, job_ids, new_jobs, classification):
     ]
 
 
-def ensure_action(job_id, company, classification, action_ids, actions_rows, new_actions, run_at):
+ACTION_REQUIRED_SIGNAL_TYPES = {
+    'recruiter_outreach',
+    'interview_scheduling',
+    'reply_received',
+    'follow_up_opportunity',
+    'reschedule',
+    'hiring_manager_communication',
+}
+
+
+def proposed_action_instruction(signal_type):
     instructions = {
         'recruiter_outreach': 'Reply to recruiter outreach',
         'application_confirmation': 'Track application and wait for update',
@@ -561,10 +574,15 @@ def ensure_action(job_id, company, classification, action_ids, actions_rows, new
         'rejection': 'Archive opportunity and capture lessons',
         'hiring_manager_communication': 'Respond to hiring manager communication',
         'follow_up_opportunity': 'Send follow-up response',
+        'reply_received': 'Review reply and respond',
         'job_alert': 'Review opportunity and decide whether to apply',
         'unknown_review_needed': 'Review unclassified job-related signal',
     }
-    instruction = instructions.get(classification['signal_type'], 'Review job-related signal')
+    return instructions.get(signal_type, 'Review job-related signal')
+
+
+def ensure_action(job_id, company, classification, action_ids, actions_rows, new_actions, run_at, signal_id=''):
+    instruction = proposed_action_instruction(classification['signal_type'])
     for row in actions_rows:
         if row['values'].get('job_id', '') == job_id and row['values'].get('instruction', '') == instruction and row['values'].get('status', '') != 'done':
             return False, None
@@ -574,7 +592,7 @@ def ensure_action(job_id, company, classification, action_ids, actions_rows, new
         job_id,
         company,
         instruction,
-        f"Signal type: {classification['signal_type']}",
+        f"Signal type: {classification['signal_type']} | signal_id: {signal_id}".strip(),
         'high' if classification['signal_type'] in {'interview_scheduling', 'reschedule', 'recruiter_outreach'} else 'medium',
         'open',
         iso(run_at),
@@ -584,11 +602,21 @@ def ensure_action(job_id, company, classification, action_ids, actions_rows, new
     return True, action_id
 
 
+def signal_status_from_confidence(classification):
+    if classification['signal_type'] == 'ignore_noise':
+        return 'ignored'
+    if classification['confidence'] >= 0.8:
+        return 'accepted'
+    if classification['confidence'] >= 0.5:
+        return 'review_needed'
+    return 'logged_low_confidence'
+
+
 def ensure_signal(parsed, classification, linked_job_id, signal_ids, signals_rows, new_signals):
     evidence_ref = f"thread:{parsed['thread_id']}|message:{parsed['message_id']}"
     for row in signals_rows:
         if row['values'].get('evidence_ref', '') == evidence_ref:
-            return False
+            return False, row['values'].get('signal_id', '')
     signal_id = next_id('signal_', signal_ids + [r[0] for r in new_signals])
     new_signals.append([
         signal_id,
@@ -599,10 +627,10 @@ def ensure_signal(parsed, classification, linked_job_id, signal_ids, signals_row
         parsed['date'],
         classification['summary'],
         evidence_ref,
-        'review_needed' if classification['review_needed'] else 'accepted',
+        signal_status_from_confidence(classification),
         linked_job_id,
     ])
-    return True
+    return True, signal_id
 
 
 def parse_message_record(message, thread_labels):
@@ -645,12 +673,64 @@ def is_job_related(parsed):
     return True
 
 
+def confidence_bucket(confidence):
+    if confidence >= 0.8:
+        return 'high'
+    if confidence >= 0.5:
+        return 'medium'
+    return 'low'
+
+
+def reason_for_review(parsed, classification, match_score):
+    reasons = []
+    if not parsed.get('company'):
+        reasons.append('missing_company')
+    if not parsed.get('role'):
+        reasons.append('missing_role')
+    if match_score < 0.6:
+        reasons.append('weak_job_match')
+    reasons.append(f"signal_type:{classification['signal_type']}")
+    return ', '.join(reasons)
+
+
+def ensure_review_queue_entry(parsed, classification, signal_id, linked_job_id, review_rows, review_ids, new_reviews, recruiter_id, match_score):
+    for row in review_rows:
+        if row['values'].get('signal_id', '') == signal_id:
+            return False, row['values'].get('review_id', '')
+    review_id = next_id('review_', review_ids + [r[0] for r in new_reviews])
+    proposed_action = proposed_action_instruction(classification['signal_type']) if classification['signal_type'] in ACTION_REQUIRED_SIGNAL_TYPES else ''
+    proposed_job_update = json.dumps({
+        'linked_job_id': linked_job_id,
+        'proposed_status': infer_status(classification['signal_type']),
+        'company': parsed.get('company', ''),
+        'role': parsed.get('role', ''),
+    })
+    new_reviews.append([
+        review_id,
+        signal_id,
+        iso(now_local()),
+        parsed.get('source', 'gmail'),
+        classification['signal_type'],
+        parsed.get('company', ''),
+        parsed.get('role', ''),
+        recruiter_id or parsed.get('sender_email', ''),
+        proposed_action,
+        proposed_job_update,
+        str(classification['confidence']),
+        reason_for_review(parsed, classification, match_score),
+        'pending',
+        '',
+    ])
+    return True, review_id
+
+
 def gmail_scan_and_update(run_at):
     state = fetch_runtime_state()
     jobs_rows = state['jobs_rows']
     recruiters_rows = state['recruiters_rows']
     signals_rows = state['signals_rows']
     actions_rows = state['actions_rows']
+    review_rows = state['review_rows']
     last_run_at = get_last_run_at()
     query = gmail_query_from_last_run(last_run_at)
     messages = collect_gmail_messages(query)
@@ -661,12 +741,14 @@ def gmail_scan_and_update(run_at):
     recruiter_ids = [r['values'].get('recruiter_id', '') for r in recruiters_rows]
     signal_ids = [r['values'].get('signal_id', '') for r in signals_rows]
     action_ids = [r['values'].get('action_id', '') for r in actions_rows]
+    review_ids = [r['values'].get('review_id', '') for r in review_rows]
 
     new_jobs = []
     updated_jobs = []
     new_recruiters = []
     new_signals = []
     new_actions = []
+    new_reviews = []
     parsed_signals = []
     job_related_threads = 0
     review_needed_count = 0
@@ -675,6 +757,10 @@ def gmail_scan_and_update(run_at):
     jobs_updated = 0
     signals_created = 0
     actions_created = 0
+    review_needed_created = 0
+    signal_to_job_update = []
+    signal_to_action = []
+    signals_by_confidence = {'high': 0, 'medium': 0, 'low': 0}
 
     for thread_id, bundle in thread_map.items():
         thread_labels = bundle.get('thread', {}).get('labels', []) or []
@@ -685,7 +771,9 @@ def gmail_scan_and_update(run_at):
                 continue
             thread_relevant = True
             classification = parsed['classification']
-            if classification['review_needed']:
+            bucket = confidence_bucket(classification['confidence'])
+            signals_by_confidence[bucket] += 1
+            if classification['review_needed'] or bucket == 'medium':
                 review_needed_count += 1
 
             recruiter_id, recruiter_created = ensure_recruiter(parsed, recruiters_rows, recruiter_ids, new_recruiters)
@@ -695,36 +783,50 @@ def gmail_scan_and_update(run_at):
 
             best_job, match_score = find_best_job_match(parsed, jobs_rows)
             linked_job_id = ''
+
             if best_job and match_score >= 0.6:
                 linked_job_id = best_job['values'].get('job_id', '')
-                if classification['auto_update_allowed']:
-                    updated = update_job_row_for_signal(best_job, parsed, classification, recruiter_id)
-                    row_values = [updated.get(col, '') for col in state['jobs_header']]
-                    update_row('Jobs', best_job['row_index'], row_values)
-                    best_job['values'] = updated
-                    jobs_updated += 1
             else:
                 parsed['company'] = choose_company_from_context(parsed, {normalize_company(r['values'].get('company', '')): r for r in jobs_rows}) or parsed['company']
                 company_jobs = [r for r in jobs_rows if normalize_company(r['values'].get('company', '')) == normalize_company(parsed['company'])]
                 parsed['role'] = choose_role_from_context(parsed, company_jobs) or parsed['role']
-                create_allowed = classification['auto_update_allowed'] and bool(parsed['company'] and (parsed['role'] or classification['signal_type'] in {'recruiter_outreach', 'follow_up_opportunity', 'application_confirmation'}))
-                if create_allowed:
-                    new_job = make_job_row(parsed, recruiter_id, job_ids, new_jobs, classification)
-                    new_jobs.append(new_job)
-                    linked_job_id = new_job[0]
-                    job_ids.append(linked_job_id)
-                    jobs_created += 1
-                else:
-                    linked_job_id = ''
 
-            if ensure_signal(parsed, classification, linked_job_id, signal_ids, signals_rows, new_signals):
+            signal_created, signal_id = ensure_signal(parsed, classification, linked_job_id, signal_ids, signals_rows, new_signals)
+            if signal_created:
                 signals_created += 1
-            signal_ids = signal_ids + [r[0] for r in new_signals if r[0] not in signal_ids]
+            if signal_id and signal_id not in signal_ids:
+                signal_ids.append(signal_id)
 
-            if linked_job_id:
-                created_action, _ = ensure_action(linked_job_id, parsed['company'], classification, action_ids, actions_rows, new_actions, run_at)
+            create_allowed = bucket == 'high' and bool(parsed['company'] and (parsed['role'] or classification['signal_type'] in {'recruiter_outreach', 'follow_up_opportunity', 'application_confirmation'}))
+            if not linked_job_id and create_allowed:
+                new_job = make_job_row(parsed, recruiter_id, job_ids, new_jobs, classification)
+                new_jobs.append(new_job)
+                linked_job_id = new_job[0]
+                job_ids.append(linked_job_id)
+                jobs_created += 1
+                signal_to_job_update.append({'signal_id': signal_id, 'job_id': linked_job_id, 'mode': 'create'})
+            elif linked_job_id and bucket == 'high' and classification['auto_update_allowed']:
+                updated = update_job_row_for_signal(best_job, parsed, classification, recruiter_id)
+                notes = updated.get('notes', '')
+                addition = f" | signal_id:{signal_id}"
+                if addition not in notes:
+                    updated['notes'] = (notes + addition).strip(' |')
+                row_values = [updated.get(col, '') for col in state['jobs_header']]
+                update_row('Jobs', best_job['row_index'], row_values)
+                best_job['values'] = updated
+                jobs_updated += 1
+                signal_to_job_update.append({'signal_id': signal_id, 'job_id': linked_job_id, 'mode': 'update'})
+            elif bucket == 'medium':
+                created_review, _ = ensure_review_queue_entry(parsed, classification, signal_id, linked_job_id, review_rows, review_ids, new_reviews, recruiter_id, match_score)
+                if created_review:
+                    review_needed_created += 1
+
+            requires_action = classification['signal_type'] in ACTION_REQUIRED_SIGNAL_TYPES and classification['signal_type'] != 'ignore_noise'
+            if linked_job_id and bucket == 'high' and requires_action:
+                created_action, action_id = ensure_action(linked_job_id, parsed['company'], classification, action_ids, actions_rows, new_actions, run_at, signal_id=signal_id)
                 if created_action:
                     actions_created += 1
+                    signal_to_action.append({'signal_id': signal_id, 'action_id': action_id, 'job_id': linked_job_id})
             action_ids = action_ids + [r[0] for r in new_actions if r[0] not in action_ids]
             parsed_signals.append({
                 'thread_id': parsed['thread_id'],
@@ -745,10 +847,15 @@ def gmail_scan_and_update(run_at):
     append_rows('Jobs', new_jobs)
     append_rows('Signals', new_signals)
     append_rows('Actions', new_actions)
+    append_rows('ReviewQueue', new_reviews)
+
+    warnings = []
+    if job_related_threads > 0 and signals_created == 0:
+        warnings.append('Run incomplete: job-related threads found but zero signals created')
 
     return {
         'source': 'gmail',
-        'status': 'complete',
+        'status': 'failed' if job_related_threads > 0 and signals_created == 0 else 'complete',
         'query': query,
         'last_run_at_used': iso(last_run_at),
         'threads_scanned': len(thread_map),
@@ -763,7 +870,12 @@ def gmail_scan_and_update(run_at):
         'signals_created': signals_created,
         'actions_created': actions_created,
         'review_needed_count': review_needed_count,
-        'warnings': [],
+        'review_needed_created': review_needed_created,
+        'review_queue_pending_count': len([r for r in review_rows if r['values'].get('status', '') == 'pending']) + review_needed_created,
+        'signals_by_confidence': signals_by_confidence,
+        'signal_to_job_update': signal_to_job_update,
+        'signal_to_action': signal_to_action,
+        'warnings': warnings,
     }
 
 

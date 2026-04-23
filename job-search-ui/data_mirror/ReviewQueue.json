@@ -1,0 +1,18 @@
+[
+  [
+    "review_id",
+    "signal_id",
+    "timestamp",
+    "source",
+    "signal_type",
+    "extracted_company",
+    "extracted_role",
+    "extracted_recruiter",
+    "proposed_action",
+    "proposed_job_update",
+    "confidence",
+    "reason_for_review",
+    "status",
+    "resolution_notes"
+  ]
+]
