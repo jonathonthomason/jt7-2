@@ -5,3 +5,12 @@ action_003,job_004,Sixfold,Review opportunity and decide whether to apply,New Gm
 action_004,job_005,Miami Jewish Health,Review opportunity and decide whether to apply,New Gmail job signal from indeed_email,medium,open,2026-04-22T20:49:22.712982-05:00,,JT7
 action_005,job_006,JETSET Pilates®,Review opportunity and decide whether to apply,New Gmail job signal from linkedin_email,medium,open,2026-04-22T20:49:22.712982-05:00,,JT7
 action_006,job_007,Pano AI,Review opportunity and decide whether to apply,New Gmail job signal from linkedin_email,medium,open,2026-04-22T20:49:22.712982-05:00,,JT7
+action_007,job_008,LinkedIn Job Alerts,Review opportunity and decide whether to apply,Signal type: job_alert,medium,open,2026-04-22T20:54:10.322840-05:00,,JT7
+action_008,job_009,Mail,Prepare for interview,Signal type: interview_scheduling,high,open,2026-04-22T20:54:10.322840-05:00,,JT7
+action_009,job_010,LinkedIn,Review opportunity and decide whether to apply,Signal type: job_alert,medium,open,2026-04-22T20:54:10.322840-05:00,,JT7
+action_010,job_011,Thomsonreuters,Send follow-up response,Signal type: follow_up_opportunity,medium,open,2026-04-22T20:54:10.322840-05:00,,JT7
+action_011,job_012,Indeed,Review opportunity and decide whether to apply,Signal type: job_alert,medium,open,2026-04-22T20:54:10.322840-05:00,,JT7
+action_012,job_013,LinkedIn Job Alerts,Review opportunity and decide whether to apply,Signal type: job_alert,medium,open,2026-04-22T20:54:10.322840-05:00,,JT7
+action_013,job_014,LinkedIn Job Alerts,Review opportunity and decide whether to apply,Signal type: job_alert,medium,open,2026-04-22T20:54:10.322840-05:00,,JT7
+action_014,job_015,American Airlines Talent Acquisition,Reply to recruiter outreach,Signal type: recruiter_outreach,high,open,2026-04-22T20:54:10.322840-05:00,,JT7
+action_015,job_016,GitHub,Review opportunity and decide whether to apply,Signal type: job_alert,medium,open,2026-04-22T20:54:10.322840-05:00,,JT7

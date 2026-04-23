@@ -10,27 +10,27 @@
       "taskName": "EMAIL_SIGNAL_SCAN",
       "isEnabled": true,
       "cadence": "multi-daily",
-      "lastRunAt": "2026-04-22T20:20:20.136404-05:00",
+      "lastRunAt": "2026-04-22T20:54:10.322840-05:00",
       "nextRunAt": "2026-04-23T08:30:00-05:00",
       "lastStatus": "complete",
-      "lastSummary": "Email scan executed with Gmail-driven tracking rules, sender/domain classification, matching logic, and confidence-based update model available"
+      "lastSummary": "Email scan executed, 33 signals, 9 jobs created, 7 jobs updated"
     },
     {
       "taskId": "calendar_signal_scan",
       "taskName": "CALENDAR_SIGNAL_SCAN",
       "isEnabled": true,
       "cadence": "multi-daily",
-      "lastRunAt": "2026-04-22T20:20:20.136404-05:00",
+      "lastRunAt": "2026-04-22T20:54:10.322840-05:00",
       "nextRunAt": "2026-04-23T08:30:00-05:00",
       "lastStatus": "complete",
-      "lastSummary": "Calendar scan executed; calendar integration available"
+      "lastSummary": "Calendar scan executed, 0 jobs matched, 0 job updates"
     },
     {
       "taskId": "job_board_signal_scan",
       "taskName": "JOB_BOARD_SIGNAL_SCAN",
       "isEnabled": true,
       "cadence": "multi-daily",
-      "lastRunAt": "2026-04-22T20:20:20.136404-05:00",
+      "lastRunAt": "2026-04-22T20:54:10.322840-05:00",
       "nextRunAt": "2026-04-23T08:30:00-05:00",
       "lastStatus": "complete",
       "lastSummary": "Job board scan executed from current configured sources when available"
@@ -40,37 +40,37 @@
       "taskName": "SIGNAL_CLASSIFICATION",
       "isEnabled": true,
       "cadence": "multi-daily",
-      "lastRunAt": "2026-04-22T20:20:20.136404-05:00",
+      "lastRunAt": "2026-04-22T20:54:10.322840-05:00",
       "nextRunAt": "2026-04-23T08:30:00-05:00",
       "lastStatus": "complete",
-      "lastSummary": "Signal classification pass completed using Gmail-driven tracking classifications and confidence thresholds"
+      "lastSummary": "Signal classification completed, 16 review-needed signals"
     },
     {
       "taskId": "pipeline_state_sync",
       "taskName": "PIPELINE_STATE_SYNC",
       "isEnabled": true,
       "cadence": "multi-daily",
-      "lastRunAt": "2026-04-22T20:20:20.136404-05:00",
+      "lastRunAt": "2026-04-22T20:54:10.322840-05:00",
       "nextRunAt": "2026-04-23T08:30:00-05:00",
       "lastStatus": "complete",
-      "lastSummary": "Pipeline reconciliation pass completed using recruiter/company/job matching rules"
+      "lastSummary": "Pipeline reconciliation pass completed using probabilistic matching rules"
     },
     {
       "taskId": "pipeline_update",
       "taskName": "PIPELINE_UPDATE",
       "isEnabled": true,
       "cadence": "multi-daily",
-      "lastRunAt": "2026-04-22T20:20:20.136404-05:00",
+      "lastRunAt": "2026-04-22T20:54:10.322840-05:00",
       "nextRunAt": "2026-04-23T08:30:00-05:00",
       "lastStatus": "complete",
-      "lastSummary": "Pipeline update pass completed against live tracker model with Sheets-first sync enforcement"
+      "lastSummary": "Pipeline update pass completed against live tracker model with real Sheets CRUD"
     },
     {
       "taskId": "local_mirror_sync",
       "taskName": "LOCAL_MIRROR_SYNC",
       "isEnabled": true,
       "cadence": "multi-daily",
-      "lastRunAt": "2026-04-22T20:20:20.136404-05:00",
+      "lastRunAt": "2026-04-22T20:54:10.322840-05:00",
       "nextRunAt": "2026-04-23T08:30:00-05:00",
       "lastStatus": "complete",
       "lastSummary": "Local mirror updated for tabs: Jobs, Recruiters, Competition, Signals, Actions, TaskRuns, Lookup"
@@ -80,17 +80,17 @@
       "taskName": "GIT_COMMIT_SYNC",
       "isEnabled": true,
       "cadence": "multi-daily",
-      "lastRunAt": "2026-04-22T20:20:20.136404-05:00",
+      "lastRunAt": "2026-04-22T20:49:22.712982-05:00",
       "nextRunAt": "2026-04-23T08:30:00-05:00",
       "lastStatus": "complete",
-      "lastSummary": "No mirror changes to commit"
+      "lastSummary": "JT7 auto-sync 2026-04-22 20:49:22 CDT tracker mirror update"
     },
     {
       "taskId": "action_generation",
       "taskName": "ACTION_GENERATION",
       "isEnabled": true,
       "cadence": "multi-daily",
-      "lastRunAt": "2026-04-22T20:20:20.136404-05:00",
+      "lastRunAt": "2026-04-22T20:49:22.712982-05:00",
       "nextRunAt": "2026-04-23T08:30:00-05:00",
       "lastStatus": "complete",
       "lastSummary": "Action generation pass completed"
@@ -100,7 +100,7 @@
       "taskName": "PRIORITY_SURFACING",
       "isEnabled": true,
       "cadence": "multi-daily",
-      "lastRunAt": "2026-04-22T20:20:20.136404-05:00",
+      "lastRunAt": "2026-04-22T20:49:22.712982-05:00",
       "nextRunAt": "2026-04-23T08:30:00-05:00",
       "lastStatus": "complete",
       "lastSummary": "Priority surfacing pass completed"
@@ -110,10 +110,10 @@
       "taskName": "PASS_LOGGER",
       "isEnabled": true,
       "cadence": "multi-daily",
-      "lastRunAt": "2026-04-22T20:20:20.136404-05:00",
+      "lastRunAt": "2026-04-22T20:49:22.712982-05:00",
       "nextRunAt": "2026-04-23T08:30:00-05:00",
       "lastStatus": "complete",
-      "lastSummary": "Pass logger completed"
+      "lastSummary": "Pass logger completed with detailed transparency report"
     }
   ]
 }
