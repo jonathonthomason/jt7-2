@@ -906,13 +906,13 @@ def run_chain():
             elif task_name == 'PIPELINE_UPDATE':
                 summary = 'Pipeline update pass completed against live tracker model with real Sheets CRUD'
             elif task_name == 'LOCAL_MIRROR_SYNC':
+                task_run_id = update_taskruns(run_at, next_at, run_log)
+                run_log['task_run_id'] = task_run_id
                 mirror_report = local_mirror_sync()
                 run_log['local_mirror'] = mirror_report
                 run_log['tracker_crud'] = mirror_report['tracker_tabs']
                 summary = f"Local mirror updated for tabs: {', '.join(mirror_report['tabs_mirrored'])}"
             elif task_name == 'GIT_COMMIT_SYNC':
-                task_run_id = update_taskruns(run_at, next_at, run_log)
-                run_log['task_run_id'] = task_run_id
                 git_report = maybe_git_commit(run_at)
                 run_log['git'] = git_report
                 summary = git_report['summary']

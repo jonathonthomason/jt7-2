@@ -133,7 +133,7 @@
     "",
     "",
     "Cold",
-    "recruiter_012",
+    "recruiter_008",
     "2026-04-22 11:45",
     "Review opportunity and decide whether to apply",
     "",
@@ -141,7 +141,7 @@
     "",
     "",
     "gmail",
-    "Created from job_alert Gmail signal thread:19db61532e31ca6e"
+    "Created from job_alert Gmail signal thread:19db61532e31ca6e | signal job_alert from gmail thread:19db61532e31ca6e"
   ],
   [
     "job_009",
@@ -157,7 +157,7 @@
     "",
     "",
     "gmail",
-    "Created from interview_scheduling Gmail signal thread:19db59b85cf92081"
+    "Created from interview_scheduling Gmail signal thread:19db59b85cf92081 | signal interview_scheduling from gmail thread:19db59b85cf92081"
   ],
   [
     "job_010",
@@ -165,7 +165,7 @@
     "",
     "",
     "Cold",
-    "recruiter_020",
+    "recruiter_008",
     "2026-04-22 9:18",
     "Review opportunity and decide whether to apply",
     "",
@@ -173,7 +173,7 @@
     "",
     "",
     "gmail",
-    "Created from job_alert Gmail signal thread:19db58ec4da62220"
+    "Created from job_alert Gmail signal thread:19db58ec4da62220 | signal job_alert from gmail thread:19db58ec4da62220"
   ],
   [
     "job_011",
@@ -189,7 +189,7 @@
     "",
     "",
     "gmail",
-    "Created from follow_up_opportunity Gmail signal thread:19db58b5849bdc81"
+    "Created from follow_up_opportunity Gmail signal thread:19db58b5849bdc81 | signal follow_up_opportunity from gmail thread:19db58b5849bdc81"
   ],
   [
     "job_012",
@@ -205,7 +205,7 @@
     "",
     "",
     "gmail",
-    "Created from job_alert Gmail signal thread:19db44ba583cff97"
+    "Created from job_alert Gmail signal thread:19db44ba583cff97 | signal job_alert from gmail thread:19db44ba583cff97"
   ],
   [
     "job_013",
@@ -213,7 +213,7 @@
     "",
     "",
     "Cold",
-    "recruiter_030",
+    "recruiter_008",
     "2026-04-22 1:45",
     "Review opportunity and decide whether to apply",
     "",
@@ -221,7 +221,7 @@
     "",
     "",
     "gmail",
-    "Created from job_alert Gmail signal thread:19db3efd6593730a"
+    "Created from job_alert Gmail signal thread:19db3efd6593730a | signal job_alert from gmail thread:19db3efd6593730a"
   ],
   [
     "job_014",
@@ -229,7 +229,7 @@
     "",
     "",
     "Cold",
-    "recruiter_031",
+    "recruiter_008",
     "2026-04-21 23:45",
     "Review opportunity and decide whether to apply",
     "",
@@ -237,7 +237,7 @@
     "",
     "",
     "gmail",
-    "Created from job_alert Gmail signal thread:19db381fe2e3d93e"
+    "Created from job_alert Gmail signal thread:19db381fe2e3d93e | signal job_alert from gmail thread:19db381fe2e3d93e"
   ],
   [
     "job_015",
@@ -253,7 +253,7 @@
     "",
     "",
     "gmail",
-    "Created from recruiter_outreach Gmail signal thread:19db32a8fd702f7b"
+    "Created from recruiter_outreach Gmail signal thread:19db32a8fd702f7b | signal recruiter_outreach from gmail thread:19db32a8fd702f7b"
   ],
   [
     "job_016",
@@ -261,7 +261,7 @@
     "Staff Product Designer, Copilot",
     "",
     "Cold",
-    "recruiter_033",
+    "recruiter_008",
     "2026-04-21 21:45",
     "Review opportunity and decide whether to apply",
     "",
@@ -269,6 +269,6 @@
     "",
     "",
     "linkedin_email",
-    "Created from job_alert Gmail signal thread:19db314223336eb7"
+    "Created from job_alert Gmail signal thread:19db314223336eb7 | signal job_alert from linkedin_email thread:19db314223336eb7"
   ]
 ]

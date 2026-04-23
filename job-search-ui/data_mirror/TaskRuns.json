@@ -10,5 +10,29 @@
     "result_summary",
     "inputs_ref",
     "outputs_ref"
+  ],
+  [
+    "taskrun_001",
+    "JT7_CHAIN",
+    "complete",
+    "high",
+    "multi-daily",
+    "2026-04-22T20:54:10.322840-05:00",
+    "2026-04-23T08:30:00-05:00",
+    "",
+    "gmail:31|calendar:10",
+    "signals:33|jobs:16|actions:9"
+  ],
+  [
+    "taskrun_002",
+    "JT7_CHAIN",
+    "complete",
+    "high",
+    "multi-daily",
+    "2026-04-22T20:54:56.935840-05:00",
+    "2026-04-23T08:30:00-05:00",
+    "",
+    "gmail:31|calendar:10",
+    "signals:0|jobs:16|actions:0"
   ]
 ]
