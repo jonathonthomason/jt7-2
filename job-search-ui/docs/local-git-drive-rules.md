@@ -16,3 +16,7 @@ Keep all logic, modules, components, and data files aligned across local runtime
 - Google Sheets is the live tracker truth; local and git are synchronized mirrors of tracker state
 - scheduled JT7 runtime passes must enforce the Sheets -> local mirror -> git sequence on meaningful tracker changes
 - Gmail-driven tracker updates must follow the same Sheets -> local mirror -> git sequence
+- TaskRuns updates count as meaningful tracker writes and must be included before local mirror sync
+- when no meaningful tracker CRUD happened, runtime reporting must explicitly say so and may skip mirror/git only if no tracked local files changed
+- runtime reports under `job-search-ui/runtime/reports/` and tracker mirror files under `job-search-ui/data_mirror/` are part of the synchronized persistence layer and should be committed when changed
+- Google Drive mirrors should be refreshed for important runtime rules/docs when execution behavior materially changes

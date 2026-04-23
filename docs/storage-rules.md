@@ -62,6 +62,9 @@ Do not collapse operational tracking, editable documents, and versioned system l
 - keep live operational tracker state in Google Sheets
 - do not treat Drive copies as canonical when a workspace/GitHub markdown file exists
 - do not treat markdown docs as the live operational source of truth when the state belongs in Sheets
+- enforce tracker persistence in this order for meaningful runtime CRUD: Google Sheets first, local mirror second, git third
+- treat runtime reports and local tracker mirror artifacts as versioned operational evidence that should live in git when changed
+- when runtime behavior materially changes, update the relevant local markdown rules and refresh the Drive mirror for those docs
 
 ---
 
@@ -69,6 +72,7 @@ Do not collapse operational tracking, editable documents, and versioned system l
 - markdown source of truth: workspace/GitHub
 - markdown mirror layer: Google Drive
 - live tracker source of truth: Google Sheets
+- operational runtime evidence layer: local mirror files + runtime reports, versioned in git after Sheets writes
 
 ---
 
