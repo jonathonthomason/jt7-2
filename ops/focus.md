@@ -39,6 +39,7 @@
 - **due_at:** null
 - **notes:**
   - Product work should support the career engine, not outrun it
+  - keep system requirements and docs aligned with the live JT7 app/runtime state
 
 ### focus_03
 - **id:** focus_reduce_execution_drag
@@ -199,11 +200,12 @@
 - **title:** Stabilize runtime execution surface
 - **type:** blocker
 - **domain:** product
-- **status:** blocked
+- **status:** resolved
 - **priority_rank:** 1
-- **summary:** Telegram/OpenClaw execution has not been reliable enough to verify a live Gmail-to-Sheets loop end to end.
+- **summary:** The JT7 runtime execution surface is now capable of real Gmail ingestion, Sheets CRUD, TaskRuns logging, local mirror sync, and git persistence. Remaining work is precision hardening, not missing runtime execution.
 - **related_files:**
   - CURRENT.md
+  - job-search-ui/scripts/run_jt7_chain.py
 - **related_entity_ids:** []
 - **owner:** shared
 - **due_at:** null
@@ -211,6 +213,7 @@
   - Use gog as canonical Google capability layer
   - Gmail read/search, Sheets read/write, and Drive read/write are only considered accessible when auth, tool availability, runtime execution, and command-path verification all pass
   - Do not assume Telegram is a valid execution surface unless verified
+  - remaining problem is parsing quality and source filtering, not basic execution capability
 
 ### focus_09
 - **id:** focus_avoid_overbuilding_before_use
@@ -229,3 +232,23 @@
 - **due_at:** null
 - **notes:**
   - Protects the system from product-first drift
+
+### focus_13
+- **id:** focus_keep_docs_current_with_runtime
+- **title:** Keep docs current with live JT7 app state
+- **type:** next_action
+- **domain:** execution
+- **status:** active
+- **priority_rank:** 1
+- **summary:** Update system requirements, storage rules, and runtime docs whenever the JT7 app/runtime behavior changes so docs do not lag behind the live system.
+- **related_files:**
+  - CURRENT.md
+  - DECISIONS.md
+  - docs/storage-rules.md
+  - job-search-ui/docs/local-git-drive-rules.md
+  - MISSION.md
+- **related_entity_ids:** []
+- **owner:** shared
+- **due_at:** null
+- **notes:**
+  - includes Drive mirror refresh when mirrored docs change

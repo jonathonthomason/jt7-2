@@ -248,3 +248,26 @@
   - docs/openclaw-thread-routing-config-spec.md
 - **related_entity_ids:** []
 - **next_review_at:** null
+
+### decision_13
+- **id:** decision_task_pass_persistence_local_git_drive
+- **title:** Persist each meaningful JT7 task pass across local, git, and Drive
+- **domain:** execution
+- **status:** active
+- **decision_date:** 2026-04-22
+- **owner:** Jonathon
+- **summary:** Each meaningful JT7 task pass event should leave behind synchronized local artifacts, git history, and Drive-accessible mirrors, while Google Sheets remains the live tracker truth for tracker state.
+- **why:** Jonathon explicitly directed JT7 to maintain local + git + Drive persistence for each task pass event rather than leaving Drive as an optional afterthought.
+- **implications:**
+  - task pass evidence should persist locally first
+  - changed runtime artifacts and mirrors should be committed to git when meaningful changes occurred
+  - relevant docs and mirrored artifacts should be refreshed to Drive when they changed
+  - system requirements and docs must be updated to match the live JT7 app state instead of drifting behind implementation
+- **related_files:**
+  - USER.md
+  - MISSION.md
+  - CURRENT.md
+  - docs/storage-rules.md
+  - job-search-ui/docs/local-git-drive-rules.md
+- **related_entity_ids:** []
+- **next_review_at:** null

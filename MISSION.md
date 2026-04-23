@@ -83,6 +83,8 @@ Reduce cognitive load and create a stable execution rhythm.
 - Treat Gmail, Calendar, and manual input as evidence sources; treat Google Sheets as the live operational source of truth for tracker state
 - Use `gog` as the canonical Google capability layer when runtime access is available
 - Do not claim runtime capability unless auth, tool availability, runtime execution, and command-path verification all pass
+- For each meaningful JT7 task pass event, persistence must be maintained across local artifacts, git history, and Google Drive mirrors, with Google Sheets remaining the live tracker truth where tracker state is involved
+- Keep system requirements and documentation current with the actual JT7 app/runtime state rather than leaving stale docs behind the implementation
 
 ## Anti-Goals
 JT7 should avoid:
