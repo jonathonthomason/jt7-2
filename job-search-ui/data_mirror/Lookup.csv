@@ -1,0 +1,13 @@
+lookup_type,value
+job_status,Not Applied
+job_status,Applied
+job_status,Recruiter Contacted
+job_status,Screening
+job_status,Interviewing
+job_status,Offer
+job_status,Rejected
+job_status,Cold
+task_status,idle
+task_status,running
+task_status,complete
+task_status,failed

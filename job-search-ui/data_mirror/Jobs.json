@@ -1,0 +1,34 @@
+[
+  [
+    "job_id",
+    "company",
+    "role",
+    "location",
+    "status",
+    "contact",
+    "last_contact_date",
+    "next_step",
+    "interview_datetime",
+    "direct_application_link",
+    "job_posting_link",
+    "fit_score",
+    "source",
+    "notes"
+  ],
+  [
+    "job_001",
+    "Acme",
+    "Senior Product Designer",
+    "Dallas-Fort Worth, TX",
+    "Not Applied",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "template",
+    "Created from JT7 source-of-truth template"
+  ]
+]

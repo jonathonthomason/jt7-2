@@ -1,0 +1,19 @@
+[
+  [
+    "competition_id",
+    "name",
+    "company_name",
+    "location",
+    "tracking_status",
+    "linkedin_profile_link",
+    "portfolio_link",
+    "notes"
+  ],
+  [
+    "competition_001",
+    "",
+    "",
+    "Dallas-Fort Worth, TX",
+    "Benchmark"
+  ]
+]
