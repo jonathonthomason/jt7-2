@@ -10,5 +10,77 @@
     "created_at",
     "due_at",
     "owner"
+  ],
+  [
+    "action_001",
+    "job_002",
+    "Massimo Zanetti Beverage USA",
+    "Review opportunity and decide whether to apply",
+    "New Gmail job signal from indeed_email",
+    "medium",
+    "open",
+    "2026-04-22T20:49:22.712982-05:00",
+    "",
+    "JT7"
+  ],
+  [
+    "action_002",
+    "job_003",
+    "Allstate",
+    "Review opportunity and decide whether to apply",
+    "New Gmail job signal from linkedin_email",
+    "medium",
+    "open",
+    "2026-04-22T20:49:22.712982-05:00",
+    "",
+    "JT7"
+  ],
+  [
+    "action_003",
+    "job_004",
+    "Sixfold",
+    "Review opportunity and decide whether to apply",
+    "New Gmail job signal from linkedin_email",
+    "medium",
+    "open",
+    "2026-04-22T20:49:22.712982-05:00",
+    "",
+    "JT7"
+  ],
+  [
+    "action_004",
+    "job_005",
+    "Miami Jewish Health",
+    "Review opportunity and decide whether to apply",
+    "New Gmail job signal from indeed_email",
+    "medium",
+    "open",
+    "2026-04-22T20:49:22.712982-05:00",
+    "",
+    "JT7"
+  ],
+  [
+    "action_005",
+    "job_006",
+    "JETSET Pilates\u00ae",
+    "Review opportunity and decide whether to apply",
+    "New Gmail job signal from linkedin_email",
+    "medium",
+    "open",
+    "2026-04-22T20:49:22.712982-05:00",
+    "",
+    "JT7"
+  ],
+  [
+    "action_006",
+    "job_007",
+    "Pano AI",
+    "Review opportunity and decide whether to apply",
+    "New Gmail job signal from linkedin_email",
+    "medium",
+    "open",
+    "2026-04-22T20:49:22.712982-05:00",
+    "",
+    "JT7"
   ]
 ]

@@ -10,5 +10,77 @@
     "evidence_ref",
     "status",
     "linked_job_id"
+  ],
+  [
+    "signal_001",
+    "indeed_email",
+    "job_alert",
+    "Massimo Zanetti Beverage USA",
+    "Director of eCommerce",
+    "2026-04-22 20:03",
+    "Massimo Zanetti Beverage USA is hiring for Director of eCommerce. 29 more Immediately Hiring jobs in Miami, FL.",
+    "thread:19db7dd83445b799",
+    "new",
+    "job_002"
+  ],
+  [
+    "signal_002",
+    "linkedin_email",
+    "job_alert",
+    "Allstate",
+    "Senior User Experience Designer",
+    "2026-04-22 19:45",
+    "You may be a fit for Allstate\u2019s Senior User Experience Designer role  - Actively recruiting",
+    "thread:19db7cc9ac86506a",
+    "new",
+    "job_003"
+  ],
+  [
+    "signal_003",
+    "linkedin_email",
+    "job_alert",
+    "Sixfold",
+    "Lead Product Designer",
+    "2026-04-22 17:45",
+    "You may be a fit for Sixfold\u2019s Lead Product Designer role  - Actively recruiting",
+    "thread:19db68306558e82d",
+    "new",
+    "job_004"
+  ],
+  [
+    "signal_004",
+    "indeed_email",
+    "job_alert",
+    "Miami Jewish Health",
+    "Senior Graphic Designer",
+    "2026-04-22 16:24",
+    "Miami Jewish Health is hiring for Senior Graphic Designer. 5 more graphic designer jobs in Miami, FL.",
+    "thread:19db714a1904cfbf",
+    "new",
+    "job_005"
+  ],
+  [
+    "signal_005",
+    "linkedin_email",
+    "job_alert",
+    "JETSET Pilates\u00ae",
+    "Design & Development Manager",
+    "2026-04-22 15:45",
+    "You may be a fit for JETSET Pilates\u00ae\u2019s Design & Development Manager role  - Actively recruiting",
+    "thread:19db6f12a764254f",
+    "new",
+    "job_006"
+  ],
+  [
+    "signal_006",
+    "linkedin_email",
+    "job_alert",
+    "Pano AI",
+    "Senior Product Designer",
+    "2026-04-22 9:45",
+    "You may be a fit for Pano AI\u2019s Senior Product Designer role  - 1 school alum",
+    "thread:19db5a76f390f43f",
+    "new",
+    "job_007"
   ]
 ]
