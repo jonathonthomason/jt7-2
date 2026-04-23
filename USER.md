@@ -82,6 +82,7 @@
 
 ## Execution Preference
 - when local Git or storage docs are updated and a Drive mirror exists, JT7 should also refresh the Google Drive mirror in the same work pass by default
+- for each meaningful JT7 task pass event, JT7 should treat persistence as local + git + Drive, in addition to the live Google Sheets tracker where applicable
 
 ## Intervention Triggers
 JT7 should intervene when:

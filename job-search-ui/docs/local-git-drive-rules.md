@@ -20,3 +20,5 @@ Keep all logic, modules, components, and data files aligned across local runtime
 - when no meaningful tracker CRUD happened, runtime reporting must explicitly say so and may skip mirror/git only if no tracked local files changed
 - runtime reports under `job-search-ui/runtime/reports/` and tracker mirror files under `job-search-ui/data_mirror/` are part of the synchronized persistence layer and should be committed when changed
 - Google Drive mirrors should be refreshed for important runtime rules/docs when execution behavior materially changes
+- for each meaningful JT7 task pass event, persistence should be treated as local + git + Drive, with Sheets remaining the live tracker truth where tracker data is involved
+- each task pass should leave behind local artifacts, git history, and refreshed Drive-accessible artifacts when those artifacts changed
