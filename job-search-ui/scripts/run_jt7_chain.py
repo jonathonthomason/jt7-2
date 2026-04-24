@@ -5,13 +5,13 @@ import re
 import subprocess
 import sys
 from datetime import datetime, timedelta
-from email.utils import parseaddr
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
 sys.path.append('/Users/jtemp/.openclaw/workspace/job-search-ui')
 
 from runtime.domain.actions import ACTION_REQUIRED_SIGNAL_TYPES
+from runtime.pipelines.gmail_pipeline import choose_company_from_context, choose_role_from_context, gmail_query_from_last_run, score_job_match
 from runtime.domain.jobs import make_job_row, update_job_row_for_signal
 from runtime.ingestion.gmail import build_thread_map, collect_gmail_messages, collect_gmail_threads
 from runtime.pipelines.calendar_pipeline import calendar_scan_and_update
@@ -29,6 +29,10 @@ from runtime.storage.reporting import write_run_report
 from runtime.storage.runtime_state import fetch_runtime_state
 from runtime.storage.sheets_repo import append_rows, rows_to_dicts, update_row
 from runtime.storage.taskruns_repo import update_taskruns
+from runtime.utils.file_utils import load_json, save_json, write_csv
+from runtime.utils.id_utils import next_id
+from runtime.utils.text_utils import extract_domain, normalize_company, normalize_text
+from runtime.utils.time_utils import next_global_run, next_run_after, parse_dt
 
 ROOT = Path('/Users/jtemp/.openclaw/workspace/job-search-ui')
 RUNTIME = ROOT / 'runtime'
@@ -101,37 +105,6 @@ def iso(dt):
     return dt.isoformat()
 
 
-def parse_dt(value):
-    if not value:
-        return None
-    try:
-        return datetime.fromisoformat(value)
-    except Exception:
-        return None
-
-
-def next_run_after(current, hhmm):
-    hour, minute = map(int, hhmm.split(':'))
-    candidate = current.replace(hour=hour, minute=minute, second=0, microsecond=0)
-    if candidate <= current:
-        candidate = candidate + timedelta(days=1)
-    return candidate
-
-
-def next_global_run(current):
-    candidates = [next_run_after(current, t) for t in RUN_TIMES]
-    return min(candidates)
-
-
-def load_json(path):
-    return json.loads(path.read_text())
-
-
-def save_json(path, data):
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(data, indent=2))
-
-
 def update_task_state(task_name, status, summary, run_at, next_at):
     data = load_json(TASKS_FILE)
     for task in data['tasks']:
@@ -182,13 +155,6 @@ def sheets_append(range_name, values):
     )
 
 
-def write_csv(path, rows):
-    path.parent.mkdir(parents=True, exist_ok=True)
-    with path.open('w', newline='') as f:
-        writer = csv.writer(f)
-        writer.writerows(rows)
-
-
 def mirror_snapshot():
     snapshot = {}
     for tab in TABS:
@@ -203,32 +169,6 @@ def mirror_snapshot():
     return snapshot
 
 
-def next_id(prefix, existing_ids):
-    max_n = 0
-    for value in existing_ids:
-        if isinstance(value, str) and value.startswith(prefix):
-            tail = value.replace(prefix, '')
-            if tail.isdigit():
-                max_n = max(max_n, int(tail))
-    return f'{prefix}{max_n + 1:03d}'
-
-
-def normalize_text(value):
-    return re.sub(r'\s+', ' ', (value or '').strip()).lower()
-
-
-def normalize_company(value):
-    text = normalize_text(value)
-    return re.sub(r'\b(inc|llc|ltd|corp|corporation|company|co)\b', '', text).strip(' ,.-')
-
-
-def extract_domain(value):
-    email = parseaddr(value or '')[1]
-    if '@' in email:
-        return email.split('@', 1)[1].lower()
-    return ''
-
-
 def get_last_run_at():
     tasks = load_json(TASKS_FILE)['tasks']
     runs = [parse_dt(t.get('lastRunAt')) for t in tasks if t.get('lastRunAt')]
@@ -236,12 +176,6 @@ def get_last_run_at():
     if runs:
         return max(runs)
     return now_local() - timedelta(days=DEFAULT_GMAIL_LOOKBACK_DAYS)
-
-
-def gmail_query_from_last_run(last_run_at):
-    delta = now_local() - last_run_at
-    days = max(1, min(30, delta.days + 1))
-    return f"{JOB_LABEL_QUERY} newer_than:{days}d"
 
 
 def infer_status(signal_type, current_status=''):
@@ -256,42 +190,6 @@ def infer_status(signal_type, current_status=''):
     if signal_type == 'job_alert' and not current_status:
         return 'Cold'
     return current_status or 'Cold'
-
-
-def choose_company_from_context(parsed, jobs_by_company):
-    if parsed['company']:
-        return parsed['company']
-    if parsed['sender_domain']:
-        for company_norm, row in jobs_by_company.items():
-            if parsed['sender_domain'].split('.')[0] in company_norm:
-                return row['values'].get('company', '')
-    return ''
-
-
-def choose_role_from_context(parsed, company_jobs):
-    if parsed['role']:
-        return parsed['role']
-    if company_jobs:
-        return company_jobs[0]['values'].get('role', '')
-    return ''
-
-
-def score_job_match(parsed, job_row):
-    job = job_row['values']
-    score = 0.0
-    if normalize_company(parsed['company']) and normalize_company(parsed['company']) == normalize_company(job.get('company', '')):
-        score += 0.55
-    elif parsed['sender_domain'] and parsed['sender_domain'].split('.')[0] in normalize_company(job.get('company', '')):
-        score += 0.25
-
-    if parsed['role'] and normalize_text(parsed['role']) == normalize_text(job.get('role', '')):
-        score += 0.35
-    elif parsed['role'] and normalize_text(parsed['role']) in normalize_text(job.get('role', '')):
-        score += 0.2
-
-    if parsed['thread_id'] and parsed['thread_id'] in (job.get('notes', '') or ''):
-        score += 0.1
-    return score
 
 
 def ensure_action(job_id, company, classification, action_ids, actions_rows, new_actions, run_at, signal_id=''):
@@ -323,7 +221,7 @@ def gmail_scan_and_update(run_at):
     actions_rows = state['actions_rows']
     review_rows = state['review_rows']
     last_run_at = get_last_run_at()
-    query = gmail_query_from_last_run(last_run_at)
+    query = gmail_query_from_last_run(last_run_at, now_local, DEFAULT_GMAIL_LOOKBACK_DAYS, JOB_LABEL_QUERY)
     messages = collect_gmail_messages(query, gog_json)
     threads = collect_gmail_threads(query, gog_json)
     thread_map = build_thread_map(threads, messages)
@@ -376,7 +274,7 @@ def gmail_scan_and_update(run_at):
                 recruiter_ids.append(recruiter_id)
                 recruiters_created += 1
 
-            best_job, match_score = find_best_job_match(parsed, jobs_rows, score_job_match)
+            best_job, match_score = find_best_job_match(parsed, jobs_rows, lambda p, row: score_job_match(p, row, normalize_company, normalize_text))
             linked_job_id = ''
 
             if best_job and match_score >= 0.6:
@@ -512,7 +410,7 @@ def maybe_git_commit(run_at):
 
 def run_chain():
     run_at = now_local()
-    next_at = next_global_run(run_at)
+    next_at = next_global_run(run_at, RUN_TIMES)
     run_log = {
         'runTimestamp': iso(run_at),
         'chain': CHAIN,

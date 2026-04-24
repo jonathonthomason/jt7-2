@@ -1,0 +1,28 @@
+{
+  "runTimestamp": "2026-04-24T07:31:00.183840-05:00",
+  "chain": [
+    "EMAIL_SIGNAL_SCAN",
+    "CALENDAR_SIGNAL_SCAN",
+    "JOB_BOARD_SIGNAL_SCAN",
+    "SIGNAL_CLASSIFICATION",
+    "PIPELINE_STATE_SYNC",
+    "PIPELINE_UPDATE",
+    "LOCAL_MIRROR_SYNC",
+    "GIT_COMMIT_SYNC",
+    "ACTION_GENERATION",
+    "PRIORITY_SURFACING",
+    "PASS_LOGGER"
+  ],
+  "taskResults": [],
+  "status": "failed",
+  "summary": "gmail_query_from_last_run() missing 3 required positional arguments: 'now_local', 'default_gmail_lookback_days', and 'job_label_query'",
+  "sources_checked": [],
+  "tracker_crud": {},
+  "local_mirror": {},
+  "git": {},
+  "warnings": [],
+  "errors": [
+    "gmail_query_from_last_run() missing 3 required positional arguments: 'now_local', 'default_gmail_lookback_days', and 'job_label_query'"
+  ],
+  "assessment": "Chain failed. Inspect errors and partial outputs."
+}

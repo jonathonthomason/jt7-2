@@ -19,10 +19,10 @@
         "PRIORITY_SURFACING",
         "PASS_LOGGER"
       ],
-      "lastRunAt": "2026-04-24T07:27:54.227609-05:00",
+      "lastRunAt": "2026-04-24T07:31:00.183840-05:00",
       "nextRunAt": "2026-04-24T08:30:00-05:00",
-      "lastStatus": "complete",
-      "lastSummary": "Full JT7 chain completed"
+      "lastStatus": "failed",
+      "lastSummary": "gmail_query_from_last_run() missing 3 required positional arguments: 'now_local', 'default_gmail_lookback_days', and 'job_label_query'"
     },
     {
       "runId": "midday_run",
@@ -42,10 +42,10 @@
         "PRIORITY_SURFACING",
         "PASS_LOGGER"
       ],
-      "lastRunAt": "2026-04-24T07:27:54.227609-05:00",
+      "lastRunAt": "2026-04-24T07:31:00.183840-05:00",
       "nextRunAt": "2026-04-24T12:30:00-05:00",
-      "lastStatus": "complete",
-      "lastSummary": "Full JT7 chain completed"
+      "lastStatus": "failed",
+      "lastSummary": "gmail_query_from_last_run() missing 3 required positional arguments: 'now_local', 'default_gmail_lookback_days', and 'job_label_query'"
     },
     {
       "runId": "evening_run",
@@ -65,10 +65,10 @@
         "PRIORITY_SURFACING",
         "PASS_LOGGER"
       ],
-      "lastRunAt": "2026-04-24T07:27:54.227609-05:00",
+      "lastRunAt": "2026-04-24T07:31:00.183840-05:00",
       "nextRunAt": "2026-04-24T18:00:00-05:00",
-      "lastStatus": "complete",
-      "lastSummary": "Full JT7 chain completed"
+      "lastStatus": "failed",
+      "lastSummary": "gmail_query_from_last_run() missing 3 required positional arguments: 'now_local', 'default_gmail_lookback_days', and 'job_label_query'"
     }
   ]
 }
