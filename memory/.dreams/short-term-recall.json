@@ -1,0 +1,37 @@
+{
+  "version": 1,
+  "updatedAt": "2026-04-22T22:49:34.107Z",
+  "entries": {
+    "memory:memory/2026-04-02.md:1:33": {
+      "key": "memory:memory/2026-04-02.md:1:33",
+      "path": "memory/2026-04-02.md",
+      "startLine": 1,
+      "endLine": 33,
+      "source": "memory",
+      "snippet": "# 2026-04-02 ## Accomplished - completed Phase 1 core activation work - finalized `IDENTITY.md` - finalized `USER.md` - finalized `AGENTS.md` - finalized `HEARTBEAT.md` - completed Phase 2 workstream initialization - created `career/strategy.md` - created `career/pipeline.md` - created `product/thesis.md` - created `ops/focus.md` - created `ROADMAP.md` as the source of truth for progress - completed JT7-R2.3.1 - defined canonical schemas in `product/schemas.md` - established schemas for opportunity, recruiter_contact, decision, focus_item, current_state, and heartbeat_alert - mapped schemas to current files and future UI surfaces ## Current System State - JT7 now has",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 0.631924756984563,
+      "maxScore": 0.631924756984563,
+      "firstRecalledAt": "2026-04-22T22:49:34.107Z",
+      "lastRecalledAt": "2026-04-22T22:49:34.107Z",
+      "queryHashes": [
+        "5f035a886966"
+      ],
+      "recallDays": [
+        "2026-04-22"
+      ],
+      "conceptTags": [
+        "identity.md",
+        "user.md",
+        "agents.md",
+        "heartbeat.md",
+        "career/strategy.md",
+        "career/pipeline.md",
+        "product/thesis.md",
+        "ops/focus.md"
+      ]
+    }
+  }
+}

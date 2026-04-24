@@ -11,6 +11,7 @@ import {
   useNavigate,
   useParams,
 } from 'react-router-dom'
+import { TodayPlanPage } from './features/today'
 
 const DEMO_AUTH_KEY = 'demo_auth'
 
@@ -137,12 +138,7 @@ function CompanyPage() {
 }
 
 function DashboardPage() {
-  return (
-    <section>
-      <h1 style={styles.title}>Dashboard</h1>
-      <p style={styles.copy}>Protected dashboard route is active.</p>
-    </section>
-  )
+  return <TodayPlanPage />
 }
 
 function SignInPage() {
