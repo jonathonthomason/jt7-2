@@ -46,10 +46,16 @@ def proposed_action_instruction(signal_type: str) -> str:
 
 def canonical_action_status(classification: dict, linked_job_id: str = '') -> str:
     signal_type = classification.get('signal_type', '')
+    if classification.get('resolved') or classification.get('completed'):
+        return 'done'
+    if classification.get('waiting'):
+        return 'waiting'
     if classification.get('no_job_create'):
         return 'blocked'
     if signal_type == 'application_confirmation':
         return 'waiting'
+    if signal_type in {'rejection', 'cancellation'}:
+        return 'done'
     if signal_type in {'recruiter_outreach', 'reply_received', 'follow_up_opportunity', 'interview_scheduling', 'reschedule', 'hiring_manager_communication'}:
         return 'open'
     if linked_job_id:

@@ -192,6 +192,17 @@ def infer_status(signal_type, current_status=''):
     return current_status or 'Cold'
 
 
+def action_classification_for_signal(signal_type, job_status=''):
+    normalized_status = (job_status or '').strip().lower()
+    return {
+        'signal_type': signal_type,
+        'no_job_create': False,
+        'resolved': signal_type in {'rejection', 'cancellation'} or normalized_status in {'rejected'},
+        'completed': normalized_status in {'rejected'},
+        'waiting': signal_type == 'application_confirmation' or normalized_status in {'applied', 'offer'},
+    }
+
+
 def ensure_action(job_id, company, classification, action_ids, actions_rows, new_actions, run_at, signal_id=''):
     action_row = build_action_row(
         next_id('action_', action_ids + [r[0] for r in new_actions]),
@@ -281,6 +292,7 @@ def run_chain():
             sheets_update,
             make_job_row,
             infer_status,
+            action_classification_for_signal,
             update_job_row_for_signal,
             ensure_action,
             append_rows,

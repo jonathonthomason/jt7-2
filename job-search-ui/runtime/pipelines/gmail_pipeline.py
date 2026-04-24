@@ -82,6 +82,7 @@ def gmail_scan_and_update(
     sheets_update,
     make_job_row,
     infer_status,
+    action_classification_for_signal,
     update_job_row_for_signal,
     ensure_action,
     append_rows,
@@ -285,10 +286,13 @@ def gmail_scan_and_update(
 
             requires_action = classification['signal_type'] in ACTION_REQUIRED_SIGNAL_TYPES and classification['signal_type'] != 'ignore_noise'
             if linked_job_id and signal_id and bucket == 'high' and requires_action:
+                action_company = parsed['company'] or (best_job['values'].get('company', '') if best_job else '')
+                job_status = best_job['values'].get('status', '') if best_job else ''
+                action_classification = action_classification_for_signal(classification['signal_type'], job_status)
                 created_action, action_id = ensure_action(
                     linked_job_id,
-                    parsed['company'],
-                    classification,
+                    action_company,
+                    action_classification,
                     action_ids,
                     actions_rows,
                     new_actions,
