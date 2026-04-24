@@ -1,4 +1,4 @@
-# JT7
+# JT7 (for hiring teams)
 
 A job search is operationally messy. Signals arrive through email, calendar, job boards, recruiter replies, and spreadsheets. Most people handle that with fragmented tools and manual memory.
 
@@ -30,7 +30,10 @@ The result is a system where AI is not just generating text — it is helping ma
 
 ## How I used AI to build it
 
-I used Claude Code as the primary development environment throughout.
+JT7 was built using a multi-model agentic workflow.
+
+### Phase 1 — Build with OpenClaw + GPT (Codex)
+The core system was built using OpenClaw, an agentic CLI framework running GPT/Codex as the execution engine.
 
 My process:
 
@@ -40,9 +43,18 @@ My process:
 4. Build the smallest real working loop first — then modularize
 5. Refactor toward cleaner architecture once real data proved the model
 
-AI accelerated systems framing, architecture definition, code scaffolding, runtime refactoring, and documentation alignment.
+### Phase 2 — Architecture review with Claude Code
+Once the system was running, I brought Claude Code in as a second pass — pointed directly at the live repo.
 
-The system was directed through product decisions. Not left to uncontrolled generation.
+I used it to:
+- audit the runtime architecture against the original contracts
+- pressure-test the task chain logic
+- surface refactor opportunities in the module boundaries
+- validate that the system behaved as designed, not just as coded
+
+This reflects how I think about AI tooling in practice: different models have different strengths. OpenClaw + Codex is fast and execution-oriented. Claude Code is strong at reasoning about existing systems and surfacing structural issues.
+
+Using both — in sequence, with clear intent — produced a more reliable system than either would have alone.
 
 ---
 
@@ -66,28 +78,30 @@ Runs at 8:30 AM, 12:30 PM, and 6:00 PM CT:
 
 ---
 
+## Core build philosophy
+
+### Markdown defines the product contract
+I used Markdown files to define rules, schemas, operating assumptions, workflow logic, and runtime boundaries. That let me use AI to reason against explicit artifacts rather than constantly re-describing intent in chat.
+
+### Build the smallest real loop first
+Instead of overdesigning, I pushed toward a real proof loop: read Gmail → classify signals → reconcile against tracker → write to Sheets → sync mirrors → log the run → render UI. Once that loop was real, I modularized it.
+
+### Separate logic, runtime, storage, and UI
+The system is intentionally split into Markdown logic/contracts, Python runtime modules, storage/mirror layers, and React UI surfaces. Collapsing these into one layer is where AI-assisted systems get messy fast.
+
+---
+
 ## UX decisions
 
 The operator UI was designed around one question: *what should happen next, and why?*
 
-That meant:
-- one dominant next best action
-- a small supporting action set
-- verified system state — not raw ingestion noise
-- calm, information-forward visual direction
-- fast scanability over analytical depth
+- One dominant next best action
+- A small supporting action set
+- Verified system state — not raw ingestion noise
+- Calm, information-forward visual direction
+- Fast scanability over analytical depth
 
 The UI is downstream of classified signals, tracker state, and action rules. It renders what the system knows — not what it guesses.
-
----
-
-## What this demonstrates
-
-- Product systems thinking applied outside a client context
-- Disciplined AI-assisted build process using Claude Code
-- Full-stack execution: Markdown contracts → Python runtime → React UI
-- Source-of-truth architecture for async, multi-source data
-- UX grounded in operator needs, not dashboard aesthetics
 
 ---
 
@@ -100,6 +114,16 @@ The UI is downstream of classified signals, tracker state, and action rules. It 
 | Runtime modules | `job-search-ui/runtime/` |
 | UI surface | `job-search-ui/src/` |
 | System specs | `JT7/`, `product/`, `docs/` |
+
+---
+
+## What this demonstrates
+
+- Product systems thinking applied outside a client context
+- Multi-model agentic workflow — OpenClaw + GPT for build, Claude Code for architecture review
+- Full-stack execution: Markdown contracts → Python runtime → React UI
+- Source-of-truth architecture for async, multi-source data
+- UX grounded in operator needs, not dashboard aesthetics
 
 ---
 
