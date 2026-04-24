@@ -8,31 +8,50 @@ type ExecutionCardProps = {
   whyNow: string
   primaryCta: string
   secondaryActions: string[]
+  emphasis?: 'primary' | 'secondary'
+}
+
+function humanActionLabel(actionType: string) {
+  if (actionType.includes('review')) return 'Needs review'
+  if (actionType.includes('reply') || actionType.includes('outreach')) return 'Reply needed'
+  if (actionType.includes('follow')) return 'Follow up'
+  if (actionType.includes('interview')) return 'Interview'
+  return ''
+}
+
+function shortWhyNow(whyNow: string) {
+  if (!whyNow) return ''
+
+  const normalized = whyNow
+    .replace('This signal was preserved but blocked from job creation. It needs an operator review before tracker mutation.', 'Review before creating job')
+    .replace('JT7 has a live next step for this job: ', '')
+    .replace('This signal is linked to a real job and is ready for the next operator move.', 'Ready for next step')
+
+  return normalized.length > 72 ? `${normalized.slice(0, 72).trim()}…` : normalized
 }
 
 export function ExecutionCard({
-  priority,
   actionType,
   title,
   targetLabel,
   whyNow,
   primaryCta,
   secondaryActions,
+  emphasis = 'secondary',
 }: ExecutionCardProps) {
+  const actionLabel = humanActionLabel(actionType)
+
   return (
-    <article style={styles.card}>
-      <div style={styles.topRow}>
-        <span style={styles.priority}>Priority {priority}</span>
-        <span style={styles.actionType}>{actionType.replaceAll('_', ' ')}</span>
-      </div>
-      <h3 style={styles.title}>{title}</h3>
+    <article style={{ ...styles.card, ...(emphasis === 'primary' ? styles.cardPrimary : styles.cardSecondary) }}>
+      {actionLabel ? <p style={styles.actionLabel}>{actionLabel}</p> : null}
+      <h3 style={{ ...styles.title, ...(emphasis === 'primary' ? styles.titlePrimary : styles.titleSecondary) }}>{title}</h3>
       <p style={styles.targetLabel}>{targetLabel}</p>
-      <p style={styles.whyNow}>{whyNow}</p>
+      <p style={styles.whyNow}>{shortWhyNow(whyNow)}</p>
       <div style={styles.buttonRow}>
         <button style={styles.primaryButton} type="button">
           {primaryCta}
         </button>
-        {secondaryActions.map((label) => (
+        {secondaryActions.slice(0, 1).map((label) => (
           <button key={label} style={styles.secondaryButton} type="button">
             {label}
           </button>
@@ -50,28 +69,31 @@ const styles: Record<string, CSSProperties> = {
     padding: '1rem',
     display: 'flex',
     flexDirection: 'column',
-    gap: '0.75rem',
+    gap: '0.6rem',
   },
-  topRow: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    gap: '1rem',
-    fontSize: '0.85rem',
-    textTransform: 'uppercase',
-    letterSpacing: '0.04em',
+  cardPrimary: {
+    padding: '1.1rem',
+    backgroundColor: '#0f172a',
   },
-  priority: {
-    color: '#fbbf24',
-    fontWeight: 700,
+  cardSecondary: {
+    padding: '0.9rem',
+    opacity: 0.94,
   },
-  actionType: {
+  actionLabel: {
+    margin: 0,
     color: '#93c5fd',
+    fontSize: '0.78rem',
+    fontWeight: 600,
   },
   title: {
     margin: 0,
-    fontSize: '1.15rem',
     color: '#f8fafc',
+  },
+  titlePrimary: {
+    fontSize: '1.2rem',
+  },
+  titleSecondary: {
+    fontSize: '1rem',
   },
   targetLabel: {
     margin: 0,
@@ -80,18 +102,19 @@ const styles: Record<string, CSSProperties> = {
   },
   whyNow: {
     margin: 0,
-    color: '#cbd5e1',
-    lineHeight: 1.5,
+    color: '#94a3b8',
+    lineHeight: 1.4,
+    fontSize: '0.92rem',
   },
   buttonRow: {
     display: 'flex',
     flexWrap: 'wrap',
-    gap: '0.75rem',
+    gap: '0.6rem',
   },
   primaryButton: {
     border: 'none',
     borderRadius: '0.5rem',
-    padding: '0.7rem 1rem',
+    padding: '0.65rem 0.9rem',
     backgroundColor: '#2563eb',
     color: '#fff',
     cursor: 'pointer',
@@ -99,7 +122,7 @@ const styles: Record<string, CSSProperties> = {
   secondaryButton: {
     border: '1px solid #334155',
     borderRadius: '0.5rem',
-    padding: '0.7rem 1rem',
+    padding: '0.6rem 0.85rem',
     backgroundColor: 'transparent',
     color: '#cbd5e1',
     cursor: 'pointer',

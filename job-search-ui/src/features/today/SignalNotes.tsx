@@ -8,7 +8,7 @@ type SignalNotesProps = {
 export function SignalNotes({ items }: SignalNotesProps) {
   return (
     <section style={styles.wrap}>
-      <h2 style={styles.title}>Signal notes</h2>
+      <h2 style={styles.title}>Recent signals</h2>
       <ul style={styles.list}>
         {items.map((item) => (
           <li key={item.id} style={styles.item}>
@@ -27,11 +27,14 @@ const styles: Record<string, CSSProperties> = {
     border: '1px solid #1e293b',
     backgroundColor: '#111827',
     borderRadius: '0.75rem',
-    padding: '1rem',
+    padding: '0.9rem',
+    opacity: 0.9,
   },
   title: {
-    margin: '0 0 0.75rem',
-    color: '#f8fafc',
+    margin: '0 0 0.6rem',
+    color: '#cbd5e1',
+    fontSize: '0.95rem',
+    fontWeight: 600,
   },
   list: {
     listStyle: 'none',

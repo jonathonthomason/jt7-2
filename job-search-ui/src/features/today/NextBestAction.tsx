@@ -10,10 +10,10 @@ export function NextBestAction({ item }: NextBestActionProps) {
 
   return (
     <section>
-      <p style={{ margin: '0 0 0.75rem', color: '#93c5fd', textTransform: 'uppercase', fontSize: '0.8rem' }}>
-        Next best action
+      <p style={{ margin: '0 0 0.5rem', color: '#93c5fd', textTransform: 'uppercase', fontSize: '0.78rem', letterSpacing: '0.04em' }}>
+        Start here
       </p>
-      <ExecutionCard {...item} />
+      <ExecutionCard {...item} emphasis="primary" />
     </section>
   )
 }

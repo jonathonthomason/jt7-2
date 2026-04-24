@@ -8,20 +8,9 @@ type ProgressStripProps = {
 export function ProgressStrip({ summary }: ProgressStripProps) {
   return (
     <section style={styles.wrap}>
-      <div>
-        <p style={styles.label}>Today</p>
-        <h1 style={styles.title}>
-          {summary.completedCount} of {summary.totalCount} completed
-        </h1>
-      </div>
-      <div style={styles.metaBlock}>
-        <p style={styles.metaLabel}>Next best action</p>
-        <p style={styles.metaValue}>{summary.nextBestActionTitle}</p>
-      </div>
-      <div style={styles.metaBlock}>
-        <p style={styles.metaLabel}>Last run</p>
-        <p style={styles.metaValue}>{summary.lastRunTimestamp}</p>
-      </div>
+      <p style={styles.label}>Today’s Plan</p>
+      <h1 style={styles.title}>Start with this</h1>
+      <p style={styles.metaValue}>{summary.totalCount} things to work through</p>
     </section>
   )
 }

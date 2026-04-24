@@ -6,21 +6,19 @@ type CompletedTodayProps = {
 }
 
 export function CompletedToday({ items }: CompletedTodayProps) {
+  if (items.length === 0) return null
+
   return (
     <section style={styles.wrap}>
       <h2 style={styles.title}>Completed today</h2>
-      {items.length === 0 ? (
-        <p style={styles.empty}>Nothing marked completed yet.</p>
-      ) : (
-        <ul style={styles.list}>
-          {items.map((item) => (
-            <li key={item.id} style={styles.item}>
-              <strong>{item.title}</strong>
-              <span style={styles.meta}>{item.targetLabel}</span>
-            </li>
-          ))}
-        </ul>
-      )}
+      <ul style={styles.list}>
+        {items.map((item) => (
+          <li key={item.id} style={styles.item}>
+            <strong>{item.title}</strong>
+            <span style={styles.meta}>{item.targetLabel}</span>
+          </li>
+        ))}
+      </ul>
     </section>
   )
 }
