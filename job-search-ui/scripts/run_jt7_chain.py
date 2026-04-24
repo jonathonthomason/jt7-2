@@ -13,9 +13,12 @@ sys.path.append('/Users/jtemp/.openclaw/workspace/job-search-ui')
 
 from runtime.domain.actions import ACTION_REQUIRED_SIGNAL_TYPES, proposed_action_instruction
 from runtime.domain.jobs import make_job_row, update_job_row_for_signal
+from runtime.ingestion.gmail import build_thread_map, collect_gmail_messages, collect_gmail_threads
 from runtime.services.action_generation import ACTION_ROW_COLUMNS, build_action_row
 from runtime.services.action_lifecycle import apply_action_update
+from runtime.services.classification import classify_signal, extract_entities, is_job_related, parse_message_record
 from runtime.services.reconciliation import find_best_job_match
+from runtime.services.recruiter_matching import ensure_recruiter
 from runtime.services.signal_lifecycle import ensure_signal
 from runtime.storage.local_mirror import local_mirror_sync
 from runtime.storage.reporting import write_run_report
@@ -237,149 +240,6 @@ def gmail_query_from_last_run(last_run_at):
     return f"{JOB_LABEL_QUERY} newer_than:{days}d"
 
 
-def collect_gmail_messages(query):
-    return gog_json(['gog', 'gmail', 'messages', 'search', query, '--max', '100', '--json']).get('messages', [])
-
-
-def collect_gmail_threads(query):
-    return gog_json(['gog', 'gmail', 'search', query, '--max', '100', '--json']).get('threads', [])
-
-
-def build_thread_map(threads, messages):
-    thread_map = {t['id']: {'thread': t, 'messages': []} for t in threads}
-    for m in messages:
-        thread_map.setdefault(m['threadId'], {'thread': {'id': m['threadId'], 'labels': m.get('labels', [])}, 'messages': []})
-        thread_map[m['threadId']]['messages'].append(m)
-    return thread_map
-
-
-def classify_signal(subject, sender, labels, body=''):
-    haystack = ' '.join([subject or '', sender or '', body or '', ' '.join(labels or [])]).lower()
-    signal_type = 'unknown_review_needed'
-    confidence = 0.35
-    auto_update_allowed = False
-    review_needed = True
-
-    if 'unsubscribe' in haystack and 'job' not in haystack and 'recruit' not in haystack:
-        return {
-            'signal_type': 'ignore_noise',
-            'summary': subject[:160],
-            'confidence': 0.95,
-            'auto_update_allowed': False,
-            'review_needed': False,
-        }
-
-    if any(re.search(pattern, haystack, re.IGNORECASE) for pattern in NEWSLETTER_NOISE_PATTERNS):
-        return {
-            'signal_type': 'ignore_noise',
-            'summary': subject[:160],
-            'confidence': 0.94,
-            'auto_update_allowed': False,
-            'review_needed': False,
-        }
-
-    if 'invitations@linkedin.com' in (sender or '').lower() and 'connect' in haystack:
-        return {
-            'signal_type': 'ignore_noise',
-            'summary': subject[:160],
-            'confidence': 0.92,
-            'auto_update_allowed': False,
-            'review_needed': False,
-        }
-
-    for candidate, patterns in CLASSIFICATION_RULES:
-        if any(re.search(pattern, haystack, re.IGNORECASE) for pattern in patterns):
-            signal_type = candidate
-            break
-
-    if signal_type in {'application_confirmation', 'interview_scheduling', 'reschedule', 'cancellation', 'rejection'}:
-        confidence = 0.88
-        auto_update_allowed = True
-        review_needed = False
-    elif signal_type in {'recruiter_outreach', 'hiring_manager_communication', 'follow_up_opportunity'}:
-        confidence = 0.76
-        auto_update_allowed = True
-        review_needed = False
-    elif signal_type == 'job_alert':
-        confidence = 0.81
-        auto_update_allowed = True
-        review_needed = False
-    elif signal_type == 'ignore_noise':
-        confidence = 0.95
-        auto_update_allowed = False
-        review_needed = False
-
-    return {
-        'signal_type': signal_type,
-        'summary': subject[:160],
-        'confidence': confidence,
-        'auto_update_allowed': auto_update_allowed,
-        'review_needed': review_needed,
-    }
-
-
-def extract_entities(subject, sender, snippet=''):
-    company = ''
-    role = ''
-    source = 'gmail'
-    sender_name, sender_email = parseaddr(sender or '')
-    domain = extract_domain(sender)
-
-    linkedin = LINKEDIN_ROLE_RE.search(subject or '')
-    linkedin_simple = LINKEDIN_SIMPLE_ROLE_RE.search(subject or '')
-    indeed = INDEED_ROLE_RE.search(subject or '')
-    thomson = THOMSON_REUTERS_RE.search(subject or '')
-    app = APPLICATION_RE.search(subject or '')
-
-    if linkedin:
-        company = linkedin.group('company').strip()
-        role = linkedin.group('role').strip(' -')
-        source = 'linkedin_email'
-    elif linkedin_simple and 'linkedin' in (sender_email or '').lower():
-        company = linkedin_simple.group('company').strip()
-        role = linkedin_simple.group('role').strip()
-        source = 'linkedin_email'
-    elif indeed:
-        company = indeed.group('company').strip()
-        role = indeed.group('role').strip()
-        source = 'indeed_email'
-    elif thomson:
-        company = 'Thomson Reuters'
-        role = thomson.group(1).strip()
-        source = 'gmail'
-    elif app:
-        role = app.group('role').strip(' .')
-
-    normalized_sender = (sender_name or '').strip()
-    if not company and normalized_sender:
-        cleaned = normalized_sender
-        lowered = cleaned.lower()
-        if 'american airlines talent acquisition' in lowered:
-            company = 'American Airlines'
-        elif 'thomson reuters' in (subject or '').lower() or 'thomson reuters' in lowered:
-            company = 'Thomson Reuters'
-        elif 'talent acquisition' in lowered or 'recruiter' in lowered or 'talent partner' in lowered:
-            company = cleaned
-        elif lowered in {'linkedin job alerts', 'linkedin', 'indeed', 'mail', 'linkedin news'}:
-            company = ''
-
-    if not company and domain and domain not in {'gmail.com', 'googlemail.com', 'linkedin.com', 'indeed.com', 'mail.linkedin.com'}:
-        company = domain.split('.')[0].replace('-', ' ').title()
-
-    if normalize_text(company) in GENERIC_COMPANY_BLOCKLIST and not role:
-        company = ''
-
-    return {
-        'company': company,
-        'role': role,
-        'source': source,
-        'sender_name': sender_name,
-        'sender_email': sender_email,
-        'sender_domain': domain,
-        'snippet': snippet or subject,
-    }
-
-
 def infer_status(signal_type, current_status=''):
     if signal_type == 'application_confirmation':
         return 'Applied'
@@ -430,36 +290,6 @@ def score_job_match(parsed, job_row):
     return score
 
 
-def ensure_recruiter(parsed, recruiters_rows, recruiter_ids, new_recruiters):
-    email = parsed['sender_email'].lower()
-    domain = parsed['sender_domain']
-    company = parsed['company']
-    for row in recruiters_rows:
-        values = row['values']
-        if email and values.get('email', '').lower() == email:
-            return values.get('recruiter_id', ''), False
-        if company and normalize_company(values.get('company_name', '')) == normalize_company(company):
-            return values.get('recruiter_id', ''), False
-        if domain and domain and domain in normalize_text(values.get('profile_link', '') + ' ' + values.get('email', '')):
-            return values.get('recruiter_id', ''), False
-
-    if not (email or company):
-        return '', False
-
-    recruiter_id = next_id('recruiter_', recruiter_ids + [r[0] for r in new_recruiters])
-    new_recruiters.append([
-        recruiter_id,
-        parsed['sender_name'],
-        company,
-        '',
-        'Prospect',
-        '',
-        parsed['sender_email'],
-        '',
-    ])
-    return recruiter_id, True
-
-
 def ensure_action(job_id, company, classification, action_ids, actions_rows, new_actions, run_at, signal_id=''):
     action_row = build_action_row(
         next_id('action_', action_ids + [r[0] for r in new_actions]),
@@ -479,46 +309,6 @@ def ensure_action(job_id, company, classification, action_ids, actions_rows, new
             return False, row['values'].get('action_id', '')
     new_actions.append(action_row)
     return True, action_row[0]
-
-
-def parse_message_record(message, thread_labels):
-    subject = message.get('subject', '')
-    sender = message.get('from', '')
-    labels = sorted(set((message.get('labels') or []) + (thread_labels or [])))
-    parsed = extract_entities(subject, sender, message.get('snippet', ''))
-    classification = classify_signal(subject, sender, labels, message.get('snippet', ''))
-    parsed.update({
-        'thread_id': message.get('threadId', ''),
-        'message_id': message.get('id', ''),
-        'date': message.get('date', ''),
-        'subject': subject,
-        'labels': labels,
-        'classification': classification,
-    })
-    return parsed
-
-
-def is_job_related(parsed):
-    combined = ' '.join([
-        parsed.get('subject', ''),
-        parsed.get('snippet', ''),
-        parsed.get('company', ''),
-        parsed.get('role', ''),
-        parsed.get('sender_name', ''),
-        parsed.get('sender_email', ''),
-        ' '.join(parsed.get('labels', [])),
-    ]).lower()
-    if parsed['classification']['signal_type'] == 'ignore_noise':
-        return False
-    if any(re.search(pattern, combined, re.IGNORECASE) for pattern in NEWSLETTER_NOISE_PATTERNS):
-        return False
-    if not any(hint in combined for hint in JOB_HINTS) and not (parsed.get('company') or parsed.get('role')):
-        return False
-    if 'linkedin.com' in parsed.get('sender_email', '').lower() and 'connect' in combined and not parsed.get('role'):
-        return False
-    if normalize_text(parsed.get('company', '')) in GENERIC_COMPANY_BLOCKLIST and not parsed.get('role'):
-        return False
-    return True
 
 
 def confidence_bucket(confidence):
@@ -602,8 +392,8 @@ def gmail_scan_and_update(run_at):
     review_rows = state['review_rows']
     last_run_at = get_last_run_at()
     query = gmail_query_from_last_run(last_run_at)
-    messages = collect_gmail_messages(query)
-    threads = collect_gmail_threads(query)
+    messages = collect_gmail_messages(query, gog_json)
+    threads = collect_gmail_threads(query, gog_json)
     thread_map = build_thread_map(threads, messages)
 
     job_ids = [r['values'].get('job_id', '') for r in jobs_rows]
@@ -639,8 +429,8 @@ def gmail_scan_and_update(run_at):
         thread_labels = bundle.get('thread', {}).get('labels', []) or []
         thread_relevant = False
         for message in bundle.get('messages', []):
-            parsed = parse_message_record(message, thread_labels)
-            if not is_job_related(parsed):
+            parsed = parse_message_record(message, thread_labels, lambda subject, sender, snippet: extract_entities(subject, sender, snippet, extract_domain, LINKEDIN_ROLE_RE, LINKEDIN_SIMPLE_ROLE_RE, INDEED_ROLE_RE, THOMSON_REUTERS_RE, APPLICATION_RE, normalize_text, GENERIC_COMPANY_BLOCKLIST), lambda subject, sender, labels, body: classify_signal(subject, sender, labels, body, CLASSIFICATION_RULES, NEWSLETTER_NOISE_PATTERNS))
+            if not is_job_related(parsed, NEWSLETTER_NOISE_PATTERNS, JOB_HINTS, normalize_text, GENERIC_COMPANY_BLOCKLIST):
                 continue
             thread_relevant = True
             classification = parsed['classification']
@@ -649,7 +439,7 @@ def gmail_scan_and_update(run_at):
             if classification['review_needed'] or bucket == 'medium':
                 review_needed_count += 1
 
-            recruiter_id, recruiter_created = ensure_recruiter(parsed, recruiters_rows, recruiter_ids, new_recruiters)
+            recruiter_id, recruiter_created = ensure_recruiter(parsed, recruiters_rows, recruiter_ids, new_recruiters, normalize_company, normalize_text, next_id)
             if recruiter_created:
                 recruiter_ids.append(recruiter_id)
                 recruiters_created += 1
