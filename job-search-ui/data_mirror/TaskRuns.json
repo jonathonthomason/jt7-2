@@ -82,5 +82,17 @@
     "",
     "gmail:19|calendar:10",
     "signals:1|jobs:8|actions:0"
+  ],
+  [
+    "taskrun_007",
+    "JT7_CHAIN",
+    "complete",
+    "high",
+    "multi-daily",
+    "2026-04-23T20:52:00.870695-05:00",
+    "2026-04-24T08:30:00-05:00",
+    "",
+    "gmail:17|calendar:10",
+    "signals:15|jobs:5|actions:0"
   ]
 ]

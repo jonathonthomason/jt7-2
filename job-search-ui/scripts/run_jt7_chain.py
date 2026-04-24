@@ -647,9 +647,6 @@ def signal_status_from_confidence(classification):
 
 def ensure_signal(parsed, classification, linked_job_id, signal_ids, signals_rows, new_signals):
     evidence_ref = f"thread:{parsed['thread_id']}|message:{parsed['message_id']}"
-    for row in signals_rows:
-        if row['values'].get('evidence_ref', '') == evidence_ref:
-            return False, row['values'].get('signal_id', '')
     signal_id = next_id('signal_', signal_ids + [r[0] for r in new_signals])
     new_signals.append([
         signal_id,
@@ -831,14 +828,16 @@ def gmail_scan_and_update(run_at):
                 signal_ids.append(signal_id)
 
             create_allowed = bucket == 'high' and bool(parsed['company'] and (parsed['role'] or classification['signal_type'] in {'recruiter_outreach', 'follow_up_opportunity', 'application_confirmation'}))
-            if not linked_job_id and create_allowed:
+            if signal_id and not linked_job_id and create_allowed:
                 new_job = make_job_row(parsed, recruiter_id, job_ids, new_jobs, classification)
+                new_job[-1] = f"{new_job[-1]} | signal_id:{signal_id}"
                 new_jobs.append(new_job)
                 linked_job_id = new_job[0]
                 job_ids.append(linked_job_id)
                 jobs_created += 1
+                new_signals[-1][-1] = linked_job_id
                 signal_to_job_update.append({'signal_id': signal_id, 'job_id': linked_job_id, 'mode': 'create'})
-            elif linked_job_id and bucket == 'high' and classification['auto_update_allowed']:
+            elif signal_id and linked_job_id and bucket == 'high' and classification['auto_update_allowed']:
                 updated = update_job_row_for_signal(best_job, parsed, classification, recruiter_id)
                 notes = updated.get('notes', '')
                 addition = f" | signal_id:{signal_id}"
@@ -848,6 +847,7 @@ def gmail_scan_and_update(run_at):
                 update_row('Jobs', best_job['row_index'], row_values)
                 best_job['values'] = updated
                 jobs_updated += 1
+                new_signals[-1][-1] = linked_job_id
                 signal_to_job_update.append({'signal_id': signal_id, 'job_id': linked_job_id, 'mode': 'update'})
             elif bucket == 'medium':
                 created_review, _ = ensure_review_queue_entry(parsed, classification, signal_id, linked_job_id, review_rows, review_ids, new_reviews, recruiter_id, match_score)
