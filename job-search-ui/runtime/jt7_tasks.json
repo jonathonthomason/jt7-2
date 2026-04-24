@@ -10,7 +10,7 @@
       "taskName": "EMAIL_SIGNAL_SCAN",
       "isEnabled": true,
       "cadence": "multi-daily",
-      "lastRunAt": "2026-04-23T20:57:49.531290-05:00",
+      "lastRunAt": "2026-04-23T21:01:06.235513-05:00",
       "nextRunAt": "2026-04-24T08:30:00-05:00",
       "lastStatus": "complete",
       "lastSummary": "Email scan executed, 0 signals, 0 jobs created, 5 jobs updated"
@@ -20,7 +20,7 @@
       "taskName": "CALENDAR_SIGNAL_SCAN",
       "isEnabled": true,
       "cadence": "multi-daily",
-      "lastRunAt": "2026-04-23T20:57:49.531290-05:00",
+      "lastRunAt": "2026-04-23T21:01:06.235513-05:00",
       "nextRunAt": "2026-04-24T08:30:00-05:00",
       "lastStatus": "complete",
       "lastSummary": "Calendar scan executed, 0 jobs matched, 0 job updates"
@@ -30,7 +30,7 @@
       "taskName": "JOB_BOARD_SIGNAL_SCAN",
       "isEnabled": true,
       "cadence": "multi-daily",
-      "lastRunAt": "2026-04-23T20:57:49.531290-05:00",
+      "lastRunAt": "2026-04-23T21:01:06.235513-05:00",
       "nextRunAt": "2026-04-24T08:30:00-05:00",
       "lastStatus": "complete",
       "lastSummary": "Job board scan executed from current configured sources when available"
@@ -40,7 +40,7 @@
       "taskName": "SIGNAL_CLASSIFICATION",
       "isEnabled": true,
       "cadence": "multi-daily",
-      "lastRunAt": "2026-04-23T20:57:49.531290-05:00",
+      "lastRunAt": "2026-04-23T21:01:06.235513-05:00",
       "nextRunAt": "2026-04-24T08:30:00-05:00",
       "lastStatus": "complete",
       "lastSummary": "Signal classification completed, 7 review-needed signals"
@@ -50,7 +50,7 @@
       "taskName": "PIPELINE_STATE_SYNC",
       "isEnabled": true,
       "cadence": "multi-daily",
-      "lastRunAt": "2026-04-23T20:57:49.531290-05:00",
+      "lastRunAt": "2026-04-23T21:01:06.235513-05:00",
       "nextRunAt": "2026-04-24T08:30:00-05:00",
       "lastStatus": "complete",
       "lastSummary": "Pipeline reconciliation pass completed using probabilistic matching rules"
@@ -60,7 +60,7 @@
       "taskName": "PIPELINE_UPDATE",
       "isEnabled": true,
       "cadence": "multi-daily",
-      "lastRunAt": "2026-04-23T20:57:49.531290-05:00",
+      "lastRunAt": "2026-04-23T21:01:06.235513-05:00",
       "nextRunAt": "2026-04-24T08:30:00-05:00",
       "lastStatus": "complete",
       "lastSummary": "Pipeline update pass completed against live tracker model with real Sheets CRUD"
@@ -70,7 +70,7 @@
       "taskName": "LOCAL_MIRROR_SYNC",
       "isEnabled": true,
       "cadence": "multi-daily",
-      "lastRunAt": "2026-04-23T20:57:49.531290-05:00",
+      "lastRunAt": "2026-04-23T21:01:06.235513-05:00",
       "nextRunAt": "2026-04-24T08:30:00-05:00",
       "lastStatus": "complete",
       "lastSummary": "Local mirror updated for tabs: Jobs, Recruiters, Competition, Signals, Actions, ReviewQueue, TaskRuns, Lookup"
@@ -80,17 +80,17 @@
       "taskName": "GIT_COMMIT_SYNC",
       "isEnabled": true,
       "cadence": "multi-daily",
-      "lastRunAt": "2026-04-23T20:52:00.870695-05:00",
+      "lastRunAt": "2026-04-23T20:57:49.531290-05:00",
       "nextRunAt": "2026-04-24T08:30:00-05:00",
       "lastStatus": "complete",
-      "lastSummary": "JT7 auto-sync 2026-04-23 20:52:00 CDT tracker mirror update"
+      "lastSummary": "JT7 auto-sync 2026-04-23 20:57:49 CDT tracker mirror update"
     },
     {
       "taskId": "action_generation",
       "taskName": "ACTION_GENERATION",
       "isEnabled": true,
       "cadence": "multi-daily",
-      "lastRunAt": "2026-04-23T20:52:00.870695-05:00",
+      "lastRunAt": "2026-04-23T20:57:49.531290-05:00",
       "nextRunAt": "2026-04-24T08:30:00-05:00",
       "lastStatus": "complete",
       "lastSummary": "Action generation pass completed, 0 actions created"
@@ -100,7 +100,7 @@
       "taskName": "PRIORITY_SURFACING",
       "isEnabled": true,
       "cadence": "multi-daily",
-      "lastRunAt": "2026-04-23T20:52:00.870695-05:00",
+      "lastRunAt": "2026-04-23T20:57:49.531290-05:00",
       "nextRunAt": "2026-04-24T08:30:00-05:00",
       "lastStatus": "complete",
       "lastSummary": "Priority surfacing pass completed"
@@ -110,7 +110,7 @@
       "taskName": "PASS_LOGGER",
       "isEnabled": true,
       "cadence": "multi-daily",
-      "lastRunAt": "2026-04-23T20:52:00.870695-05:00",
+      "lastRunAt": "2026-04-23T20:57:49.531290-05:00",
       "nextRunAt": "2026-04-24T08:30:00-05:00",
       "lastStatus": "complete",
       "lastSummary": "Pass logger completed with detailed transparency report"

@@ -648,14 +648,27 @@ def signal_status_from_confidence(classification):
     return 'logged_low_confidence'
 
 
-def ensure_signal(parsed, classification, linked_job_id, signal_ids, signals_rows, new_signals):
+def ensure_signal(parsed, classification, linked_job_id, signal_ids, signals_rows, new_signals, signals_header):
     evidence_ref = f"thread:{parsed['thread_id']}|message:{parsed['message_id']}"
     for row in signals_rows:
         if row['values'].get('evidence_ref', '') == evidence_ref:
-            return False, row['values'].get('signal_id', '')
+            updated = row['values'].copy()
+            updated['source'] = parsed['source']
+            updated['signal_type'] = classification['signal_type']
+            updated['company'] = parsed['company']
+            updated['role'] = parsed['role']
+            updated['date'] = parsed['date']
+            updated['summary'] = classification['summary']
+            updated['status'] = signal_status_from_confidence(classification)
+            if linked_job_id:
+                updated['job_id'] = linked_job_id
+            row_values = [updated.get(col, '') for col in signals_header]
+            update_row('Signals', row['row_index'], row_values)
+            row['values'] = updated
+            return False, row['values'].get('signal_id', ''), True
     for row in new_signals:
         if len(row) > 7 and row[7] == evidence_ref:
-            return False, row[0]
+            return False, row[0], False
     signal_id = next_id('signal_', signal_ids + [r[0] for r in new_signals])
     new_signals.append([
         signal_id,
@@ -669,7 +682,7 @@ def ensure_signal(parsed, classification, linked_job_id, signal_ids, signals_row
         signal_status_from_confidence(classification),
         linked_job_id,
     ])
-    return True, signal_id
+    return True, signal_id, True
 
 
 def parse_message_record(message, thread_labels):
@@ -863,7 +876,7 @@ def gmail_scan_and_update(run_at):
                     classification['confidence'] = 0.5
                 signals_marked_review_required += 1
 
-            signal_created, signal_id = ensure_signal(parsed, classification, linked_job_id, signal_ids, signals_rows, new_signals)
+            signal_created, signal_id, signal_persisted = ensure_signal(parsed, classification, linked_job_id, signal_ids, signals_rows, new_signals, state['signals_header'])
             if signal_created:
                 signals_created += 1
             else:
@@ -933,12 +946,13 @@ def gmail_scan_and_update(run_at):
     append_rows('ReviewQueue', new_reviews)
 
     warnings = []
-    if job_related_threads > 0 and signals_created == 0:
-        warnings.append('Run incomplete: job-related threads found but zero signals created')
+    signals_persisted = signals_created + signals_updated
+    if job_related_threads > 0 and signals_persisted == 0:
+        warnings.append('Run incomplete: job-related threads found but zero persisted signals')
 
     return {
         'source': 'gmail',
-        'status': 'failed' if job_related_threads > 0 and signals_created == 0 else 'complete',
+        'status': 'failed' if job_related_threads > 0 and signals_persisted == 0 else 'complete',
         'query': query,
         'last_run_at_used': iso(last_run_at),
         'threads_scanned': len(thread_map),
@@ -952,6 +966,7 @@ def gmail_scan_and_update(run_at):
         'jobs_updated': jobs_updated,
         'signals_created': signals_created,
         'signals_updated': signals_updated,
+        'signals_persisted': signals_persisted,
         'signals_marked_review_required': signals_marked_review_required,
         'actions_created': actions_created,
         'review_needed_count': review_needed_count,
