@@ -11,14 +11,18 @@ from zoneinfo import ZoneInfo
 
 sys.path.append('/Users/jtemp/.openclaw/workspace/job-search-ui')
 
-from runtime.domain.actions import ACTION_REQUIRED_SIGNAL_TYPES, proposed_action_instruction
+from runtime.domain.actions import ACTION_REQUIRED_SIGNAL_TYPES
 from runtime.domain.jobs import make_job_row, update_job_row_for_signal
 from runtime.ingestion.gmail import build_thread_map, collect_gmail_messages, collect_gmail_threads
+from runtime.pipelines.calendar_pipeline import calendar_scan_and_update
+from runtime.pipelines.chain_runner import build_task_summary
+from runtime.pipelines.job_board_pipeline import job_board_scan_report
 from runtime.services.action_generation import ACTION_ROW_COLUMNS, build_action_row
 from runtime.services.action_lifecycle import apply_action_update
 from runtime.services.classification import classify_signal, extract_entities, is_job_related, parse_message_record
 from runtime.services.reconciliation import find_best_job_match
 from runtime.services.recruiter_matching import ensure_recruiter
+from runtime.services.review_queue import confidence_bucket, ensure_review_queue_entry, should_block_job_creation
 from runtime.services.signal_lifecycle import ensure_signal
 from runtime.storage.local_mirror import local_mirror_sync
 from runtime.storage.reporting import write_run_report
@@ -311,78 +315,6 @@ def ensure_action(job_id, company, classification, action_ids, actions_rows, new
     return True, action_row[0]
 
 
-def confidence_bucket(confidence):
-    if confidence >= 0.8:
-        return 'high'
-    if confidence >= 0.5:
-        return 'medium'
-    return 'low'
-
-
-def should_block_job_creation(parsed, classification):
-    source_norm = normalize_text(parsed.get('company', '') or parsed.get('sender_name', '') or parsed.get('source', ''))
-    role_norm = normalize_text(parsed.get('role', ''))
-    company_norm = normalize_text(parsed.get('company', ''))
-    signal_type = classification.get('signal_type', '')
-
-    if signal_type == 'ignore_noise':
-        return True, 'ignore_noise'
-    if source_norm in NO_JOB_CREATE_SOURCES:
-        return True, f'blocked_source:{source_norm}'
-    if not role_norm:
-        return True, 'missing_role'
-    if not company_norm:
-        return True, 'missing_company'
-    if company_norm in GENERIC_COMPANY_BLOCKLIST:
-        return True, f'generic_company:{company_norm}'
-    if signal_type in {'unknown_review_needed'}:
-        return True, f'weak_signal_type:{signal_type}'
-    return False, ''
-
-
-def reason_for_review(parsed, classification, match_score):
-    reasons = []
-    if not parsed.get('company'):
-        reasons.append('missing_company')
-    if not parsed.get('role'):
-        reasons.append('missing_role')
-    if match_score < 0.6:
-        reasons.append('weak_job_match')
-    reasons.append(f"signal_type:{classification['signal_type']}")
-    return ', '.join(reasons)
-
-
-def ensure_review_queue_entry(parsed, classification, signal_id, linked_job_id, review_rows, review_ids, new_reviews, recruiter_id, match_score):
-    for row in review_rows:
-        if row['values'].get('signal_id', '') == signal_id:
-            return False, row['values'].get('review_id', '')
-    review_id = next_id('review_', review_ids + [r[0] for r in new_reviews])
-    proposed_action = proposed_action_instruction(classification['signal_type']) if classification['signal_type'] in ACTION_REQUIRED_SIGNAL_TYPES else ''
-    proposed_job_update = json.dumps({
-        'linked_job_id': linked_job_id,
-        'proposed_status': infer_status(classification['signal_type']),
-        'company': parsed.get('company', ''),
-        'role': parsed.get('role', ''),
-    })
-    new_reviews.append([
-        review_id,
-        signal_id,
-        iso(now_local()),
-        parsed.get('source', 'gmail'),
-        classification['signal_type'],
-        parsed.get('company', ''),
-        parsed.get('role', ''),
-        recruiter_id or parsed.get('sender_email', ''),
-        proposed_action,
-        proposed_job_update,
-        str(classification['confidence']),
-        reason_for_review(parsed, classification, match_score),
-        'pending',
-        '',
-    ])
-    return True, review_id
-
-
 def gmail_scan_and_update(run_at):
     state = fetch_runtime_state(lambda tab: rows_to_dicts(tab, sheets_get, MIRROR_DIR))
     jobs_rows = state['jobs_rows']
@@ -454,7 +386,7 @@ def gmail_scan_and_update(run_at):
                 company_jobs = [r for r in jobs_rows if normalize_company(r['values'].get('company', '')) == normalize_company(parsed['company'])]
                 parsed['role'] = choose_role_from_context(parsed, company_jobs) or parsed['role']
 
-            blocked_job_create, block_reason = should_block_job_creation(parsed, classification)
+            blocked_job_create, block_reason = should_block_job_creation(parsed, classification, normalize_text, NO_JOB_CREATE_SOURCES, GENERIC_COMPANY_BLOCKLIST)
             if blocked_job_create:
                 classification['no_job_create'] = True
                 classification['review_needed'] = True
@@ -497,7 +429,7 @@ def gmail_scan_and_update(run_at):
                 if blocked_job_create and not linked_job_id:
                     blocked_job_creations += 1
                 if bucket == 'medium' or blocked_job_create:
-                    created_review, _ = ensure_review_queue_entry(parsed, classification, signal_id, linked_job_id, review_rows, review_ids, new_reviews, recruiter_id, match_score)
+                    created_review, _ = ensure_review_queue_entry(parsed, classification, signal_id, linked_job_id, review_rows, review_ids, new_reviews, recruiter_id, match_score, next_id, ACTION_REQUIRED_SIGNAL_TYPES, infer_status, lambda: iso(now_local()))
                     if created_review:
                         review_needed_created += 1
 
@@ -567,86 +499,6 @@ def gmail_scan_and_update(run_at):
     }
 
 
-def calendar_scan_and_update(run_at):
-    state = fetch_runtime_state(lambda tab: rows_to_dicts(tab, sheets_get, MIRROR_DIR))
-    jobs_rows = state['jobs_rows']
-    actions_rows = state['actions_rows']
-    action_ids = [r['values'].get('action_id', '') for r in actions_rows]
-    new_actions = []
-    updates_written = 0
-    matched_jobs = 0
-    interview_events_found = 0
-    from_iso = iso(run_at - timedelta(days=2))
-    to_iso = iso(run_at + timedelta(days=14))
-    events = gog_json(['gog', 'calendar', 'events', 'primary', '--from', from_iso, '--to', to_iso, '--json']).get('events', [])
-
-    for event in events:
-        summary = event.get('summary', '')
-        location = event.get('location', '')
-        text = f"{summary} {location}".lower()
-        if 'interview' not in text and 'recruit' not in text and 'screen' not in text and 'hiring' not in text:
-            continue
-        interview_events_found += 1
-        best = None
-        best_score = 0.0
-        for row in jobs_rows:
-            job = row['values']
-            company = job.get('company', '')
-            role = job.get('role', '')
-            score = 0.0
-            if company and normalize_company(company) in normalize_company(text):
-                score += 0.55
-            if role and normalize_text(role) in normalize_text(text):
-                score += 0.35
-            if score > best_score:
-                best_score = score
-                best = row
-        if best and best_score >= 0.45:
-            matched_jobs += 1
-            updated = best['values'].copy()
-            updated['status'] = 'Interviewing'
-            updated['interview_datetime'] = event.get('start', {}).get('dateTime', '') or updated.get('interview_datetime', '')
-            updated['next_step'] = 'Prepare for scheduled interview'
-            notes = updated.get('notes', '')
-            addition = f" | calendar_event:{event.get('id','')}"
-            if addition not in notes:
-                updated['notes'] = (notes + addition).strip(' |')
-            row_values = [updated.get(col, '') for col in state['jobs_header']]
-            update_row('Jobs', best['row_index'], row_values)
-            best['values'] = updated
-            updates_written += 1
-            action_created, _ = ensure_action(best['values'].get('job_id', ''), best['values'].get('company', ''), {'signal_type': 'interview_scheduling'}, action_ids, actions_rows, new_actions, run_at)
-            if action_created:
-                action_ids.append(new_actions[-1][0])
-
-    append_rows('Actions', new_actions, MIRROR_DIR, write_csv, sheets_append)
-    return {
-        'source': 'calendar',
-        'status': 'complete',
-        'events_scanned': len(events),
-        'interview_events_found': interview_events_found,
-        'matched_jobs': matched_jobs,
-        'updates_written': updates_written,
-        'actions_created': len(new_actions),
-        'warnings': [],
-    }
-
-
-def job_board_scan_report():
-    return {
-        'source': 'job_boards',
-        'status': 'complete',
-        'sources_checked': ['linkedin', 'indeed', 'builtin', 'workday', 'greenhouse', 'creative_circle'],
-        'sources_successful': [],
-        'jobs_found': 0,
-        'jobs_created': 0,
-        'jobs_updated': 0,
-        'duplicates_skipped': 0,
-        'review_needed': 0,
-        'warnings': ['Board adapters still pending beyond Gmail-delivered board signals'],
-    }
-
-
 def maybe_git_commit(run_at):
     status = subprocess.run(['git', 'status', '--porcelain', str(ROOT / 'data_mirror'), str(ROOT / 'runtime'), str(ROOT / 'scripts' / 'run_jt7_chain.py')], cwd=ROOT, capture_output=True, text=True, check=True)
     if not status.stdout.strip():
@@ -678,42 +530,26 @@ def run_chain():
 
     try:
         gmail_report = gmail_scan_and_update(run_at)
-        calendar_report = calendar_scan_and_update(run_at)
+        state_for_calendar = fetch_runtime_state(lambda tab: rows_to_dicts(tab, sheets_get, MIRROR_DIR))
+        action_ids = [r['values'].get('action_id', '') for r in state_for_calendar['actions_rows']]
+        calendar_report = calendar_scan_and_update(run_at, gog_json, lambda tab: rows_to_dicts(tab, sheets_get, MIRROR_DIR), ensure_action, action_ids, state_for_calendar['actions_rows'], [], append_rows, MIRROR_DIR, write_csv, sheets_append, iso, timedelta, normalize_company, normalize_text, lambda tab, row_index, row_values: update_row(tab, row_index, row_values, sheets_update))
         job_board_report = job_board_scan_report()
         run_log['sources_checked'] = [gmail_report, calendar_report, job_board_report]
 
         for task_name in CHAIN:
-            summary = 'Executed'
-            if task_name == 'EMAIL_SIGNAL_SCAN':
-                summary = f"Email scan executed, {gmail_report['signals_created']} signals, {gmail_report['jobs_created']} jobs created, {gmail_report['jobs_updated']} jobs updated"
-            elif task_name == 'CALENDAR_SIGNAL_SCAN':
-                summary = f"Calendar scan executed, {calendar_report['matched_jobs']} jobs matched, {calendar_report['updates_written']} job updates"
-            elif task_name == 'JOB_BOARD_SIGNAL_SCAN':
-                summary = 'Job board scan executed from current configured sources when available'
-            elif task_name == 'SIGNAL_CLASSIFICATION':
-                summary = f"Signal classification completed, {gmail_report['review_needed_count']} review-needed signals"
-            elif task_name == 'PIPELINE_STATE_SYNC':
-                summary = 'Pipeline reconciliation pass completed using probabilistic matching rules'
-            elif task_name == 'PIPELINE_UPDATE':
-                summary = 'Pipeline update pass completed against live tracker model with real Sheets CRUD'
-            elif task_name == 'LOCAL_MIRROR_SYNC':
+            if task_name == 'LOCAL_MIRROR_SYNC':
                 task_run_id = update_taskruns(run_at, next_at, run_log, lambda tab: rows_to_dicts(tab, sheets_get, MIRROR_DIR), next_id, lambda tab, rows: append_rows(tab, rows, MIRROR_DIR, write_csv, sheets_append), iso)
                 run_log['task_run_id'] = task_run_id
                 mirror_report = local_mirror_sync(TABS, MIRROR_DIR, mirror_snapshot, sheets_get, write_csv)
                 run_log['local_mirror'] = mirror_report
                 run_log['tracker_crud'] = mirror_report['tracker_tabs']
-                summary = f"Local mirror updated for tabs: {', '.join(mirror_report['tabs_mirrored'])}"
+                summary = build_task_summary(task_name, gmail_report, calendar_report, run_log.get('git'), mirror_report)
             elif task_name == 'GIT_COMMIT_SYNC':
                 git_report = maybe_git_commit(run_at)
                 run_log['git'] = git_report
-                summary = git_report['summary']
-            elif task_name == 'ACTION_GENERATION':
-                total_actions = gmail_report['actions_created'] + calendar_report['actions_created']
-                summary = f'Action generation pass completed, {total_actions} actions created'
-            elif task_name == 'PRIORITY_SURFACING':
-                summary = 'Priority surfacing pass completed'
-            elif task_name == 'PASS_LOGGER':
-                summary = 'Pass logger completed with detailed transparency report'
+                summary = build_task_summary(task_name, gmail_report, calendar_report, git_report, run_log.get('local_mirror'))
+            else:
+                summary = build_task_summary(task_name, gmail_report, calendar_report, run_log.get('git'), run_log.get('local_mirror'))
 
             update_task_state(task_name, 'complete', summary, run_at, next_at)
             run_log['taskResults'].append({'taskName': task_name, 'status': 'complete', 'summary': summary})
