@@ -19,6 +19,7 @@ from runtime.pipelines.chain_runner import build_task_summary
 from runtime.pipelines.job_board_pipeline import job_board_scan_report
 from runtime.services.action_generation import ACTION_ROW_COLUMNS, build_action_row
 from runtime.services.action_lifecycle import apply_action_update
+from runtime.services.action_normalization import normalized_action_due_at, normalized_action_reason, normalized_action_status
 from runtime.services.classification import classify_signal, extract_entities, is_job_related, parse_message_record
 from runtime.services.reconciliation import find_best_job_match
 from runtime.services.recruiter_matching import ensure_recruiter
@@ -224,6 +225,33 @@ def ensure_action(job_id, company, classification, action_ids, actions_rows, new
     return True, action_row[0]
 
 
+
+def normalize_existing_actions(run_at):
+    state = fetch_runtime_state(lambda tab: rows_to_dicts(tab, sheets_get, MIRROR_DIR))
+    jobs_by_id = {row['values'].get('job_id', ''): row['values'] for row in state['jobs_rows']}
+    signals_by_job = {}
+    for row in state['signals_rows']:
+        linked_job_id = row['values'].get('linked_job_id', '')
+        if linked_job_id:
+            signals_by_job.setdefault(linked_job_id, []).append(row['values'])
+
+    actions_updated = 0
+    for row in state['actions_rows']:
+        action = row['values']
+        job = jobs_by_id.get(action.get('job_id', ''), {})
+        linked_signals = signals_by_job.get(action.get('job_id', ''), [])
+        updated = action.copy()
+        updated['status'] = normalized_action_status(action, job, linked_signals)
+        updated['reason'] = normalized_action_reason(action, linked_signals)
+        updated['due_at'] = normalized_action_due_at(action, linked_signals, run_at)
+        row_values = [updated.get(col, '') for col in ACTION_ROW_COLUMNS]
+        current_values = [action.get(col, '') for col in ACTION_ROW_COLUMNS]
+        if row_values != current_values:
+            update_row('Actions', row['row_index'], row_values, sheets_update)
+            row['values'] = updated
+            actions_updated += 1
+    return actions_updated
+
 def maybe_git_commit(run_at):
     status = subprocess.run(['git', 'status', '--porcelain', str(ROOT / 'data_mirror'), str(ROOT / 'runtime'), str(ROOT / 'scripts' / 'run_jt7_chain.py')], cwd=ROOT, capture_output=True, text=True, check=True)
     if not status.stdout.strip():
@@ -301,6 +329,8 @@ def run_chain():
             iso,
             NO_JOB_CREATE_SOURCES,
         )
+        actions_normalized = normalize_existing_actions(run_at)
+        gmail_report['actions_updated'] = gmail_report.get('actions_updated', 0) + actions_normalized
         state_for_calendar = fetch_runtime_state(lambda tab: rows_to_dicts(tab, sheets_get, MIRROR_DIR))
         action_ids = [r['values'].get('action_id', '') for r in state_for_calendar['actions_rows']]
         calendar_report = calendar_scan_and_update(run_at, gog_json, lambda tab: rows_to_dicts(tab, sheets_get, MIRROR_DIR), ensure_action, action_ids, state_for_calendar['actions_rows'], [], append_rows, MIRROR_DIR, write_csv, sheets_append, iso, timedelta, normalize_company, normalize_text, lambda tab, row_index, row_values: update_row(tab, row_index, row_values, sheets_update))
