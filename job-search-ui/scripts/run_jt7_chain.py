@@ -11,13 +11,17 @@ from zoneinfo import ZoneInfo
 
 sys.path.append('/Users/jtemp/.openclaw/workspace/job-search-ui')
 
-from runtime.domain.actions import ACTION_REQUIRED_SIGNAL_TYPES
+from runtime.domain.actions import ACTION_REQUIRED_SIGNAL_TYPES, proposed_action_instruction
 from runtime.domain.jobs import make_job_row, update_job_row_for_signal
 from runtime.services.action_generation import ACTION_ROW_COLUMNS, build_action_row
 from runtime.services.action_lifecycle import apply_action_update
 from runtime.services.reconciliation import find_best_job_match
 from runtime.services.signal_lifecycle import ensure_signal
 from runtime.storage.local_mirror import local_mirror_sync
+from runtime.storage.reporting import write_run_report
+from runtime.storage.runtime_state import fetch_runtime_state
+from runtime.storage.sheets_repo import append_rows, rows_to_dicts, update_row
+from runtime.storage.taskruns_repo import update_taskruns
 
 ROOT = Path('/Users/jtemp/.openclaw/workspace/job-search-ui')
 RUNTIME = ROOT / 'runtime'
@@ -192,38 +196,6 @@ def mirror_snapshot():
     return snapshot
 
 
-def local_reviewqueue_rows():
-    json_path = MIRROR_DIR / 'ReviewQueue.json'
-    if not json_path.exists():
-        return [], []
-    data = json.loads(json_path.read_text())
-    if not data:
-        return [], []
-    header = data[0]
-    rows = []
-    for idx, row in enumerate(data[1:], start=2):
-        padded = row + [''] * (len(header) - len(row))
-        rows.append({'row_index': idx, 'values': dict(zip(header, padded))})
-    return header, rows
-
-
-def rows_to_dicts(tab):
-    try:
-        data = sheets_get(f'{tab}!A1:Z1000').get('values', [])
-    except subprocess.CalledProcessError:
-        if tab == 'ReviewQueue':
-            return local_reviewqueue_rows()
-        raise
-    if not data:
-        return [], []
-    header = data[0]
-    rows = []
-    for idx, row in enumerate(data[1:], start=2):
-        padded = row + [''] * (len(header) - len(row))
-        rows.append({'row_index': idx, 'values': dict(zip(header, padded))})
-    return header, rows
-
-
 def next_id(prefix, existing_ids):
     max_n = 0
     for value in existing_ids:
@@ -232,29 +204,6 @@ def next_id(prefix, existing_ids):
             if tail.isdigit():
                 max_n = max(max_n, int(tail))
     return f'{prefix}{max_n + 1:03d}'
-
-
-def append_rows(tab, rows):
-    if not rows:
-        return
-    if tab == 'ReviewQueue':
-        csv_path = MIRROR_DIR / 'ReviewQueue.csv'
-        json_path = MIRROR_DIR / 'ReviewQueue.json'
-        existing = []
-        if json_path.exists():
-            existing = json.loads(json_path.read_text())
-        if not existing:
-            existing = [["review_id","signal_id","timestamp","source","signal_type","extracted_company","extracted_role","extracted_recruiter","proposed_action","proposed_job_update","confidence","reason_for_review","status","resolution_notes"]]
-        existing.extend(rows)
-        write_csv(csv_path, existing)
-        json_path.write_text(json.dumps(existing, indent=2))
-        return
-    sheets_append(f'{tab}!A:Z', rows)
-
-
-def update_row(tab, row_index, row_values):
-    end_col = chr(ord('A') + len(row_values) - 1)
-    sheets_update(f'{tab}!A{row_index}:{end_col}{row_index}', [row_values])
 
 
 def normalize_text(value):
@@ -481,29 +430,6 @@ def score_job_match(parsed, job_row):
     return score
 
 
-def fetch_runtime_state():
-    jobs_header, jobs_rows = rows_to_dicts('Jobs')
-    recruiters_header, recruiters_rows = rows_to_dicts('Recruiters')
-    signals_header, signals_rows = rows_to_dicts('Signals')
-    actions_header, actions_rows = rows_to_dicts('Actions')
-    review_header, review_rows = rows_to_dicts('ReviewQueue')
-    taskruns_header, taskruns_rows = rows_to_dicts('TaskRuns')
-    return {
-        'jobs_header': jobs_header,
-        'jobs_rows': jobs_rows,
-        'recruiters_header': recruiters_header,
-        'recruiters_rows': recruiters_rows,
-        'signals_header': signals_header,
-        'signals_rows': signals_rows,
-        'actions_header': actions_header,
-        'actions_rows': actions_rows,
-        'review_header': review_header,
-        'review_rows': review_rows,
-        'taskruns_header': taskruns_header,
-        'taskruns_rows': taskruns_rows,
-    }
-
-
 def ensure_recruiter(parsed, recruiters_rows, recruiter_ids, new_recruiters):
     email = parsed['sender_email'].lower()
     domain = parsed['sender_domain']
@@ -548,7 +474,7 @@ def ensure_action(job_id, company, classification, action_ids, actions_rows, new
         if row['values'].get('job_id', '') == job_id and row['values'].get('instruction', '') == instruction and row['values'].get('status', '') != 'done':
             updated = apply_action_update(row['values'], classification, run_at, signal_id=signal_id)
             row_values = [updated.get(col, '') for col in ACTION_ROW_COLUMNS]
-            update_row('Actions', row['row_index'], row_values)
+            update_row('Actions', row['row_index'], row_values, sheets_update)
             row['values'] = updated
             return False, row['values'].get('action_id', '')
     new_actions.append(action_row)
@@ -668,7 +594,7 @@ def ensure_review_queue_entry(parsed, classification, signal_id, linked_job_id, 
 
 
 def gmail_scan_and_update(run_at):
-    state = fetch_runtime_state()
+    state = fetch_runtime_state(lambda tab: rows_to_dicts(tab, sheets_get, MIRROR_DIR))
     jobs_rows = state['jobs_rows']
     recruiters_rows = state['recruiters_rows']
     signals_rows = state['signals_rows']
@@ -746,7 +672,7 @@ def gmail_scan_and_update(run_at):
                     classification['confidence'] = 0.5
                 signals_marked_review_required += 1
 
-            signal_created, signal_id, signal_persisted = ensure_signal(parsed, classification, linked_job_id, signal_ids, signals_rows, new_signals, state['signals_header'], update_row, next_id)
+            signal_created, signal_id, signal_persisted = ensure_signal(parsed, classification, linked_job_id, signal_ids, signals_rows, new_signals, state['signals_header'], lambda tab, row_index, row_values: update_row(tab, row_index, row_values, sheets_update), next_id)
             if signal_created:
                 signals_created += 1
             else:
@@ -771,7 +697,7 @@ def gmail_scan_and_update(run_at):
                 if addition not in notes:
                     updated['notes'] = (notes + addition).strip(' |')
                 row_values = [updated.get(col, '') for col in state['jobs_header']]
-                update_row('Jobs', best_job['row_index'], row_values)
+                update_row('Jobs', best_job['row_index'], row_values, sheets_update)
                 best_job['values'] = updated
                 jobs_updated += 1
                 if signal_created:
@@ -809,11 +735,11 @@ def gmail_scan_and_update(run_at):
         if thread_relevant:
             job_related_threads += 1
 
-    append_rows('Recruiters', new_recruiters)
-    append_rows('Jobs', new_jobs)
-    append_rows('Signals', new_signals)
-    append_rows('Actions', new_actions)
-    append_rows('ReviewQueue', new_reviews)
+    append_rows('Recruiters', new_recruiters, MIRROR_DIR, write_csv, sheets_append)
+    append_rows('Jobs', new_jobs, MIRROR_DIR, write_csv, sheets_append)
+    append_rows('Signals', new_signals, MIRROR_DIR, write_csv, sheets_append)
+    append_rows('Actions', new_actions, MIRROR_DIR, write_csv, sheets_append)
+    append_rows('ReviewQueue', new_reviews, MIRROR_DIR, write_csv, sheets_append)
 
     warnings = []
     signals_persisted = signals_created + signals_updated
@@ -852,7 +778,7 @@ def gmail_scan_and_update(run_at):
 
 
 def calendar_scan_and_update(run_at):
-    state = fetch_runtime_state()
+    state = fetch_runtime_state(lambda tab: rows_to_dicts(tab, sheets_get, MIRROR_DIR))
     jobs_rows = state['jobs_rows']
     actions_rows = state['actions_rows']
     action_ids = [r['values'].get('action_id', '') for r in actions_rows]
@@ -903,7 +829,7 @@ def calendar_scan_and_update(run_at):
             if action_created:
                 action_ids.append(new_actions[-1][0])
 
-    append_rows('Actions', new_actions)
+    append_rows('Actions', new_actions, MIRROR_DIR, write_csv, sheets_append)
     return {
         'source': 'calendar',
         'status': 'complete',
@@ -931,27 +857,6 @@ def job_board_scan_report():
     }
 
 
-def update_taskruns(run_at, next_at, run_log):
-    _, taskruns_rows = rows_to_dicts('TaskRuns')
-    taskrun_ids = [r['values'].get('task_run_id', '') for r in taskruns_rows]
-    task_run_id = next_id('taskrun_', taskrun_ids)
-    inputs_ref = f"gmail:{run_log['sources_checked'][0].get('threads_scanned',0)}|calendar:{run_log['sources_checked'][1].get('events_scanned',0)}"
-    outputs_ref = f"signals:{run_log['sources_checked'][0].get('signals_created',0)}|jobs:{run_log['sources_checked'][0].get('jobs_created',0)+run_log['sources_checked'][0].get('jobs_updated',0)}|actions:{run_log['sources_checked'][0].get('actions_created',0)+run_log['sources_checked'][1].get('actions_created',0)}"
-    append_rows('TaskRuns', [[
-        task_run_id,
-        'JT7_CHAIN',
-        run_log['status'],
-        'high',
-        'multi-daily',
-        iso(run_at),
-        iso(next_at),
-        run_log['summary'],
-        inputs_ref,
-        outputs_ref,
-    ]])
-    return task_run_id
-
-
 def maybe_git_commit(run_at):
     status = subprocess.run(['git', 'status', '--porcelain', str(ROOT / 'data_mirror'), str(ROOT / 'runtime'), str(ROOT / 'scripts' / 'run_jt7_chain.py')], cwd=ROOT, capture_output=True, text=True, check=True)
     if not status.stdout.strip():
@@ -961,14 +866,6 @@ def maybe_git_commit(run_at):
     subprocess.run(['git', 'commit', '-m', message], cwd=ROOT, check=True)
     commit = subprocess.run(['git', 'rev-parse', '--short', 'HEAD'], cwd=ROOT, capture_output=True, text=True, check=True).stdout.strip()
     return {'committed': True, 'summary': message, 'commit': commit}
-
-
-def write_run_report(run_log):
-    REPORTS_DIR.mkdir(parents=True, exist_ok=True)
-    stamp = run_log['runTimestamp'].replace(':', '-').replace('+', '_plus_')
-    path = REPORTS_DIR / f'jt7_run_{stamp}.json'
-    path.write_text(json.dumps(run_log, indent=2))
-    return str(path)
 
 
 def run_chain():
@@ -1010,7 +907,7 @@ def run_chain():
             elif task_name == 'PIPELINE_UPDATE':
                 summary = 'Pipeline update pass completed against live tracker model with real Sheets CRUD'
             elif task_name == 'LOCAL_MIRROR_SYNC':
-                task_run_id = update_taskruns(run_at, next_at, run_log)
+                task_run_id = update_taskruns(run_at, next_at, run_log, lambda tab: rows_to_dicts(tab, sheets_get, MIRROR_DIR), next_id, lambda tab, rows: append_rows(tab, rows, MIRROR_DIR, write_csv, sheets_append), iso)
                 run_log['task_run_id'] = task_run_id
                 mirror_report = local_mirror_sync(TABS, MIRROR_DIR, mirror_snapshot, sheets_get, write_csv)
                 run_log['local_mirror'] = mirror_report
@@ -1037,7 +934,7 @@ def run_chain():
         run_log['summary'] = 'Full JT7 chain completed'
         run_log['assessment'] = 'JT7 now performs real Gmail ingestion since last run, runtime signal classification, probabilistic entity matching, live tracker CRUD, calendar verification, TaskRuns logging, local mirror sync, and git persistence.'
         update_scheduler_state('complete', run_log['summary'], run_at)
-        report_path = write_run_report(run_log)
+        report_path = write_run_report(run_log, REPORTS_DIR)
         run_log['reportPath'] = report_path
         append_log(run_log)
         print(json.dumps(run_log, indent=2))
@@ -1047,7 +944,7 @@ def run_chain():
         run_log['errors'].append(str(e))
         run_log['assessment'] = 'Chain failed. Inspect errors and partial outputs.'
         update_scheduler_state('failed', str(e), run_at)
-        report_path = write_run_report(run_log)
+        report_path = write_run_report(run_log, REPORTS_DIR)
         run_log['reportPath'] = report_path
         append_log(run_log)
         print(json.dumps(run_log, indent=2))

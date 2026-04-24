@@ -206,5 +206,53 @@
     "missing_role, weak_job_match, signal_type:unknown_review_needed",
     "pending",
     ""
+  ],
+  [
+    "review_013",
+    "signal_057",
+    "2026-04-24T06:39:13.692436-05:00",
+    "gmail",
+    "interview_scheduling",
+    "",
+    "",
+    "recruiter_021",
+    "Prepare for interview",
+    "{\"linked_job_id\": \"\", \"proposed_status\": \"Interviewing\", \"company\": \"\", \"role\": \"\"}",
+    "0.5",
+    "missing_company, missing_role, weak_job_match, signal_type:interview_scheduling",
+    "pending",
+    ""
+  ],
+  [
+    "review_014",
+    "signal_059",
+    "2026-04-24T06:39:14.882793-05:00",
+    "gmail",
+    "job_alert",
+    "Recruiting",
+    "",
+    "recruiter_037",
+    "",
+    "{\"linked_job_id\": \"\", \"proposed_status\": \"Cold\", \"company\": \"Recruiting\", \"role\": \"\"}",
+    "0.5",
+    "missing_role, weak_job_match, signal_type:job_alert",
+    "pending",
+    ""
+  ],
+  [
+    "review_015",
+    "signal_060",
+    "2026-04-24T06:39:18.780096-05:00",
+    "gmail",
+    "follow_up_opportunity",
+    "Thomson Reuters",
+    "Senior UX Product Designer",
+    "recruiter_021",
+    "Send follow-up response",
+    "{\"linked_job_id\": \"job_017\", \"proposed_status\": \"Cold\", \"company\": \"Thomson Reuters\", \"role\": \"Senior UX Product Designer\"}",
+    "0.76",
+    "signal_type:follow_up_opportunity",
+    "pending",
+    ""
   ]
 ]
