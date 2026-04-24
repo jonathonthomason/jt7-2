@@ -9,6 +9,15 @@ def classify_signal(subject, sender, labels, body, classification_rules, newslet
     auto_update_allowed = False
     review_needed = True
 
+    if any(token in haystack for token in ['substack', 'view in browser', 'manage preferences']) and 'job' not in haystack and 'recruit' not in haystack:
+        return {
+            'signal_type': 'ignore_noise',
+            'summary': subject[:160],
+            'confidence': 0.95,
+            'auto_update_allowed': False,
+            'review_needed': False,
+        }
+
     if 'unsubscribe' in haystack and 'job' not in haystack and 'recruit' not in haystack:
         return {
             'signal_type': 'ignore_noise',
@@ -112,10 +121,10 @@ def extract_entities(subject, sender, snippet, extract_domain, linkedin_role_re,
         elif lowered in {'linkedin job alerts', 'linkedin', 'indeed', 'mail', 'linkedin news'}:
             company = ''
 
-    if not company and domain and domain not in {'gmail.com', 'googlemail.com', 'linkedin.com', 'indeed.com', 'mail.linkedin.com'}:
+    if not company and domain and domain not in {'gmail.com', 'googlemail.com', 'linkedin.com', 'indeed.com', 'mail.linkedin.com', 'substack.com', 'ashbyhq.com'}:
         company = domain.split('.')[0].replace('-', ' ').title()
 
-    if normalize_text(company) in generic_company_blocklist and not role:
+    if normalize_text(company) in generic_company_blocklist or normalize_text(company) in {'match', 'substack', 'email', 'ashbyhq', 'recruiting'} and not role:
         company = ''
 
     return {

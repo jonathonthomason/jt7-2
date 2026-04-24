@@ -89,6 +89,7 @@ def gmail_scan_and_update(
     write_csv,
     sheets_append,
     iso,
+    no_job_create_sources,
 ):
     state = fetch_runtime_state(lambda tab: rows_to_dicts(tab, sheets_get, mirror_dir))
     jobs_rows = state['jobs_rows']
@@ -205,7 +206,7 @@ def gmail_scan_and_update(
                 parsed,
                 classification,
                 normalize_text,
-                no_job_create_sources=[],
+                no_job_create_sources=no_job_create_sources,
                 generic_company_blocklist=generic_company_blocklist,
             )
             if blocked_job_create:
@@ -350,6 +351,7 @@ def gmail_scan_and_update(
         'signals_persisted': signals_persisted,
         'signals_marked_review_required': signals_marked_review_required,
         'actions_created': actions_created,
+        'actions_updated': 0,
         'review_needed_count': review_needed_count,
         'review_needed_created': review_needed_created,
         'blocked_job_creations': blocked_job_creations,

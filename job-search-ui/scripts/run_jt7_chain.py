@@ -299,6 +299,7 @@ def run_chain():
             write_csv,
             sheets_append,
             iso,
+            NO_JOB_CREATE_SOURCES,
         )
         state_for_calendar = fetch_runtime_state(lambda tab: rows_to_dicts(tab, sheets_get, MIRROR_DIR))
         action_ids = [r['values'].get('action_id', '') for r in state_for_calendar['actions_rows']]
