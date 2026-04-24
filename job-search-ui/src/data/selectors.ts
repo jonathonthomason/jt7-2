@@ -7,12 +7,15 @@ import latestRunReport from '../../runtime/reports/jt7_run_2026-04-23T21-01-06.2
 
 type MirrorRow = Record<string, string>
 
+export type ActionState = 'open' | 'waiting' | 'done' | 'blocked'
+
 export type ExecutionCardItem = {
   id: string
   priority: number
   actionType: string
   status: 'critical' | 'high' | 'medium' | 'low'
   urgency: 'now' | 'soon' | 'later'
+  actionState: ActionState
   title: string
   targetLabel: string
   companyName?: string
@@ -127,6 +130,16 @@ function priorityMeta(signal: MirrorRow, job?: MirrorRow, dueAt?: string) {
   return { priority: 5, status: 'low' as const, urgency: 'later' as const }
 }
 
+function actionStateForCard(card: {
+  reviewRequired: boolean
+  dueAt?: string
+  whyNow: string
+}): ActionState {
+  if (card.reviewRequired) return 'blocked'
+  if (card.whyNow.toLowerCase().includes('waiting')) return 'waiting'
+  return 'open'
+}
+
 function buildSignalDrivenCards(): ExecutionCardItem[] {
   const cards: ExecutionCardItem[] = []
   const added = new Set<string>()
@@ -177,6 +190,7 @@ function buildSignalDrivenCards(): ExecutionCardItem[] {
       confidence: confidenceForSignal(signal),
       reviewRequired,
       urgency,
+      actionState: actionStateForCard({ reviewRequired, dueAt, whyNow }),
       primaryCta: reviewRequired ? 'Review signal' : 'Open job',
       secondaryActions: reviewRequired ? ['Ignore', 'Defer'] : ['Mark waiting', 'Defer'],
       dueAt,
@@ -216,6 +230,7 @@ function buildActionBackedCards(): ExecutionCardItem[] {
         confidence: confidenceForSignal(primarySignal),
         reviewRequired: false,
         urgency,
+        actionState: action.status === 'done' ? 'done' : action.status === 'blocked' ? 'blocked' : action.status === 'waiting' ? 'waiting' : 'open',
         primaryCta: 'Open action',
         secondaryActions: ['Mark done', 'Defer'],
         dueAt: action.due_at || undefined,
@@ -302,12 +317,18 @@ export function getNextBestAction(): ExecutionCardItem | null {
 
 export function getExecutionCards(): ExecutionCardItem[] {
   const next = getNextBestAction()
-  const rest = rankedBacklog().filter((item) => item.id !== next?.id)
+  const rest = rankedBacklog()
+    .filter((item) => item.id !== next?.id)
+    .filter((item) => item.actionState === 'open' || item.actionState === 'blocked')
   return rest.slice(0, 8)
 }
 
 export function getCompletedToday(): ExecutionCardItem[] {
-  return []
+  return uniqueCards([...buildActionBackedCards(), ...buildSignalDrivenCards()]).filter((item) => item.actionState === 'done')
+}
+
+export function getWaitingActions(): ExecutionCardItem[] {
+  return uniqueCards([...buildActionBackedCards(), ...buildSignalDrivenCards()]).filter((item) => item.actionState === 'waiting')
 }
 
 export function getRecentSignals(): RecentSignalItem[] {
