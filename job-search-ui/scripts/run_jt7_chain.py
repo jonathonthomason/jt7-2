@@ -615,11 +615,43 @@ def proposed_action_instruction(signal_type):
     return instructions.get(signal_type, 'Review job-related signal')
 
 
+def canonical_action_status(classification, linked_job_id=''):
+    signal_type = classification.get('signal_type', '')
+    if classification.get('no_job_create'):
+        return 'blocked'
+    if signal_type == 'application_confirmation':
+        return 'waiting'
+    if signal_type in {'recruiter_outreach', 'reply_received', 'follow_up_opportunity', 'interview_scheduling', 'reschedule', 'hiring_manager_communication'}:
+        return 'open'
+    if linked_job_id:
+        return 'open'
+    return 'blocked'
+
+
+def canonical_action_due_at(classification, run_at):
+    signal_type = classification.get('signal_type', '')
+    if signal_type in {'interview_scheduling', 'reschedule'}:
+        return iso(run_at + timedelta(hours=24))
+    if signal_type in {'recruiter_outreach', 'reply_received', 'follow_up_opportunity', 'hiring_manager_communication'}:
+        return iso(run_at + timedelta(hours=48))
+    return ''
+
+
 def ensure_action(job_id, company, classification, action_ids, actions_rows, new_actions, run_at, signal_id=''):
     instruction = proposed_action_instruction(classification['signal_type'])
+    status = canonical_action_status(classification, job_id)
+    due_at = canonical_action_due_at(classification, run_at)
     for row in actions_rows:
         if row['values'].get('job_id', '') == job_id and row['values'].get('instruction', '') == instruction and row['values'].get('status', '') != 'done':
-            return False, None
+            updated = row['values'].copy()
+            updated['reason'] = f"Signal type: {classification['signal_type']} | signal_id: {signal_id}".strip()
+            updated['urgency'] = 'high' if classification['signal_type'] in {'interview_scheduling', 'reschedule', 'recruiter_outreach'} else 'medium'
+            updated['status'] = status
+            updated['due_at'] = due_at
+            row_values = [updated.get(col, '') for col in ['action_id','job_id','company','instruction','reason','urgency','status','created_at','due_at','owner']]
+            update_row('Actions', row['row_index'], row_values)
+            row['values'] = updated
+            return False, row['values'].get('action_id', '')
     action_id = next_id('action_', action_ids + [r[0] for r in new_actions])
     new_actions.append([
         action_id,
@@ -628,9 +660,9 @@ def ensure_action(job_id, company, classification, action_ids, actions_rows, new
         instruction,
         f"Signal type: {classification['signal_type']} | signal_id: {signal_id}".strip(),
         'high' if classification['signal_type'] in {'interview_scheduling', 'reschedule', 'recruiter_outreach'} else 'medium',
-        'open',
+        status,
         iso(run_at),
-        '',
+        due_at,
         'JT7',
     ])
     return True, action_id
