@@ -1,119 +1,301 @@
 # JT7 (for hiring teams)
 
-JT7 is Jonathon Thomason’s self-directed AI-operated job search system.
+JT7 is a personal AI-operated job search platform that I designed and built as both:
+- a working operating system for my own search
+- a product-thinking artifact that shows how I use AI, OpenClaw, and structured prompting to move from concept to real implementation
 
-It is both:
-- a working personal operating system for managing a modern job search
-- a product and systems-thinking artifact that shows how Jonathon approaches workflow design, operational clarity, and real-world execution
+This file is meant to explain not just what JT7 does, but how I used AI in a disciplined product and engineering workflow to produce architecture, logic, UI structure, and live code.
 
-## What this demonstrates
+## Why I built it this way
 
-JT7 is not just a concept deck or design exercise.
-It is a live system built to:
-- ingest job-search signals from Gmail and Calendar
-- classify and reconcile those signals against a structured tracker
-- persist operational state across Google Sheets, local artifacts, and git history
-- surface the highest-priority next actions in a calm operator UI
-- reduce cognitive overhead in a fragmented, multi-source workflow
+A job search is operationally messy.
+Signals arrive through email, calendar, job boards, recruiter replies, spreadsheets, and ad hoc notes. Most people handle that through fragmented tools and manual memory.
 
-In practical terms, it demonstrates Jonathon’s ability to:
-- frame messy workflows as systems
-- define clean operating models
-- design around traceability and decision quality
-- move from architecture to working implementation
-- balance product thinking with execution discipline
-
-## Why it matters
-
-Most job-search tooling is fragmented.
-Signals live in email, scheduling lives in calendar, trackers drift, and next steps become unclear.
-
-JT7 treats the problem like an operating system problem:
+I approached the problem as a product systems problem:
 - separate evidence from truth
-- preserve state cleanly
-- make action visible
-- prevent context loss
-- design the interface around decision-making, not noise
+- make logic explicit
+- keep state durable
+- build calm execution surfaces
+- reduce cognitive overhead
+- preserve traceability from input to decision to action
 
-That framing reflects how Jonathon thinks about product design more broadly:
-- systems over isolated screens
-- clarity over feature sprawl
-- workflow integrity over superficial polish
-- practical execution over abstract strategy alone
+The result is JT7: a system where AI is not just generating text, but helping define contracts, structure workflows, scaffold implementation, and maintain continuity across the product.
 
-## Current system shape
+## How I used AI in this repo
 
-JT7 currently operates across three connected layers.
+I used AI as a structured design-and-build collaborator, not as a black-box code generator.
 
-### 1. Logic layer
-Markdown defines the rules, contracts, and operating model.
+My approach was:
+1. define the operating model in Markdown first
+2. use prompting to turn vague ideas into explicit contracts, rules, and schemas
+3. scaffold implementation around those contracts
+4. iterate from planning artifacts into real runtime behavior
+5. refactor working vertical slices into modular architecture once the end-to-end loop was proven
 
-### 2. Runtime layer
-Python executes ingestion, reconciliation, persistence, and reporting.
+In other words, AI was used to accelerate:
+- systems framing
+- artifact creation
+- architecture definition
+- code scaffolding
+- runtime refactoring
+- documentation alignment
 
-### 3. Application layer
-A React/Vite interface renders the operator surface for execution.
+But the important part is that the system was directed through product decisions, not left to uncontrolled generation.
 
-## Live operating model
+## Core build philosophy
 
-Current source-of-truth model:
-- **Google Sheets** for live tracker truth
-- **local structured artifacts** for mirrors and runtime state
-- **git/GitHub** for versioned history
-- **Google Drive** as a mirrored access layer for important documents
+The repo reflects a few deliberate principles.
 
-Current execution chain includes:
-- email signal scan
-- calendar signal scan
-- job-board signal scan
-- signal classification
-- pipeline reconciliation
-- pipeline update
-- local mirror sync
-- git commit sync
+### 1. Markdown defines the product contract
+I used Markdown files to define:
+- rules
+- schemas
+- operating assumptions
+- workflow logic
+- runtime boundaries
+- product/system decisions
+
+That let me use AI to reason against explicit artifacts rather than constantly re-describing intent in chat.
+
+### 2. Build the smallest real loop first
+Instead of overdesigning the whole platform, I pushed toward a real proof loop:
+- read Gmail
+- classify signals
+- reconcile against tracker truth
+- write to Google Sheets
+- sync local mirrors
+- log the run
+- render an operator-facing UI
+
+Once that loop was real, I started modularizing it.
+
+### 3. Separate logic, runtime, storage, and UI
+A major architectural direction in this repo was to avoid collapsing everything into one app layer.
+
+The system is intentionally split into:
+- Markdown logic/contracts
+- Python runtime modules
+- storage/mirror layers
+- React UI surfaces
+
+### 4. Keep product intent visible during implementation
+I did not want the project to become “just a script” or “just a dashboard.”
+The product goal stayed consistent: an operator system that turns fragmented search activity into actionable, verified state.
+
+## Key architectural decisions
+
+## 1. Source-of-truth split
+One of the most important design choices was establishing a clean truth model:
+- **Google Sheets** = live operational truth
+- **Gmail / Calendar / job boards** = evidence sources
+- **local artifacts** = structured mirrors and runtime state
+- **git/GitHub** = version history and persistence
+- **Google Drive** = mirrored access layer for important docs
+
+This matters because AI-generated systems get messy quickly if truth boundaries are fuzzy.
+
+## 2. Markdown-first system design
+A large amount of the platform logic was first expressed in Markdown.
+
+Examples include:
+- root operating files like `MISSION.md`, `CURRENT.md`, `DECISIONS.md`, `MEMORY.md`
+- runtime rules in `job-search-ui/docs/`
+- architecture and data-spec docs under `JT7/`
+- contract files like `ACTIONS.md`, `TODAYS_PLAN.md`, and `RUNTIME_BOUNDARIES.md`
+
+That gave me durable, reviewable logic surfaces that AI could use as working context.
+
+## 3. Vertical slice before modular extraction
+I first built JT7 as a working vertical slice.
+That included a large orchestration script, live tracker writes, runtime reports, mirrors, and UI wiring.
+
+Once the loop was real, I started extracting modules.
+That was intentional.
+I wanted to avoid abstract architecture that had never touched real data.
+
+## 4. Phase-based modularization
+After the working loop existed, I started refactoring toward a more composable runtime.
+
+Examples of extracted modules now include:
+- `runtime/domain/actions.py`
+- `runtime/domain/jobs.py`
+- `runtime/domain/signals.py`
+- `runtime/services/action_generation.py`
+- `runtime/services/action_lifecycle.py`
+- `runtime/services/signal_lifecycle.py`
+- `runtime/services/reconciliation.py`
+- `runtime/storage/local_mirror.py`
+- `runtime/adapters/homepage_state.py`
+- `runtime/pipelines/todays_plan.py`
+
+This reflects how I use AI in practice:
+- get a real loop working
+- inspect the monolith honestly
+- extract the safest boundaries first
+- verify behavior after each refactor
+
+## Key UX and product design decisions
+
+## 1. Treat the interface as an operator surface, not a dashboard
+A major UX choice was to avoid generic analytics-heavy dashboard behavior.
+
+Instead, the Today surface was designed to answer:
+- what matters now
+- what should happen next
+- what is blocked
+- what is waiting
+- what evidence supports that recommendation
+
+That is why the interaction model emphasizes:
+- one dominant next best action
+- a small supporting action set
+- calm spacing
+- plain language
+- minimal jargon
+- fast scanability
+
+## 2. Calm, enterprise-like visual direction
+The visual/product direction was intentionally:
+- dark-mode-first
+- quiet
+- structured
+- information-forward
+- low-noise
+- similar in spirit to enterprise control surfaces rather than consumer dashboards
+
+## 3. Verified-state rendering
+Another key UX decision was that the UI should render verified system state, not raw ingestion noise.
+
+That means the UI is downstream of:
+- classified signals
+- tracker state
+- action rules
+- runtime artifacts
+
+not just “whatever was found in an email.”
+
+## 4. Persona and workflow awareness
+This repo also includes persona and workflow thinking, not just raw code.
+
+Examples:
+- user/persona files under `career/personas/`
+- system/operator behavior files at the root
+- structured workflow docs for ingestion, pass logging, storage, and task execution
+
+This reflects my design bias that a product system is not complete unless user framing, system behavior, and execution logic are coherent together.
+
+## Scaffolding and component decisions
+
+## Logic scaffolding
+I used AI to create and refine the document/control structure first:
+- mission/state/memory/decision files
+- roadmap and schema files
+- docs that defined execution rules and storage rules
+- contract artifacts for runtime modules
+
+## Runtime scaffolding
+The Python runtime started as a working orchestrator and then evolved into extracted modules.
+That allowed fast proof-of-life first, followed by cleaner architecture.
+
+## App scaffolding
+The UI was built as a React + TypeScript + Vite app with a thin operator surface.
+I intentionally preserved route structure and existing auth boundaries during later UI work instead of rewriting the app shell.
+
+## Component approach
+The Today surface was broken into focused components such as:
+- `TodayPlanPage`
+- `NextBestAction`
+- `ExecutionCard`
+- `CompletedToday`
+- `SignalNotes`
+- `ProgressStrip`
+
+That reflects a common pattern in my work:
+- define a clear content contract
+- compress the UX to the essential decisions
+- keep components small and composable
+
+## Workflow design approach
+
+JT7 was designed around workflows rather than around isolated screens.
+
+Examples of workflow thinking in this repo:
+- Gmail ingestion and classification rules
+- signal-to-job linking
 - action generation
-- priority surfacing
-- pass logging
+- review-needed handling
+- scheduled refresh runs
+- local mirror and git persistence
+- Today’s Plan derivation from canonical runtime state
 
-## What this says about Jonathon
+This matters because the system is fundamentally about turning asynchronous evidence into reliable next actions.
 
-This project reflects a product designer who is comfortable working across:
-- product strategy
-- systems architecture
-- information design
-- workflow modeling
-- implementation-adjacent execution
-- operational rigor
+## Data, git, and persistence approach
 
-It also reflects a bias toward building real things, not just describing them.
+I wanted the system to leave behind a durable trail of what happened.
 
-## How to read this project
+That meant treating persistence as part of the product, not an implementation detail.
 
-If you are reviewing JT7 as part of Jonathon’s candidacy, the useful lens is:
-- how the system is framed
-- how ambiguity is turned into structure
-- how data/state boundaries are defined
-- how the workflow was made operational
-- how the implementation preserves product intent
+The repo reflects that through:
+- structured tracker rows in Google Sheets
+- mirrored CSV/JSON artifacts locally
+- runtime reports in `job-search-ui/runtime/reports/`
+- task state in runtime JSON files
+- git commits capturing meaningful execution changes and checkpoints
 
-This is best understood as a working product-thinking artifact, not just a code sample and not just a design artifact.
+This is one of the clearest ways AI was used pragmatically: not just generating files, but helping maintain a system where state, outputs, and rules stay inspectable.
 
-## Primary repo README
+## What to look at in the repo
 
-For the operator-facing technical overview, see:
+If you want to understand how I used AI to build this, the best areas are:
+
+### Root control files
 - `README.md`
+- `MISSION.md`
+- `CURRENT.md`
+- `DECISIONS.md`
+- `MEMORY.md`
 
-That file is the better reference for:
-- runtime details
-- local paths
-- task-chain execution
-- tracker/storage mechanics
+### Product and system specs
+- `JT7/`
+- `product/`
+- `docs/`
+
+### Runtime logic
+- `job-search-ui/scripts/run_jt7_chain.py`
+- `job-search-ui/runtime/`
+- `job-search-ui/docs/`
+
+### UI surface
+- `job-search-ui/src/`
+- especially the Today feature and selector layer
+
+### Personas and user framing
+- `career/personas/`
+
+## What this project demonstrates about my approach
+
+I use AI best when the work requires:
+- structuring ambiguity
+- making logic explicit
+- preserving continuity
+- rapidly scaffolding and testing ideas
+- moving between product design and implementation detail
+- iterating from working loops to cleaner architecture
+
+This repo is a good example of that.
+It is not “AI wrote some code for me.”
+It is a system where I used AI as part of a disciplined product design and build process.
 
 ## Summary
 
-JT7 is a concrete example of Jonathon Thomason designing and building a system that:
-- structures a complex workflow
-- preserves truth across tools
-- surfaces action clearly
-- reduces user cognitive load
-- bridges product thinking and actual execution
+JT7 shows how I approach AI-assisted product building:
+- define the system clearly
+- externalize logic in durable artifacts
+- use AI to accelerate structure and implementation
+- prove the workflow with real data
+- refactor toward better architecture once reality is known
+- keep UX grounded in verified state and operator needs
+
+For a more operator-facing technical overview of the live runtime, see:
+- `README.md`
