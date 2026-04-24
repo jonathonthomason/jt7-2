@@ -4,10 +4,25 @@ from email.utils import parseaddr
 
 def classify_signal(subject, sender, labels, body, classification_rules, newsletter_noise_patterns):
     haystack = ' '.join([subject or '', sender or '', body or '', ' '.join(labels or [])]).lower()
+    social_noise_tokens = [
+        'accepted your invitation', 'just messaged you', 'via linkedin', 'sales navigator',
+        'claim your exclusive offer', 'job search program', 'view in browser', 'free interview cheat sheet',
+        'design faq', 'why 5 people joined', 'psychology of token remorse', 'meta starts tracking employee laptops',
+        'explore their network'
+    ]
     signal_type = 'unknown_review_needed'
     confidence = 0.35
     auto_update_allowed = False
     review_needed = True
+
+    if any(token in haystack for token in social_noise_tokens):
+        return {
+            'signal_type': 'ignore_noise',
+            'summary': subject[:160],
+            'confidence': 0.96,
+            'auto_update_allowed': False,
+            'review_needed': False,
+        }
 
     if any(token in haystack for token in ['substack', 'view in browser', 'manage preferences']) and 'job' not in haystack and 'recruit' not in haystack:
         return {
@@ -124,7 +139,7 @@ def extract_entities(subject, sender, snippet, extract_domain, linkedin_role_re,
     if not company and domain and domain not in {'gmail.com', 'googlemail.com', 'linkedin.com', 'indeed.com', 'mail.linkedin.com', 'substack.com', 'ashbyhq.com'}:
         company = domain.split('.')[0].replace('-', ' ').title()
 
-    if normalize_text(company) in generic_company_blocklist or normalize_text(company) in {'match', 'substack', 'email', 'ashbyhq', 'recruiting'} and not role:
+    if (normalize_text(company) in generic_company_blocklist or normalize_text(company) in {'match', 'substack', 'email', 'ashbyhq', 'recruiting', 'lensa', 'postjobfree', 'sarahdoody'}) and not role:
         company = ''
 
     return {
