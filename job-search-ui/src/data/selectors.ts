@@ -76,6 +76,13 @@ const signals = rowsToObjects(signalsMirror)
 const actions = rowsToObjects(actionsMirror)
 const taskRuns = rowsToObjects(taskRunsMirror)
 
+function actionStateFromStatus(status: string): ActionState {
+  if (status === 'done') return 'done'
+  if (status === 'waiting') return 'waiting'
+  if (status === 'blocked') return 'blocked'
+  return 'open'
+}
+
 function latestTaskRunRow(): MirrorRow | undefined {
   return [...taskRuns].sort((a, b) => Date.parse(b.last_run_at) - Date.parse(a.last_run_at))[0]
 }
@@ -206,7 +213,7 @@ function buildSignalDrivenCards(): ExecutionCardItem[] {
 
 function buildActionBackedCards(): ExecutionCardItem[] {
   return actions
-    .filter((action) => action.status === 'open')
+    .filter((action) => ['open', 'waiting', 'done', 'blocked'].includes(action.status))
     .map((action) => {
       const job = jobs.find((item) => item.job_id === action.job_id)
       const linkedSignals = linkedSignalsForJob(action.job_id)
@@ -230,14 +237,14 @@ function buildActionBackedCards(): ExecutionCardItem[] {
         confidence: confidenceForSignal(primarySignal),
         reviewRequired: false,
         urgency,
-        actionState: action.status === 'done' ? 'done' : action.status === 'blocked' ? 'blocked' : action.status === 'waiting' ? 'waiting' : 'open',
-        primaryCta: 'Open action',
-        secondaryActions: ['Mark done', 'Defer'],
+        actionState: actionStateFromStatus(action.status),
+        primaryCta: action.status === 'done' ? 'View completed action' : action.status === 'waiting' ? 'View waiting action' : 'Open action',
+        secondaryActions: action.status === 'done' ? ['View job'] : action.status === 'waiting' ? ['Mark done', 'Open job'] : ['Mark done', 'Defer'],
         dueAt: action.due_at || undefined,
         createdAt: action.created_at,
         updatedAt: latestRunReport.runTimestamp || action.created_at,
         evidenceSummary: primarySignal.raw_excerpt,
-        completed: false,
+        completed: action.status === 'done',
       } satisfies ExecutionCardItem
     })
     .filter(Boolean) as ExecutionCardItem[]
