@@ -19,10 +19,10 @@
         "PRIORITY_SURFACING",
         "PASS_LOGGER"
       ],
-      "lastRunAt": "2026-04-24T00:32:44.590033-05:00",
+      "lastRunAt": "2026-04-24T00:33:13.686290-05:00",
       "nextRunAt": "2026-04-24T08:30:00-05:00",
-      "lastStatus": "failed",
-      "lastSummary": "ensure_signal() missing 2 required positional arguments: 'update_row' and 'next_id'"
+      "lastStatus": "complete",
+      "lastSummary": "Full JT7 chain completed"
     },
     {
       "runId": "midday_run",
@@ -42,10 +42,10 @@
         "PRIORITY_SURFACING",
         "PASS_LOGGER"
       ],
-      "lastRunAt": "2026-04-24T00:32:44.590033-05:00",
+      "lastRunAt": "2026-04-24T00:33:13.686290-05:00",
       "nextRunAt": "2026-04-24T12:30:00-05:00",
-      "lastStatus": "failed",
-      "lastSummary": "ensure_signal() missing 2 required positional arguments: 'update_row' and 'next_id'"
+      "lastStatus": "complete",
+      "lastSummary": "Full JT7 chain completed"
     },
     {
       "runId": "evening_run",
@@ -65,10 +65,10 @@
         "PRIORITY_SURFACING",
         "PASS_LOGGER"
       ],
-      "lastRunAt": "2026-04-24T00:32:44.590033-05:00",
+      "lastRunAt": "2026-04-24T00:33:13.686290-05:00",
       "nextRunAt": "2026-04-24T18:00:00-05:00",
-      "lastStatus": "failed",
-      "lastSummary": "ensure_signal() missing 2 required positional arguments: 'update_row' and 'next_id'"
+      "lastStatus": "complete",
+      "lastSummary": "Full JT7 chain completed"
     }
   ]
 }
