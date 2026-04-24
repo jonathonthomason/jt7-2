@@ -190,5 +190,21 @@
     "missing_company, missing_role, weak_job_match, signal_type:unknown_review_needed",
     "pending",
     ""
+  ],
+  [
+    "review_012",
+    "signal_056",
+    "2026-04-24T00:04:55.757099-05:00",
+    "gmail",
+    "unknown_review_needed",
+    "Ford",
+    "",
+    "recruiter_034",
+    "",
+    "{\"linked_job_id\": \"\", \"proposed_status\": \"Cold\", \"company\": \"Ford\", \"role\": \"\"}",
+    "0.35",
+    "missing_role, weak_job_match, signal_type:unknown_review_needed",
+    "pending",
+    ""
   ]
 ]

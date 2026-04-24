@@ -3,10 +3,17 @@ import csv
 import json
 import re
 import subprocess
+import sys
 from datetime import datetime, timedelta
 from email.utils import parseaddr
 from pathlib import Path
 from zoneinfo import ZoneInfo
+
+sys.path.append('/Users/jtemp/.openclaw/workspace/job-search-ui')
+
+from runtime.domain.actions import ACTION_REQUIRED_SIGNAL_TYPES
+from runtime.services.action_generation import ACTION_ROW_COLUMNS, build_action_row
+from runtime.services.action_lifecycle import apply_action_update
 
 ROOT = Path('/Users/jtemp/.openclaw/workspace/job-search-ui')
 RUNTIME = ROOT / 'runtime'
@@ -588,84 +595,25 @@ def make_job_row(parsed, recruiter_id, job_ids, new_jobs, classification):
     ]
 
 
-ACTION_REQUIRED_SIGNAL_TYPES = {
-    'recruiter_outreach',
-    'interview_scheduling',
-    'reply_received',
-    'follow_up_opportunity',
-    'reschedule',
-    'hiring_manager_communication',
-}
-
-
-def proposed_action_instruction(signal_type):
-    instructions = {
-        'recruiter_outreach': 'Reply to recruiter outreach',
-        'application_confirmation': 'Track application and wait for update',
-        'interview_scheduling': 'Prepare for interview',
-        'reschedule': 'Confirm rescheduled interview details',
-        'cancellation': 'Review cancellation and decide next follow-up',
-        'rejection': 'Archive opportunity and capture lessons',
-        'hiring_manager_communication': 'Respond to hiring manager communication',
-        'follow_up_opportunity': 'Send follow-up response',
-        'reply_received': 'Review reply and respond',
-        'job_alert': 'Review opportunity and decide whether to apply',
-        'unknown_review_needed': 'Review unclassified job-related signal',
-    }
-    return instructions.get(signal_type, 'Review job-related signal')
-
-
-def canonical_action_status(classification, linked_job_id=''):
-    signal_type = classification.get('signal_type', '')
-    if classification.get('no_job_create'):
-        return 'blocked'
-    if signal_type == 'application_confirmation':
-        return 'waiting'
-    if signal_type in {'recruiter_outreach', 'reply_received', 'follow_up_opportunity', 'interview_scheduling', 'reschedule', 'hiring_manager_communication'}:
-        return 'open'
-    if linked_job_id:
-        return 'open'
-    return 'blocked'
-
-
-def canonical_action_due_at(classification, run_at):
-    signal_type = classification.get('signal_type', '')
-    if signal_type in {'interview_scheduling', 'reschedule'}:
-        return iso(run_at + timedelta(hours=24))
-    if signal_type in {'recruiter_outreach', 'reply_received', 'follow_up_opportunity', 'hiring_manager_communication'}:
-        return iso(run_at + timedelta(hours=48))
-    return ''
-
-
 def ensure_action(job_id, company, classification, action_ids, actions_rows, new_actions, run_at, signal_id=''):
-    instruction = proposed_action_instruction(classification['signal_type'])
-    status = canonical_action_status(classification, job_id)
-    due_at = canonical_action_due_at(classification, run_at)
+    action_row = build_action_row(
+        next_id('action_', action_ids + [r[0] for r in new_actions]),
+        job_id,
+        company,
+        classification,
+        run_at,
+        signal_id=signal_id,
+    )
+    instruction = action_row[3]
     for row in actions_rows:
         if row['values'].get('job_id', '') == job_id and row['values'].get('instruction', '') == instruction and row['values'].get('status', '') != 'done':
-            updated = row['values'].copy()
-            updated['reason'] = f"Signal type: {classification['signal_type']} | signal_id: {signal_id}".strip()
-            updated['urgency'] = 'high' if classification['signal_type'] in {'interview_scheduling', 'reschedule', 'recruiter_outreach'} else 'medium'
-            updated['status'] = status
-            updated['due_at'] = due_at
-            row_values = [updated.get(col, '') for col in ['action_id','job_id','company','instruction','reason','urgency','status','created_at','due_at','owner']]
+            updated = apply_action_update(row['values'], classification, run_at, signal_id=signal_id)
+            row_values = [updated.get(col, '') for col in ACTION_ROW_COLUMNS]
             update_row('Actions', row['row_index'], row_values)
             row['values'] = updated
             return False, row['values'].get('action_id', '')
-    action_id = next_id('action_', action_ids + [r[0] for r in new_actions])
-    new_actions.append([
-        action_id,
-        job_id,
-        company,
-        instruction,
-        f"Signal type: {classification['signal_type']} | signal_id: {signal_id}".strip(),
-        'high' if classification['signal_type'] in {'interview_scheduling', 'reschedule', 'recruiter_outreach'} else 'medium',
-        status,
-        iso(run_at),
-        due_at,
-        'JT7',
-    ])
-    return True, action_id
+    new_actions.append(action_row)
+    return True, action_row[0]
 
 
 def signal_status_from_confidence(classification):

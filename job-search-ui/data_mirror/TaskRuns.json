@@ -130,5 +130,17 @@
     "",
     "gmail:18|calendar:10",
     "signals:0|jobs:5|actions:0"
+  ],
+  [
+    "taskrun_011",
+    "JT7_CHAIN",
+    "complete",
+    "high",
+    "multi-daily",
+    "2026-04-24T00:04:49.413998-05:00",
+    "2026-04-24T08:30:00-05:00",
+    "",
+    "gmail:18|calendar:10",
+    "signals:1|jobs:5|actions:0"
   ]
 ]
