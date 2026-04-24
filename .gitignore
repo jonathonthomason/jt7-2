@@ -5,3 +5,5 @@
 # Python
 __pycache__/
 *.pyc
+job-search-ui/runtime/*.png
+logs/*.err
