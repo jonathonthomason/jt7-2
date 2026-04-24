@@ -50,7 +50,8 @@ NEWSLETTER_NOISE_PATTERNS = [
     r'meta starts tracking employee laptops',
     r'just messaged you',
 ]
-GENERIC_COMPANY_BLOCKLIST = {'linkedin job alerts', 'linkedin', 'indeed', 'mail', 'em'}
+GENERIC_COMPANY_BLOCKLIST = {'linkedin job alerts', 'linkedin', 'indeed', 'mail', 'em', 'builtin', 'built in'}
+NO_JOB_CREATE_SOURCES = {'linkedin job alerts', 'builtin', 'built in', 'indeed job alerts', 'job alerts'}
 CLASSIFICATION_RULES = [
     ('interview_scheduling', [r'\binterview\b', r'schedule(?:d|ing)?', r'availability', r'calendar invite', r'meet with']),
     ('reschedule', [r'reschedule', r're-schedule', r'move .* interview', r'new time']),
@@ -638,6 +639,8 @@ def ensure_action(job_id, company, classification, action_ids, actions_rows, new
 def signal_status_from_confidence(classification):
     if classification['signal_type'] == 'ignore_noise':
         return 'ignored'
+    if classification.get('no_job_create'):
+        return 'review_required_no_job_create'
     if classification['confidence'] >= 0.8:
         return 'accepted'
     if classification['confidence'] >= 0.5:
@@ -647,6 +650,12 @@ def signal_status_from_confidence(classification):
 
 def ensure_signal(parsed, classification, linked_job_id, signal_ids, signals_rows, new_signals):
     evidence_ref = f"thread:{parsed['thread_id']}|message:{parsed['message_id']}"
+    for row in signals_rows:
+        if row['values'].get('evidence_ref', '') == evidence_ref:
+            return False, row['values'].get('signal_id', '')
+    for row in new_signals:
+        if len(row) > 7 and row[7] == evidence_ref:
+            return False, row[0]
     signal_id = next_id('signal_', signal_ids + [r[0] for r in new_signals])
     new_signals.append([
         signal_id,
@@ -709,6 +718,27 @@ def confidence_bucket(confidence):
     if confidence >= 0.5:
         return 'medium'
     return 'low'
+
+
+def should_block_job_creation(parsed, classification):
+    source_norm = normalize_text(parsed.get('company', '') or parsed.get('sender_name', '') or parsed.get('source', ''))
+    role_norm = normalize_text(parsed.get('role', ''))
+    company_norm = normalize_text(parsed.get('company', ''))
+    signal_type = classification.get('signal_type', '')
+
+    if signal_type == 'ignore_noise':
+        return True, 'ignore_noise'
+    if source_norm in NO_JOB_CREATE_SOURCES:
+        return True, f'blocked_source:{source_norm}'
+    if not role_norm:
+        return True, 'missing_role'
+    if not company_norm:
+        return True, 'missing_company'
+    if company_norm in GENERIC_COMPANY_BLOCKLIST:
+        return True, f'generic_company:{company_norm}'
+    if signal_type in {'unknown_review_needed'}:
+        return True, f'weak_signal_type:{signal_type}'
+    return False, ''
 
 
 def reason_for_review(parsed, classification, match_score):
@@ -786,8 +816,12 @@ def gmail_scan_and_update(run_at):
     jobs_created = 0
     jobs_updated = 0
     signals_created = 0
+    signals_updated = 0
     actions_created = 0
     review_needed_created = 0
+    signals_marked_review_required = 0
+    blocked_job_creations = 0
+    orphan_actions = 0
     signal_to_job_update = []
     signal_to_action = []
     signals_by_confidence = {'high': 0, 'medium': 0, 'low': 0}
@@ -821,13 +855,23 @@ def gmail_scan_and_update(run_at):
                 company_jobs = [r for r in jobs_rows if normalize_company(r['values'].get('company', '')) == normalize_company(parsed['company'])]
                 parsed['role'] = choose_role_from_context(parsed, company_jobs) or parsed['role']
 
+            blocked_job_create, block_reason = should_block_job_creation(parsed, classification)
+            if blocked_job_create:
+                classification['no_job_create'] = True
+                classification['review_needed'] = True
+                if classification['confidence'] > 0.5:
+                    classification['confidence'] = 0.5
+                signals_marked_review_required += 1
+
             signal_created, signal_id = ensure_signal(parsed, classification, linked_job_id, signal_ids, signals_rows, new_signals)
             if signal_created:
                 signals_created += 1
+            else:
+                signals_updated += 1
             if signal_id and signal_id not in signal_ids:
                 signal_ids.append(signal_id)
 
-            create_allowed = bucket == 'high' and bool(parsed['company'] and (parsed['role'] or classification['signal_type'] in {'recruiter_outreach', 'follow_up_opportunity', 'application_confirmation'}))
+            create_allowed = bucket == 'high' and not blocked_job_create and bool(parsed['company'] and parsed['role'] and signal_id)
             if signal_id and not linked_job_id and create_allowed:
                 new_job = make_job_row(parsed, recruiter_id, job_ids, new_jobs, classification)
                 new_job[-1] = f"{new_job[-1]} | signal_id:{signal_id}"
@@ -847,19 +891,25 @@ def gmail_scan_and_update(run_at):
                 update_row('Jobs', best_job['row_index'], row_values)
                 best_job['values'] = updated
                 jobs_updated += 1
-                new_signals[-1][-1] = linked_job_id
+                if signal_created:
+                    new_signals[-1][-1] = linked_job_id
                 signal_to_job_update.append({'signal_id': signal_id, 'job_id': linked_job_id, 'mode': 'update'})
-            elif bucket == 'medium':
-                created_review, _ = ensure_review_queue_entry(parsed, classification, signal_id, linked_job_id, review_rows, review_ids, new_reviews, recruiter_id, match_score)
-                if created_review:
-                    review_needed_created += 1
+            else:
+                if blocked_job_create and not linked_job_id:
+                    blocked_job_creations += 1
+                if bucket == 'medium' or blocked_job_create:
+                    created_review, _ = ensure_review_queue_entry(parsed, classification, signal_id, linked_job_id, review_rows, review_ids, new_reviews, recruiter_id, match_score)
+                    if created_review:
+                        review_needed_created += 1
 
             requires_action = classification['signal_type'] in ACTION_REQUIRED_SIGNAL_TYPES and classification['signal_type'] != 'ignore_noise'
-            if linked_job_id and bucket == 'high' and requires_action:
+            if linked_job_id and signal_id and bucket == 'high' and requires_action:
                 created_action, action_id = ensure_action(linked_job_id, parsed['company'], classification, action_ids, actions_rows, new_actions, run_at, signal_id=signal_id)
                 if created_action:
                     actions_created += 1
                     signal_to_action.append({'signal_id': signal_id, 'action_id': action_id, 'job_id': linked_job_id})
+            elif requires_action and not signal_id:
+                orphan_actions += 1
             action_ids = action_ids + [r[0] for r in new_actions if r[0] not in action_ids]
             parsed_signals.append({
                 'thread_id': parsed['thread_id'],
@@ -901,9 +951,13 @@ def gmail_scan_and_update(run_at):
         'jobs_created': jobs_created,
         'jobs_updated': jobs_updated,
         'signals_created': signals_created,
+        'signals_updated': signals_updated,
+        'signals_marked_review_required': signals_marked_review_required,
         'actions_created': actions_created,
         'review_needed_count': review_needed_count,
         'review_needed_created': review_needed_created,
+        'blocked_job_creations': blocked_job_creations,
+        'orphan_actions': orphan_actions,
         'review_queue_pending_count': len([r for r in review_rows if r['values'].get('status', '') == 'pending']) + review_needed_created,
         'signals_by_confidence': signals_by_confidence,
         'signal_to_job_update': signal_to_job_update,

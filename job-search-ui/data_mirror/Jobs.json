@@ -333,7 +333,7 @@
     "",
     "",
     "linkedin_email",
-    "Created from job_alert Gmail signal thread:19dbd28fad298473 | signal_id:signal_041"
+    "Created from job_alert Gmail signal thread:19dbd28fad298473 | signal_id:signal_041 | signal job_alert from linkedin_email thread:19dbd28fad298473"
   ],
   [
     "job_021",
@@ -349,7 +349,7 @@
     "",
     "",
     "indeed_email",
-    "Created from job_alert Gmail signal thread:19dbcc9e8f92a5ed | signal_id:signal_044"
+    "Created from job_alert Gmail signal thread:19dbcc9e8f92a5ed | signal_id:signal_044 | signal job_alert from indeed_email thread:19dbcc9e8f92a5ed"
   ],
   [
     "job_022",
@@ -358,14 +358,14 @@
     "",
     "Cold",
     "recruiter_008",
-    "2026-04-23 13:45",
+    "2026-04-23 9:46",
     "Review opportunity and decide whether to apply",
     "",
     "",
     "",
     "",
     "linkedin_email",
-    "Created from job_alert Gmail signal thread:19dbace827b9f562 | signal_id:signal_053"
+    "Created from job_alert Gmail signal thread:19dbace827b9f562 | signal_id:signal_053 | signal job_alert from linkedin_email thread:19dbace827b9f562 | signal_id:signal_054"
   ],
   [
     "job_023",
