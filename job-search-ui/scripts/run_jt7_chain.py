@@ -12,8 +12,12 @@ from zoneinfo import ZoneInfo
 sys.path.append('/Users/jtemp/.openclaw/workspace/job-search-ui')
 
 from runtime.domain.actions import ACTION_REQUIRED_SIGNAL_TYPES
+from runtime.domain.jobs import make_job_row, update_job_row_for_signal
 from runtime.services.action_generation import ACTION_ROW_COLUMNS, build_action_row
 from runtime.services.action_lifecycle import apply_action_update
+from runtime.services.reconciliation import find_best_job_match
+from runtime.services.signal_lifecycle import ensure_signal
+from runtime.storage.local_mirror import local_mirror_sync
 
 ROOT = Path('/Users/jtemp/.openclaw/workspace/job-search-ui')
 RUNTIME = ROOT / 'runtime'
@@ -530,71 +534,6 @@ def ensure_recruiter(parsed, recruiters_rows, recruiter_ids, new_recruiters):
     return recruiter_id, True
 
 
-def find_best_job_match(parsed, jobs_rows):
-    best = None
-    best_score = 0.0
-    for row in jobs_rows:
-        score = score_job_match(parsed, row)
-        if score > best_score:
-            best_score = score
-            best = row
-    return best, best_score
-
-
-def update_job_row_for_signal(job_row, parsed, classification, recruiter_id):
-    values = job_row['values'].copy()
-    new_status = infer_status(classification['signal_type'], values.get('status', ''))
-    values['status'] = new_status
-    values['contact'] = recruiter_id or values.get('contact', '') or parsed['sender_email']
-    values['last_contact_date'] = parsed['date'] or values.get('last_contact_date', '')
-    if classification['signal_type'] in {'interview_scheduling', 'reschedule'}:
-        values['interview_datetime'] = parsed['date']
-        values['next_step'] = 'Prepare for interview'
-    elif classification['signal_type'] == 'rejection':
-        values['next_step'] = 'Archive and capture lessons'
-    elif classification['signal_type'] == 'application_confirmation':
-        values['next_step'] = 'Wait for recruiter or hiring team response'
-    elif classification['signal_type'] in {'recruiter_outreach', 'hiring_manager_communication', 'follow_up_opportunity'}:
-        values['next_step'] = 'Respond to outreach'
-    elif classification['signal_type'] == 'job_alert' and not values.get('next_step'):
-        values['next_step'] = 'Review opportunity and decide whether to apply'
-    notes = values.get('notes', '')
-    addition = f" | signal {classification['signal_type']} from {parsed['source']} thread:{parsed['thread_id']}"
-    if addition not in notes:
-        values['notes'] = (notes + addition).strip(' |')
-    return values
-
-
-def make_job_row(parsed, recruiter_id, job_ids, new_jobs, classification):
-    job_id = next_id('job_', job_ids + [r[0] for r in new_jobs])
-    status = infer_status(classification['signal_type'])
-    next_step = 'Review opportunity and decide whether to apply'
-    if classification['signal_type'] == 'application_confirmation':
-        next_step = 'Wait for recruiter or hiring team response'
-    elif classification['signal_type'] in {'interview_scheduling', 'reschedule'}:
-        next_step = 'Prepare for interview'
-    elif classification['signal_type'] == 'rejection':
-        next_step = 'Archive and capture lessons'
-    elif classification['signal_type'] in {'recruiter_outreach', 'hiring_manager_communication', 'follow_up_opportunity'}:
-        next_step = 'Respond to outreach'
-    return [
-        job_id,
-        parsed['company'],
-        parsed['role'],
-        '',
-        status,
-        recruiter_id or parsed['sender_email'],
-        parsed['date'],
-        next_step,
-        parsed['date'] if classification['signal_type'] in {'interview_scheduling', 'reschedule'} else '',
-        '',
-        '',
-        '',
-        parsed['source'],
-        f"Created from {classification['signal_type']} Gmail signal thread:{parsed['thread_id']}",
-    ]
-
-
 def ensure_action(job_id, company, classification, action_ids, actions_rows, new_actions, run_at, signal_id=''):
     action_row = build_action_row(
         next_id('action_', action_ids + [r[0] for r in new_actions]),
@@ -614,55 +553,6 @@ def ensure_action(job_id, company, classification, action_ids, actions_rows, new
             return False, row['values'].get('action_id', '')
     new_actions.append(action_row)
     return True, action_row[0]
-
-
-def signal_status_from_confidence(classification):
-    if classification['signal_type'] == 'ignore_noise':
-        return 'ignored'
-    if classification.get('no_job_create'):
-        return 'review_required_no_job_create'
-    if classification['confidence'] >= 0.8:
-        return 'accepted'
-    if classification['confidence'] >= 0.5:
-        return 'review_needed'
-    return 'logged_low_confidence'
-
-
-def ensure_signal(parsed, classification, linked_job_id, signal_ids, signals_rows, new_signals, signals_header):
-    evidence_ref = f"thread:{parsed['thread_id']}|message:{parsed['message_id']}"
-    for row in signals_rows:
-        if row['values'].get('evidence_ref', '') == evidence_ref:
-            updated = row['values'].copy()
-            updated['source'] = parsed['source']
-            updated['signal_type'] = classification['signal_type']
-            updated['company'] = parsed['company']
-            updated['role'] = parsed['role']
-            updated['date'] = parsed['date']
-            updated['summary'] = classification['summary']
-            updated['status'] = signal_status_from_confidence(classification)
-            if linked_job_id:
-                updated['job_id'] = linked_job_id
-            row_values = [updated.get(col, '') for col in signals_header]
-            update_row('Signals', row['row_index'], row_values)
-            row['values'] = updated
-            return False, row['values'].get('signal_id', ''), True
-    for row in new_signals:
-        if len(row) > 7 and row[7] == evidence_ref:
-            return False, row[0], False
-    signal_id = next_id('signal_', signal_ids + [r[0] for r in new_signals])
-    new_signals.append([
-        signal_id,
-        parsed['source'],
-        classification['signal_type'],
-        parsed['company'],
-        parsed['role'],
-        parsed['date'],
-        classification['summary'],
-        evidence_ref,
-        signal_status_from_confidence(classification),
-        linked_job_id,
-    ])
-    return True, signal_id, True
 
 
 def parse_message_record(message, thread_labels):
@@ -838,7 +728,7 @@ def gmail_scan_and_update(run_at):
                 recruiter_ids.append(recruiter_id)
                 recruiters_created += 1
 
-            best_job, match_score = find_best_job_match(parsed, jobs_rows)
+            best_job, match_score = find_best_job_match(parsed, jobs_rows, score_job_match)
             linked_job_id = ''
 
             if best_job and match_score >= 0.6:
@@ -856,7 +746,7 @@ def gmail_scan_and_update(run_at):
                     classification['confidence'] = 0.5
                 signals_marked_review_required += 1
 
-            signal_created, signal_id, signal_persisted = ensure_signal(parsed, classification, linked_job_id, signal_ids, signals_rows, new_signals, state['signals_header'])
+            signal_created, signal_id, signal_persisted = ensure_signal(parsed, classification, linked_job_id, signal_ids, signals_rows, new_signals, state['signals_header'], update_row, next_id)
             if signal_created:
                 signals_created += 1
             else:
@@ -866,7 +756,7 @@ def gmail_scan_and_update(run_at):
 
             create_allowed = bucket == 'high' and not blocked_job_create and bool(parsed['company'] and parsed['role'] and signal_id)
             if signal_id and not linked_job_id and create_allowed:
-                new_job = make_job_row(parsed, recruiter_id, job_ids, new_jobs, classification)
+                new_job = make_job_row(parsed, recruiter_id, next_id('job_', job_ids + [r[0] for r in new_jobs]), classification, infer_status)
                 new_job[-1] = f"{new_job[-1]} | signal_id:{signal_id}"
                 new_jobs.append(new_job)
                 linked_job_id = new_job[0]
@@ -875,7 +765,7 @@ def gmail_scan_and_update(run_at):
                 new_signals[-1][-1] = linked_job_id
                 signal_to_job_update.append({'signal_id': signal_id, 'job_id': linked_job_id, 'mode': 'create'})
             elif signal_id and linked_job_id and bucket == 'high' and classification['auto_update_allowed']:
-                updated = update_job_row_for_signal(best_job, parsed, classification, recruiter_id)
+                updated = update_job_row_for_signal(best_job, parsed, classification, recruiter_id, infer_status)
                 notes = updated.get('notes', '')
                 addition = f" | signal_id:{signal_id}"
                 if addition not in notes:
@@ -1041,52 +931,6 @@ def job_board_scan_report():
     }
 
 
-def local_mirror_sync():
-    before = mirror_snapshot()
-    mirrored = []
-    changed_csv = []
-    changed_json = []
-    unchanged = []
-    tracker_tabs = {}
-    for tab in TABS:
-        if tab == 'ReviewQueue':
-            rows = json.loads((MIRROR_DIR / 'ReviewQueue.json').read_text()) if (MIRROR_DIR / 'ReviewQueue.json').exists() else []
-        else:
-            data = sheets_get(f'{tab}!A1:Z1000')
-            rows = data.get('values', [])
-        csv_path = MIRROR_DIR / f'{tab}.csv'
-        json_path = MIRROR_DIR / f'{tab}.json'
-        prev_csv = csv_path.read_text() if csv_path.exists() else None
-        prev_json = json_path.read_text() if json_path.exists() else None
-        write_csv(csv_path, rows)
-        json_path.write_text(json.dumps(rows, indent=2))
-        mirrored.append(tab)
-        new_csv = csv_path.read_text()
-        new_json = json_path.read_text()
-        tracker_tabs[tab] = {
-            'rows_total': max(len(rows) - 1, 0) if rows else 0,
-            'rows_created': 0,
-            'rows_updated': 0,
-            'rows_unchanged': max(len(rows) - 1, 0) if rows else 0,
-            'row_identifiers': [r[0] for r in rows[1:6] if r and len(r) > 0],
-        }
-        if prev_csv != new_csv:
-            changed_csv.append(str(csv_path))
-        if prev_json != new_json:
-            changed_json.append(str(json_path))
-        if prev_csv == new_csv and prev_json == new_json:
-            unchanged.append(tab)
-    return {
-        'tabs_mirrored': mirrored,
-        'changed_csv': changed_csv,
-        'changed_json': changed_json,
-        'unchanged_tabs': unchanged,
-        'tracker_tabs': tracker_tabs,
-        'before': before,
-        'after': mirror_snapshot(),
-    }
-
-
 def update_taskruns(run_at, next_at, run_log):
     _, taskruns_rows = rows_to_dicts('TaskRuns')
     taskrun_ids = [r['values'].get('task_run_id', '') for r in taskruns_rows]
@@ -1168,7 +1012,7 @@ def run_chain():
             elif task_name == 'LOCAL_MIRROR_SYNC':
                 task_run_id = update_taskruns(run_at, next_at, run_log)
                 run_log['task_run_id'] = task_run_id
-                mirror_report = local_mirror_sync()
+                mirror_report = local_mirror_sync(TABS, MIRROR_DIR, mirror_snapshot, sheets_get, write_csv)
                 run_log['local_mirror'] = mirror_report
                 run_log['tracker_crud'] = mirror_report['tracker_tabs']
                 summary = f"Local mirror updated for tabs: {', '.join(mirror_report['tabs_mirrored'])}"
