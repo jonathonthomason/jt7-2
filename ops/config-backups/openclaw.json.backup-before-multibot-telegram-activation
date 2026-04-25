@@ -1,0 +1,110 @@
+{
+  "wizard": {
+    "lastRunAt": "2026-04-02T05:39:45.171Z",
+    "lastRunVersion": "2026.4.1",
+    "lastRunCommand": "onboard",
+    "lastRunMode": "local"
+  },
+  "auth": {
+    "profiles": {
+      "openai-codex:jonathon.thomason@gmail.com": {
+        "provider": "openai-codex",
+        "mode": "oauth",
+        "email": "jonathon.thomason@gmail.com"
+      }
+    }
+  },
+  "agents": {
+    "defaults": {
+      "model": {
+        "primary": "openai-codex/gpt-5.4"
+      },
+      "timeoutSeconds": 600,
+      "models": {
+        "openai-codex/gpt-5.4": {}
+      },
+      "workspace": "/Users/jtemp/.openclaw/workspace"
+    }
+  },
+  "tools": {
+    "profile": "coding",
+    "web": {
+      "search": {
+        "provider": "grok"
+      }
+    }
+  },
+  "commands": {
+    "native": "auto",
+    "nativeSkills": "auto",
+    "restart": true,
+    "ownerDisplay": "raw"
+  },
+  "approvals": {
+    "exec": {
+      "enabled": true,
+      "mode": "targets",
+      "targets": [
+        {
+          "channel": "telegram",
+          "to": "8458375017"
+        }
+      ]
+    }
+  },
+  "session": {
+    "dmScope": "per-channel-peer"
+  },
+  "gateway": {
+    "port": 18789,
+    "mode": "local",
+    "bind": "loopback",
+    "auth": {
+      "mode": "token",
+      "token": "a4dfd0b8782e5a2608362bf5032e8eea63f17bfa85d9d645"
+    },
+    "tailscale": {
+      "mode": "off",
+      "resetOnExit": false
+    },
+    "nodes": {
+      "denyCommands": [
+        "camera.snap",
+        "camera.clip",
+        "screen.record",
+        "contacts.add",
+        "calendar.add",
+        "reminders.add",
+        "sms.send"
+      ]
+    },
+    "controlUi": {
+      "allowInsecureAuth": true
+    }
+  },
+  "meta": {
+    "lastTouchedVersion": "2026.4.14",
+    "lastTouchedAt": "2026-04-15T14:16:59.230Z"
+  },
+  "channels": {
+    "telegram": {
+      "enabled": true,
+      "groups": {
+        "*": {
+          "requireMention": true
+        }
+      },
+      "botToken": "8770112503:AAHq4XEXPXQS7b1ocfGjxZnfHy3NKzM7DXQ"
+    }
+  },
+  "plugins": {
+    "entries": {
+      "telegram": {
+        "enabled": true
+      },
+      "openai": {
+        "enabled": true
+      }
+    }
+  }
+}
