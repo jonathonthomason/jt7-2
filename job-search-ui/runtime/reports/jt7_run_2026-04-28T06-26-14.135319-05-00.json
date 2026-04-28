@@ -1,0 +1,911 @@
+{
+  "runTimestamp": "2026-04-28T06:26:14.135319-05:00",
+  "chain": [
+    "EMAIL_SIGNAL_SCAN",
+    "CALENDAR_SIGNAL_SCAN",
+    "JOB_BOARD_SIGNAL_SCAN",
+    "SIGNAL_CLASSIFICATION",
+    "PIPELINE_STATE_SYNC",
+    "PIPELINE_UPDATE",
+    "LOCAL_MIRROR_SYNC",
+    "GIT_COMMIT_SYNC",
+    "ACTION_GENERATION",
+    "PRIORITY_SURFACING",
+    "PASS_LOGGER"
+  ],
+  "taskResults": [
+    {
+      "taskName": "EMAIL_SIGNAL_SCAN",
+      "status": "complete",
+      "summary": "Email scan executed, 59 signals, 22 jobs created, 2 jobs updated"
+    },
+    {
+      "taskName": "CALENDAR_SIGNAL_SCAN",
+      "status": "complete",
+      "summary": "Calendar scan executed, 0 jobs matched, 0 job updates"
+    },
+    {
+      "taskName": "JOB_BOARD_SIGNAL_SCAN",
+      "status": "complete",
+      "summary": "Job board scan executed from current configured sources when available"
+    },
+    {
+      "taskName": "SIGNAL_CLASSIFICATION",
+      "status": "complete",
+      "summary": "Signal classification completed, 34 review-needed signals"
+    },
+    {
+      "taskName": "PIPELINE_STATE_SYNC",
+      "status": "complete",
+      "summary": "Pipeline reconciliation pass completed using probabilistic matching rules"
+    },
+    {
+      "taskName": "PIPELINE_UPDATE",
+      "status": "complete",
+      "summary": "Pipeline update pass completed against live tracker model with real Sheets CRUD"
+    },
+    {
+      "taskName": "LOCAL_MIRROR_SYNC",
+      "status": "complete",
+      "summary": "Local mirror updated for tabs: Jobs, Recruiters, Competition, Signals, Actions, ReviewQueue, TaskRuns, Lookup"
+    },
+    {
+      "taskName": "GIT_COMMIT_SYNC",
+      "status": "complete",
+      "summary": "JT7 auto-sync 2026-04-28 06:26:14 CDT tracker mirror update"
+    },
+    {
+      "taskName": "ACTION_GENERATION",
+      "status": "complete",
+      "summary": "Action generation pass completed, 0 actions created"
+    },
+    {
+      "taskName": "PRIORITY_SURFACING",
+      "status": "complete",
+      "summary": "Priority surfacing pass completed"
+    },
+    {
+      "taskName": "PASS_LOGGER",
+      "status": "complete",
+      "summary": "Pass logger completed with detailed transparency report"
+    }
+  ],
+  "status": "complete",
+  "summary": "Full JT7 chain completed",
+  "sources_checked": [
+    {
+      "source": "gmail",
+      "status": "complete",
+      "query": "label:Folders/Jobs newer_than:4d",
+      "last_run_at_used": "2026-04-24T11:38:09.023321-05:00",
+      "threads_scanned": 75,
+      "messages_scanned": 81,
+      "job_related_threads_found": 61,
+      "parsed_candidate_signals": [
+        {
+          "thread_id": "19dd3ba9f275a8d7",
+          "message_id": "19dd3ba9f275a8d7",
+          "company": "edZOOcation",
+          "role": "Web Manager (E-commerce & Conversion)",
+          "signal_type": "job_alert",
+          "confidence": 0.81,
+          "auto_update_allowed": true,
+          "review_needed": false,
+          "match_score": 0.0,
+          "linked_job_id": "job_025"
+        },
+        {
+          "thread_id": "19dd39ff242c7b38",
+          "message_id": "19dd39ff242c7b38",
+          "company": "LinkedIn Job Alerts",
+          "role": "was sent to Kforce Inc",
+          "signal_type": "unknown_review_needed",
+          "confidence": 0.35,
+          "auto_update_allowed": false,
+          "review_needed": true,
+          "match_score": 0.25,
+          "linked_job_id": ""
+        },
+        {
+          "thread_id": "19dd2681f9aa7b93",
+          "message_id": "19dd2681f9aa7b93",
+          "company": "Sparrow",
+          "role": "New jobs similar to Senior Product Designer",
+          "signal_type": "job_alert",
+          "confidence": 0.81,
+          "auto_update_allowed": true,
+          "review_needed": false,
+          "match_score": 0.25,
+          "linked_job_id": "job_026"
+        },
+        {
+          "thread_id": "19dd1c27ebb1efd9",
+          "message_id": "19dd1c27ebb1efd9",
+          "company": "MAJORITY",
+          "role": "Product Design Lead",
+          "signal_type": "job_alert",
+          "confidence": 0.81,
+          "auto_update_allowed": true,
+          "review_needed": false,
+          "match_score": 0.25,
+          "linked_job_id": "job_027"
+        },
+        {
+          "thread_id": "19dd19e9125bc59f",
+          "message_id": "19dd19e9125bc59f",
+          "company": "Ford",
+          "role": "",
+          "signal_type": "unknown_review_needed",
+          "confidence": 0.35,
+          "auto_update_allowed": false,
+          "review_needed": true,
+          "match_score": 0.0,
+          "linked_job_id": ""
+        },
+        {
+          "thread_id": "19dd18c8a3968a3e",
+          "message_id": "19dd18c8a3968a3e",
+          "company": "LinkedIn Job Alerts",
+          "role": "",
+          "signal_type": "job_alert",
+          "confidence": 0.5,
+          "auto_update_allowed": true,
+          "review_needed": true,
+          "match_score": 0.25,
+          "linked_job_id": ""
+        },
+        {
+          "thread_id": "19dd17ed02e6bdaa",
+          "message_id": "19dd17ed02e6bdaa",
+          "company": "Efinancialcareers",
+          "role": "",
+          "signal_type": "unknown_review_needed",
+          "confidence": 0.35,
+          "auto_update_allowed": false,
+          "review_needed": true,
+          "match_score": 0.0,
+          "linked_job_id": ""
+        },
+        {
+          "thread_id": "19dd1522dc2e4f95",
+          "message_id": "19dd1522dc2e4f95",
+          "company": "Equinix",
+          "role": "",
+          "signal_type": "unknown_review_needed",
+          "confidence": 0.35,
+          "auto_update_allowed": false,
+          "review_needed": true,
+          "match_score": 0.0,
+          "linked_job_id": ""
+        },
+        {
+          "thread_id": "19dd14dde919c88b",
+          "message_id": "19dd14dde919c88b",
+          "company": "Confidential",
+          "role": "Senior Designer (Digital, UX/UI, Presentations, Adobe + Figma)",
+          "signal_type": "job_alert",
+          "confidence": 0.81,
+          "auto_update_allowed": true,
+          "review_needed": false,
+          "match_score": 0.0,
+          "linked_job_id": "job_028"
+        },
+        {
+          "thread_id": "19dd11e9bbb617c4",
+          "message_id": "19dd11e9bbb617c4",
+          "company": "Sundayy",
+          "role": "UX Designer, AI",
+          "signal_type": "job_alert",
+          "confidence": 0.81,
+          "auto_update_allowed": true,
+          "review_needed": false,
+          "match_score": 0.25,
+          "linked_job_id": "job_029"
+        },
+        {
+          "thread_id": "19dd0b4b620c00e1",
+          "message_id": "19dd0b4b620c00e1",
+          "company": "Google",
+          "role": "",
+          "signal_type": "interview_scheduling",
+          "confidence": 0.5,
+          "auto_update_allowed": true,
+          "review_needed": true,
+          "match_score": 0.0,
+          "linked_job_id": ""
+        },
+        {
+          "thread_id": "19dd0b0b68b9e956",
+          "message_id": "19dd0b0b68b9e956",
+          "company": "Section",
+          "role": "Senior Product Designer",
+          "signal_type": "job_alert",
+          "confidence": 0.81,
+          "auto_update_allowed": true,
+          "review_needed": false,
+          "match_score": 0.35,
+          "linked_job_id": "job_030"
+        },
+        {
+          "thread_id": "19dd099b422598c2",
+          "message_id": "19dd099b422598c2",
+          "company": "",
+          "role": "",
+          "signal_type": "unknown_review_needed",
+          "confidence": 0.35,
+          "auto_update_allowed": false,
+          "review_needed": true,
+          "match_score": 0.0,
+          "linked_job_id": ""
+        },
+        {
+          "thread_id": "19dd097b203420e1",
+          "message_id": "19dd097b203420e1",
+          "company": "Pizza Hut",
+          "role": "Senior Systems Design Specialist",
+          "signal_type": "unknown_review_needed",
+          "confidence": 0.35,
+          "auto_update_allowed": false,
+          "review_needed": true,
+          "match_score": 0.25,
+          "linked_job_id": ""
+        },
+        {
+          "thread_id": "19dd05fd2c32facc",
+          "message_id": "19dd05fd2c32facc",
+          "company": "LinkedIn Job Alerts",
+          "role": "was sent to DesignMeshAI",
+          "signal_type": "unknown_review_needed",
+          "confidence": 0.35,
+          "auto_update_allowed": false,
+          "review_needed": true,
+          "match_score": 0.25,
+          "linked_job_id": ""
+        },
+        {
+          "thread_id": "19dcff40858256e3",
+          "message_id": "19dcff40858256e3",
+          "company": "Blinkux",
+          "role": "",
+          "signal_type": "interview_scheduling",
+          "confidence": 0.5,
+          "auto_update_allowed": true,
+          "review_needed": true,
+          "match_score": 0.0,
+          "linked_job_id": ""
+        },
+        {
+          "thread_id": "19dcfecffe5aa199",
+          "message_id": "19dcfecffe5aa199",
+          "company": "Talent",
+          "role": "",
+          "signal_type": "unknown_review_needed",
+          "confidence": 0.35,
+          "auto_update_allowed": false,
+          "review_needed": true,
+          "match_score": 0.25,
+          "linked_job_id": ""
+        },
+        {
+          "thread_id": "19dcfebfe400ccb0",
+          "message_id": "19dcfebfe400ccb0",
+          "company": "Talent",
+          "role": "",
+          "signal_type": "unknown_review_needed",
+          "confidence": 0.35,
+          "auto_update_allowed": false,
+          "review_needed": true,
+          "match_score": 0.25,
+          "linked_job_id": ""
+        },
+        {
+          "thread_id": "19dcfe8c2c6cd6d2",
+          "message_id": "19dcfe8c2c6cd6d2",
+          "company": "Indeed",
+          "role": "",
+          "signal_type": "unknown_review_needed",
+          "confidence": 0.35,
+          "auto_update_allowed": false,
+          "review_needed": true,
+          "match_score": 0.25,
+          "linked_job_id": ""
+        },
+        {
+          "thread_id": "19dcfd500c48ffed",
+          "message_id": "19dcfd500c48ffed",
+          "company": "DesignMeshAI",
+          "role": "UX Design Expert | Remote",
+          "signal_type": "job_alert",
+          "confidence": 0.81,
+          "auto_update_allowed": true,
+          "review_needed": false,
+          "match_score": 0.25,
+          "linked_job_id": "job_031"
+        },
+        {
+          "thread_id": "19dcfa08dedcf19b",
+          "message_id": "19dd002e31aef76a",
+          "company": "LinkedIn Job Alerts",
+          "role": "",
+          "signal_type": "unknown_review_needed",
+          "confidence": 0.35,
+          "auto_update_allowed": false,
+          "review_needed": true,
+          "match_score": 0.25,
+          "linked_job_id": ""
+        },
+        {
+          "thread_id": "19dcfa08dedcf19b",
+          "message_id": "19dcffc62a227f70",
+          "company": "LinkedIn Job Alerts",
+          "role": "",
+          "signal_type": "unknown_review_needed",
+          "confidence": 0.35,
+          "auto_update_allowed": false,
+          "review_needed": true,
+          "match_score": 0.25,
+          "linked_job_id": ""
+        },
+        {
+          "thread_id": "19dcfa08dedcf19b",
+          "message_id": "19dcfa08dedcf19b",
+          "company": "LinkedIn Job Alerts",
+          "role": "",
+          "signal_type": "unknown_review_needed",
+          "confidence": 0.35,
+          "auto_update_allowed": false,
+          "review_needed": true,
+          "match_score": 0.25,
+          "linked_job_id": ""
+        },
+        {
+          "thread_id": "19dcf8c6876ebde9",
+          "message_id": "19dcf8c6876ebde9",
+          "company": "",
+          "role": "",
+          "signal_type": "unknown_review_needed",
+          "confidence": 0.35,
+          "auto_update_allowed": false,
+          "review_needed": true,
+          "match_score": 0.0,
+          "linked_job_id": ""
+        },
+        {
+          "thread_id": "19dcf85a82f3cb87",
+          "message_id": "19dcf85a82f3cb87",
+          "company": "LinkedIn Job Alerts",
+          "role": "",
+          "signal_type": "unknown_review_needed",
+          "confidence": 0.35,
+          "auto_update_allowed": false,
+          "review_needed": true,
+          "match_score": 0.25,
+          "linked_job_id": ""
+        }
+      ],
+      "labels_changed": 0,
+      "recruiters_matched_or_created": 9,
+      "jobs_matched_created_or_updated": 24,
+      "jobs_created": 22,
+      "jobs_updated": 2,
+      "signals_created": 59,
+      "signals_updated": 8,
+      "signals_persisted": 67,
+      "signals_marked_review_required": 41,
+      "actions_created": 0,
+      "actions_updated": 4,
+      "review_needed_count": 34,
+      "review_needed_created": 36,
+      "blocked_job_creations": 41,
+      "orphan_actions": 0,
+      "review_queue_pending_count": 56,
+      "signals_by_confidence": {
+        "high": 33,
+        "medium": 3,
+        "low": 31
+      },
+      "signal_to_job_update": [
+        {
+          "signal_id": "signal_066",
+          "job_id": "job_025",
+          "mode": "create"
+        },
+        {
+          "signal_id": "signal_068",
+          "job_id": "job_026",
+          "mode": "create"
+        },
+        {
+          "signal_id": "signal_069",
+          "job_id": "job_027",
+          "mode": "create"
+        },
+        {
+          "signal_id": "signal_074",
+          "job_id": "job_028",
+          "mode": "create"
+        },
+        {
+          "signal_id": "signal_075",
+          "job_id": "job_029",
+          "mode": "create"
+        },
+        {
+          "signal_id": "signal_077",
+          "job_id": "job_030",
+          "mode": "create"
+        },
+        {
+          "signal_id": "signal_085",
+          "job_id": "job_031",
+          "mode": "create"
+        },
+        {
+          "signal_id": "signal_093",
+          "job_id": "job_032",
+          "mode": "create"
+        },
+        {
+          "signal_id": "signal_094",
+          "job_id": "job_033",
+          "mode": "create"
+        },
+        {
+          "signal_id": "signal_095",
+          "job_id": "job_034",
+          "mode": "create"
+        },
+        {
+          "signal_id": "signal_097",
+          "job_id": "job_035",
+          "mode": "create"
+        },
+        {
+          "signal_id": "signal_098",
+          "job_id": "job_036",
+          "mode": "create"
+        },
+        {
+          "signal_id": "signal_099",
+          "job_id": "job_037",
+          "mode": "create"
+        },
+        {
+          "signal_id": "signal_101",
+          "job_id": "job_038",
+          "mode": "create"
+        },
+        {
+          "signal_id": "signal_103",
+          "job_id": "job_039",
+          "mode": "create"
+        },
+        {
+          "signal_id": "signal_105",
+          "job_id": "job_040",
+          "mode": "create"
+        },
+        {
+          "signal_id": "signal_106",
+          "job_id": "job_041",
+          "mode": "create"
+        },
+        {
+          "signal_id": "signal_108",
+          "job_id": "job_042",
+          "mode": "create"
+        },
+        {
+          "signal_id": "signal_110",
+          "job_id": "job_043",
+          "mode": "create"
+        },
+        {
+          "signal_id": "signal_112",
+          "job_id": "job_044",
+          "mode": "create"
+        },
+        {
+          "signal_id": "signal_113",
+          "job_id": "job_045",
+          "mode": "create"
+        },
+        {
+          "signal_id": "signal_114",
+          "job_id": "job_046",
+          "mode": "create"
+        },
+        {
+          "signal_id": "signal_116",
+          "job_id": "job_021",
+          "mode": "update"
+        },
+        {
+          "signal_id": "signal_058",
+          "job_id": "job_024",
+          "mode": "update"
+        }
+      ],
+      "signal_to_action": [],
+      "warnings": [],
+      "signals_cleaned": 4
+    },
+    {
+      "source": "calendar",
+      "status": "complete",
+      "events_scanned": 10,
+      "interview_events_found": 1,
+      "matched_jobs": 0,
+      "updates_written": 0,
+      "actions_created": 0,
+      "warnings": []
+    },
+    {
+      "source": "job_boards",
+      "status": "complete",
+      "sources_checked": [
+        "linkedin",
+        "indeed",
+        "builtin",
+        "workday",
+        "greenhouse",
+        "creative_circle"
+      ],
+      "sources_successful": [],
+      "jobs_found": 0,
+      "jobs_created": 0,
+      "jobs_updated": 0,
+      "duplicates_skipped": 0,
+      "review_needed": 0,
+      "warnings": [
+        "Board adapters still pending beyond Gmail-delivered board signals"
+      ]
+    }
+  ],
+  "tracker_crud": {
+    "Jobs": {
+      "rows_total": 46,
+      "rows_created": 0,
+      "rows_updated": 0,
+      "rows_unchanged": 46,
+      "row_identifiers": [
+        "job_001",
+        "job_002",
+        "job_003",
+        "job_004",
+        "job_005"
+      ]
+    },
+    "Recruiters": {
+      "rows_total": 48,
+      "rows_created": 0,
+      "rows_updated": 0,
+      "rows_unchanged": 48,
+      "row_identifiers": [
+        "recruiter_001",
+        "recruiter_002",
+        "recruiter_003",
+        "recruiter_004",
+        "recruiter_005"
+      ]
+    },
+    "Competition": {
+      "rows_total": 1,
+      "rows_created": 0,
+      "rows_updated": 0,
+      "rows_unchanged": 1,
+      "row_identifiers": [
+        "competition_001"
+      ]
+    },
+    "Signals": {
+      "rows_total": 124,
+      "rows_created": 0,
+      "rows_updated": 0,
+      "rows_unchanged": 124,
+      "row_identifiers": [
+        "signal_001",
+        "signal_002",
+        "signal_003",
+        "signal_004",
+        "signal_005"
+      ]
+    },
+    "Actions": {
+      "rows_total": 18,
+      "rows_created": 0,
+      "rows_updated": 0,
+      "rows_unchanged": 18,
+      "row_identifiers": [
+        "action_001",
+        "action_002",
+        "action_003",
+        "action_004",
+        "action_005"
+      ]
+    },
+    "ReviewQueue": {
+      "rows_total": 56,
+      "rows_created": 0,
+      "rows_updated": 0,
+      "rows_unchanged": 56,
+      "row_identifiers": [
+        "review_001",
+        "review_002",
+        "review_003",
+        "review_004",
+        "review_005"
+      ]
+    },
+    "TaskRuns": {
+      "rows_total": 23,
+      "rows_created": 0,
+      "rows_updated": 0,
+      "rows_unchanged": 23,
+      "row_identifiers": [
+        "taskrun_001",
+        "taskrun_002",
+        "taskrun_003",
+        "taskrun_004",
+        "taskrun_005"
+      ]
+    },
+    "Lookup": {
+      "rows_total": 12,
+      "rows_created": 0,
+      "rows_updated": 0,
+      "rows_unchanged": 12,
+      "row_identifiers": [
+        "job_status",
+        "job_status",
+        "job_status",
+        "job_status",
+        "job_status"
+      ]
+    }
+  },
+  "local_mirror": {
+    "tabs_mirrored": [
+      "Jobs",
+      "Recruiters",
+      "Competition",
+      "Signals",
+      "Actions",
+      "ReviewQueue",
+      "TaskRuns",
+      "Lookup"
+    ],
+    "changed_csv": [
+      "/Users/jtemp/.openclaw/workspace/job-search-ui/data_mirror/Jobs.csv",
+      "/Users/jtemp/.openclaw/workspace/job-search-ui/data_mirror/Recruiters.csv",
+      "/Users/jtemp/.openclaw/workspace/job-search-ui/data_mirror/Signals.csv",
+      "/Users/jtemp/.openclaw/workspace/job-search-ui/data_mirror/Actions.csv",
+      "/Users/jtemp/.openclaw/workspace/job-search-ui/data_mirror/TaskRuns.csv"
+    ],
+    "changed_json": [
+      "/Users/jtemp/.openclaw/workspace/job-search-ui/data_mirror/Jobs.json",
+      "/Users/jtemp/.openclaw/workspace/job-search-ui/data_mirror/Recruiters.json",
+      "/Users/jtemp/.openclaw/workspace/job-search-ui/data_mirror/Signals.json",
+      "/Users/jtemp/.openclaw/workspace/job-search-ui/data_mirror/Actions.json",
+      "/Users/jtemp/.openclaw/workspace/job-search-ui/data_mirror/TaskRuns.json"
+    ],
+    "unchanged_tabs": [
+      "Competition",
+      "ReviewQueue",
+      "Lookup"
+    ],
+    "tracker_tabs": {
+      "Jobs": {
+        "rows_total": 46,
+        "rows_created": 0,
+        "rows_updated": 0,
+        "rows_unchanged": 46,
+        "row_identifiers": [
+          "job_001",
+          "job_002",
+          "job_003",
+          "job_004",
+          "job_005"
+        ]
+      },
+      "Recruiters": {
+        "rows_total": 48,
+        "rows_created": 0,
+        "rows_updated": 0,
+        "rows_unchanged": 48,
+        "row_identifiers": [
+          "recruiter_001",
+          "recruiter_002",
+          "recruiter_003",
+          "recruiter_004",
+          "recruiter_005"
+        ]
+      },
+      "Competition": {
+        "rows_total": 1,
+        "rows_created": 0,
+        "rows_updated": 0,
+        "rows_unchanged": 1,
+        "row_identifiers": [
+          "competition_001"
+        ]
+      },
+      "Signals": {
+        "rows_total": 124,
+        "rows_created": 0,
+        "rows_updated": 0,
+        "rows_unchanged": 124,
+        "row_identifiers": [
+          "signal_001",
+          "signal_002",
+          "signal_003",
+          "signal_004",
+          "signal_005"
+        ]
+      },
+      "Actions": {
+        "rows_total": 18,
+        "rows_created": 0,
+        "rows_updated": 0,
+        "rows_unchanged": 18,
+        "row_identifiers": [
+          "action_001",
+          "action_002",
+          "action_003",
+          "action_004",
+          "action_005"
+        ]
+      },
+      "ReviewQueue": {
+        "rows_total": 56,
+        "rows_created": 0,
+        "rows_updated": 0,
+        "rows_unchanged": 56,
+        "row_identifiers": [
+          "review_001",
+          "review_002",
+          "review_003",
+          "review_004",
+          "review_005"
+        ]
+      },
+      "TaskRuns": {
+        "rows_total": 23,
+        "rows_created": 0,
+        "rows_updated": 0,
+        "rows_unchanged": 23,
+        "row_identifiers": [
+          "taskrun_001",
+          "taskrun_002",
+          "taskrun_003",
+          "taskrun_004",
+          "taskrun_005"
+        ]
+      },
+      "Lookup": {
+        "rows_total": 12,
+        "rows_created": 0,
+        "rows_updated": 0,
+        "rows_unchanged": 12,
+        "row_identifiers": [
+          "job_status",
+          "job_status",
+          "job_status",
+          "job_status",
+          "job_status"
+        ]
+      }
+    },
+    "before": {
+      "Jobs": {
+        "csv_exists": true,
+        "json_exists": true,
+        "csv_size": 6845,
+        "json_size": 9484
+      },
+      "Recruiters": {
+        "csv_exists": true,
+        "json_exists": true,
+        "csv_size": 3177,
+        "json_size": 5324
+      },
+      "Competition": {
+        "csv_exists": true,
+        "json_exists": true,
+        "csv_size": 155,
+        "json_size": 260
+      },
+      "Signals": {
+        "csv_exists": true,
+        "json_exists": true,
+        "csv_size": 14064,
+        "json_size": 18970
+      },
+      "Actions": {
+        "csv_exists": true,
+        "json_exists": true,
+        "csv_size": 3324,
+        "json_size": 4793
+      },
+      "ReviewQueue": {
+        "csv_exists": true,
+        "json_exists": true,
+        "csv_size": 17505,
+        "json_size": 23278
+      },
+      "TaskRuns": {
+        "csv_exists": true,
+        "json_exists": true,
+        "csv_size": 3570,
+        "json_size": 5343
+      },
+      "Lookup": {
+        "csv_exists": true,
+        "json_exists": true,
+        "csv_size": 279,
+        "json_size": 554
+      }
+    },
+    "after": {
+      "Jobs": {
+        "csv_exists": true,
+        "json_exists": true,
+        "csv_size": 12282,
+        "json_size": 17249
+      },
+      "Recruiters": {
+        "csv_exists": true,
+        "json_exists": true,
+        "csv_size": 3912,
+        "json_size": 6563
+      },
+      "Competition": {
+        "csv_exists": true,
+        "json_exists": true,
+        "csv_size": 155,
+        "json_size": 260
+      },
+      "Signals": {
+        "csv_exists": true,
+        "json_exists": true,
+        "csv_size": 27673,
+        "json_size": 36944
+      },
+      "Actions": {
+        "csv_exists": true,
+        "json_exists": true,
+        "csv_size": 3324,
+        "json_size": 4793
+      },
+      "ReviewQueue": {
+        "csv_exists": true,
+        "json_exists": true,
+        "csv_size": 17505,
+        "json_size": 23278
+      },
+      "TaskRuns": {
+        "csv_exists": true,
+        "json_exists": true,
+        "csv_size": 3729,
+        "json_size": 5579
+      },
+      "Lookup": {
+        "csv_exists": true,
+        "json_exists": true,
+        "csv_size": 279,
+        "json_size": 554
+      }
+    }
+  },
+  "git": {
+    "committed": true,
+    "summary": "JT7 auto-sync 2026-04-28 06:26:14 CDT tracker mirror update",
+    "commit": "e1c980a"
+  },
+  "warnings": [
+    "Board adapters still pending beyond Gmail-delivered board signals"
+  ],
+  "errors": [],
+  "assessment": "JT7 now performs real Gmail ingestion since last run, runtime signal classification, probabilistic entity matching, live tracker CRUD, calendar verification, TaskRuns logging, local mirror sync, and git persistence.",
+  "task_run_id": "taskrun_023"
+}
