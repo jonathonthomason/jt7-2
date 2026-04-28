@@ -1,0 +1,28 @@
+{
+  "runTimestamp": "2026-04-26T12:30:45.906811-05:00",
+  "chain": [
+    "EMAIL_SIGNAL_SCAN",
+    "CALENDAR_SIGNAL_SCAN",
+    "JOB_BOARD_SIGNAL_SCAN",
+    "SIGNAL_CLASSIFICATION",
+    "PIPELINE_STATE_SYNC",
+    "PIPELINE_UPDATE",
+    "LOCAL_MIRROR_SYNC",
+    "GIT_COMMIT_SYNC",
+    "ACTION_GENERATION",
+    "PRIORITY_SURFACING",
+    "PASS_LOGGER"
+  ],
+  "taskResults": [],
+  "status": "failed",
+  "summary": "[Errno 2] No such file or directory: 'gog'",
+  "sources_checked": [],
+  "tracker_crud": {},
+  "local_mirror": {},
+  "git": {},
+  "warnings": [],
+  "errors": [
+    "[Errno 2] No such file or directory: 'gog'"
+  ],
+  "assessment": "Chain failed. Inspect errors and partial outputs."
+}

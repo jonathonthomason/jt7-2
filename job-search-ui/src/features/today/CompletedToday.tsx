@@ -25,14 +25,16 @@ export function CompletedToday({ items }: CompletedTodayProps) {
 
 const styles: Record<string, CSSProperties> = {
   wrap: {
-    border: '1px solid #1e293b',
-    backgroundColor: '#111827',
-    borderRadius: '0.75rem',
-    padding: '1rem',
+    border: '1px solid #2a2f3a',
+    backgroundColor: '#161616',
+    borderRadius: 0,
+    padding: '0.75rem',
   },
   title: {
-    margin: '0 0 0.75rem',
-    color: '#f8fafc',
+    margin: '0 0 0.5rem',
+    color: '#f4f4f4',
+    fontSize: '0.95rem',
+    lineHeight: '1.25rem',
   },
   empty: {
     margin: 0,
@@ -44,15 +46,19 @@ const styles: Record<string, CSSProperties> = {
     margin: 0,
     display: 'flex',
     flexDirection: 'column',
-    gap: '0.75rem',
+    gap: '0.5rem',
   },
   item: {
     display: 'flex',
+    flexDirection: 'column',
     justifyContent: 'space-between',
-    gap: '1rem',
-    color: '#e2e8f0',
+    gap: '0.15rem',
+    color: '#e0e0e0',
+    borderTop: '1px solid #262626',
+    paddingTop: '0.5rem',
+    fontSize: '0.85rem',
   },
   meta: {
-    color: '#94a3b8',
+    color: '#8d8d8d',
   },
 }

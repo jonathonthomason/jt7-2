@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-04-22T22:49:34.107Z",
+  "updatedAt": "2026-04-27T00:25:59.851Z",
   "entries": {
     "memory:memory/2026-04-02.md:1:33": {
       "key": "memory:memory/2026-04-02.md:1:33",
@@ -9,18 +9,24 @@
       "endLine": 33,
       "source": "memory",
       "snippet": "# 2026-04-02 ## Accomplished - completed Phase 1 core activation work - finalized `IDENTITY.md` - finalized `USER.md` - finalized `AGENTS.md` - finalized `HEARTBEAT.md` - completed Phase 2 workstream initialization - created `career/strategy.md` - created `career/pipeline.md` - created `product/thesis.md` - created `ops/focus.md` - created `ROADMAP.md` as the source of truth for progress - completed JT7-R2.3.1 - defined canonical schemas in `product/schemas.md` - established schemas for opportunity, recruiter_contact, decision, focus_item, current_state, and heartbeat_alert - mapped schemas to current files and future UI surfaces ## Current System State - JT7 now has",
-      "recallCount": 1,
+      "recallCount": 5,
       "dailyCount": 0,
       "groundedCount": 0,
-      "totalScore": 0.631924756984563,
-      "maxScore": 0.631924756984563,
+      "totalScore": 4.631924756984563,
+      "maxScore": 1,
       "firstRecalledAt": "2026-04-22T22:49:34.107Z",
-      "lastRecalledAt": "2026-04-22T22:49:34.107Z",
+      "lastRecalledAt": "2026-04-25T10:37:06.466Z",
       "queryHashes": [
-        "5f035a886966"
+        "5f035a886966",
+        "cde2f348b429",
+        "547fa4fbef56",
+        "dd2cd80ef77d",
+        "96dc41d218eb"
       ],
       "recallDays": [
-        "2026-04-22"
+        "2026-04-22",
+        "2026-04-24",
+        "2026-04-25"
       ],
       "conceptTags": [
         "identity.md",
@@ -31,6 +37,640 @@
         "career/pipeline.md",
         "product/thesis.md",
         "ops/focus.md"
+      ]
+    },
+    "memory:memory/2026-04-22.md:1:19": {
+      "key": "memory:memory/2026-04-22.md:1:19",
+      "path": "memory/2026-04-22.md",
+      "startLine": 1,
+      "endLine": 19,
+      "source": "memory",
+      "snippet": "## 2026-04-22 pre-compaction durable memory append - The JT7 scheduled chain now has a real transparency/reporting layer, with per-run JSON reports written under `job-search-ui/runtime/reports/` and pass logging expanded to include source checks, tracker CRUD visibility, local mirror changes, git outcome, warnings/errors, and batch assessment. - The earlier zero-change runs were traced to two real gaps: placeholder Gmail extraction logic and malformed Sheets append behavior that treated tab-delimited strings as single-cell writes instead of row-wise values. - `job-search-ui/scripts/run_jt7_chain.py` was upgraded from scaffolded reporting to a live Gmail-to-Sheets ingestion path for subject-",
+      "recallCount": 4,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 2.789476054906845,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-04-24T15:52:43.907Z",
+      "lastRecalledAt": "2026-04-27T00:25:59.851Z",
+      "queryHashes": [
+        "cde2f348b429",
+        "b95de55048fb",
+        "46f1a51dfb0a",
+        "2c67f3f48353"
+      ],
+      "recallDays": [
+        "2026-04-24",
+        "2026-04-26"
+      ],
+      "conceptTags": [
+        "pre-compaction",
+        "transparency/reporting",
+        "per-run",
+        "job-search-ui/runtime/reports",
+        "warnings/errors",
+        "zero-change",
+        "tab-delimited",
+        "single-cell"
+      ]
+    },
+    "memory:memory/2026-04-22.md:14:25": {
+      "key": "memory:memory/2026-04-22.md:14:25",
+      "path": "memory/2026-04-22.md",
+      "startLine": 14,
+      "endLine": 25,
+      "source": "memory",
+      "snippet": "- Example roles/companies created in the tracker from the live Gmail ingestion run include: - Allstate — Senior User Experience Designer - Sixfold — Lead Product Designer - Pano AI — Senior Product Designer - Massimo Zanetti Beverage USA — Director of eCommerce - Miami Jewish Health — Senior Graphic Designer - JETSET Pilates® — Design & Development Manager - The local mirror was updated for the affected tabs and committed/pushed after the successful real ingestion pass. - Commit pushed for the live Gmail ingestion gap-fill work: `93d0848`. - Current truth: JT7 now supports real subject-line-based Gmail job alert ingestion into `Jobs`, `Recruiters`, `Signals`, and `Actions`, but i",
+      "recallCount": 6,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 4.841729170083999,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-04-24T15:52:43.907Z",
+      "lastRecalledAt": "2026-04-27T00:25:59.851Z",
+      "queryHashes": [
+        "cde2f348b429",
+        "547fa4fbef56",
+        "dd2cd80ef77d",
+        "b95de55048fb",
+        "46f1a51dfb0a",
+        "2c67f3f48353"
+      ],
+      "recallDays": [
+        "2026-04-24",
+        "2026-04-26"
+      ],
+      "conceptTags": [
+        "roles/companies",
+        "committed/pushed",
+        "gap-fill",
+        "subject-line-based",
+        "example",
+        "roles",
+        "companies",
+        "created"
+      ]
+    },
+    "memory:memory/2026-04-05.md:1:23": {
+      "key": "memory:memory/2026-04-05.md:1:23",
+      "path": "memory/2026-04-05.md",
+      "startLine": 1,
+      "endLine": 23,
+      "source": "memory",
+      "snippet": "## Durable Memory Flush - JT7 V1 has been explicitly refocused around intelligent Google Sheets tracker updates rather than broad autonomous job-search automation. - Locked V1 operating model: - Gmail = intake layer for LinkedIn, Indeed, Otta, Greenhouse, Workday, recruiter emails - Calendar = interview/call truth and reinforcing evidence - Google Sheet = operational canonical tracker / system of record - manual logging = required for direct LinkedIn inbox conversations, phone calls, and off-platform decisions - Locked V1 application status mapping: - alerts -> lead / later consolidated under Cold in the stricter schema discussion - confirmation -> Applied - recruiter outreach",
+      "recallCount": 5,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 3.7565254300832747,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-04-25T04:32:13.416Z",
+      "lastRecalledAt": "2026-04-27T00:25:59.851Z",
+      "queryHashes": [
+        "547fa4fbef56",
+        "b95de55048fb",
+        "96dc41d218eb",
+        "46f1a51dfb0a",
+        "2c67f3f48353"
+      ],
+      "recallDays": [
+        "2026-04-24",
+        "2026-04-25",
+        "2026-04-26"
+      ],
+      "conceptTags": [
+        "job-search",
+        "interview/call",
+        "off-platform",
+        "durable",
+        "flush",
+        "jt7",
+        "has",
+        "been"
+      ]
+    },
+    "memory:memory/2026-04-24.md:5:29": {
+      "key": "memory:memory/2026-04-24.md:5:29",
+      "path": "memory/2026-04-24.md",
+      "startLine": 5,
+      "endLine": 29,
+      "source": "memory",
+      "snippet": "- Empty `__init__.py` package-marker writes failed because the write tool rejected empty content; this is non-critical and the extraction was not yet fully wired into `run_jt7_chain.py` at flush time. - The modular extraction was in progress at compaction time; do not treat Phase 3A as complete or verified yet. ## Phase 3E / 3F modularization checkpoint - Completed Phase 3E by extracting remaining orchestration support out of `job-search-ui/scripts/run_jt7_chain.py` into: - `runtime/services/review_queue.py` - `runtime/pipelines/chain_runner.py` - `runtime/pipelines/calendar_pipeline.py` - `runtime/pipelines/job_board_pipeline.py` - Completed Phase 3F by further thinning the coordin",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 1,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-04-25T04:32:13.416Z",
+      "lastRecalledAt": "2026-04-25T04:32:13.416Z",
+      "queryHashes": [
+        "547fa4fbef56"
+      ],
+      "recallDays": [
+        "2026-04-24"
+      ],
+      "conceptTags": [
+        "package-marker",
+        "non-critical",
+        "run-jt7-chain.py",
+        "runtime/services/review-queue.py",
+        "empty",
+        "init",
+        "package",
+        "marker"
+      ]
+    },
+    "memory:memory/2026-04-23.md:17:20": {
+      "key": "memory:memory/2026-04-23.md:17:20",
+      "path": "memory/2026-04-23.md",
+      "startLine": 17,
+      "endLine": 20,
+      "source": "memory",
+      "snippet": "- Executed a real JT7 chain after the ReviewQueue fallback work. The run showed the review queue path works for medium-confidence handling, but the stricter signal-first requirement remains unmet because the pass still reported `job_related_threads_found > 0` with too few freshly created signals (`13` job-related threads, `1` signal created, `8` jobs updated). The next required runtime fix is to enforce that each meaningful current-pass event holds a signal object before Jobs or Actions can update. - Jonathon challenged an inaccurate implication of completion around the signal-first fix. Durable correction: JT7 had not actually completed the stricter dedupe/model rewrite at that point; the",
+      "recallCount": 3,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 3,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-04-25T04:32:13.416Z",
+      "lastRecalledAt": "2026-04-25T04:36:33.661Z",
+      "queryHashes": [
+        "547fa4fbef56",
+        "dd2cd80ef77d",
+        "b95de55048fb"
+      ],
+      "recallDays": [
+        "2026-04-24"
+      ],
+      "conceptTags": [
+        "medium-confidence",
+        "signal-first",
+        "job-related-threads-found",
+        "job-related",
+        "current-pass",
+        "dedupe/model",
+        "executed",
+        "real"
+      ]
+    },
+    "memory:memory/2026-04-05.md:43:63": {
+      "key": "memory:memory/2026-04-05.md:43:63",
+      "path": "memory/2026-04-05.md",
+      "startLine": 43,
+      "endLine": 63,
+      "source": "memory",
+      "snippet": "- A first live reconstruction import was completed into `career/pipeline.md` from pasted legacy data, creating 7 opportunity records and 6 recruiter_contact records. - Imported opportunities currently represented in `career/pipeline.md`: - Autodesk - Crossover - LEVEL - Better - Achieve Debt Relief - Pattison ID - Deloitte - Imported recruiter firms currently represented in `career/pipeline.md`: - Francine Ma / Robert Half - Synergis - Impellam Group - Creative Circle - TEKsystems - Net2Source - The imported pipeline is explicitly not fully validated yet; Pattison ID remains the biggest ambiguous record because prior status was only \"Confirmed\" with no clear meaning",
+      "recallCount": 3,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 3,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-04-25T04:32:13.416Z",
+      "lastRecalledAt": "2026-04-25T10:42:55.646Z",
+      "queryHashes": [
+        "547fa4fbef56",
+        "b95de55048fb",
+        "b154faaeedd5"
+      ],
+      "recallDays": [
+        "2026-04-24",
+        "2026-04-25"
+      ],
+      "conceptTags": [
+        "career/pipeline.md",
+        "recruiter-contact",
+        "first",
+        "live",
+        "reconstruction",
+        "import",
+        "was",
+        "completed"
+      ]
+    },
+    "memory:memory/2026-04-05.md:19:51": {
+      "key": "memory:memory/2026-04-05.md:19:51",
+      "path": "memory/2026-04-05.md",
+      "startLine": 19,
+      "endLine": 51,
+      "source": "memory",
+      "snippet": "- Layer ownership clarified during consolidation: - Intake Layer only collects and structures raw signals - Processing Layer owns interpretation, classification, matching, dedupe, next actions, and update-mode decisions - System of Record stores state only and must not interpret - Interaction Layer surfaces state/edits only and must not own processing logic - Source-of-truth hierarchy clarified: - Google Sheets = operational source of truth for tracker state - Markdown docs = architecture, governance, memory, audits, and contracts - Gmail / Calendar / manual input = evidence inputs, not truth stores - Current JT7 MVP tracking model was defined in five layers: - Foundation -",
+      "recallCount": 5,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 5,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-04-25T04:32:13.416Z",
+      "lastRecalledAt": "2026-04-25T10:42:55.646Z",
+      "queryHashes": [
+        "547fa4fbef56",
+        "dd2cd80ef77d",
+        "b95de55048fb",
+        "96dc41d218eb",
+        "b154faaeedd5"
+      ],
+      "recallDays": [
+        "2026-04-24",
+        "2026-04-25"
+      ],
+      "conceptTags": [
+        "update-mode",
+        "state/edits",
+        "source-of-truth",
+        "layer",
+        "ownership",
+        "clarified",
+        "consolidation",
+        "intake"
+      ]
+    },
+    "memory:memory/2026-04-20.md:1:7": {
+      "key": "memory:memory/2026-04-20.md:1:7",
+      "path": "memory/2026-04-20.md",
+      "startLine": 1,
+      "endLine": 7,
+      "source": "memory",
+      "snippet": "## Pre-compaction durable memory - `tenants/JT_PERSONAL/channel_surfaces.md` was established as the canonical bot-to-surface mapping artifact for JT7. - The current active JT7 surface model in files is five surfaces under one shared engine: `jt7_platform_bot`, `jt7_job_ops_bot`, `jrt7_life_bot`, `jt7_ta_knowledge_bot`, and `jt7_tasks_bot`. - `jt7_platform_bot` is defined in files as the control plane and primary inbound platform entry. - Current file-state audit conclusion: surfaces are defined in tenant artifacts, but live runtime binding and verification were not yet confirmed. - Remaining modularity risks captured in-session: missing runtime-bound mapping, stale legacy doc filenames/conte",
+      "recallCount": 3,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 3,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-04-25T04:32:13.416Z",
+      "lastRecalledAt": "2026-04-25T10:42:55.646Z",
+      "queryHashes": [
+        "547fa4fbef56",
+        "96dc41d218eb",
+        "b154faaeedd5"
+      ],
+      "recallDays": [
+        "2026-04-24",
+        "2026-04-25"
+      ],
+      "conceptTags": [
+        "pre-compaction",
+        "bot-to-surface",
+        "jt7-platform-bot",
+        "jt7-job-ops-bot",
+        "jrt7-life-bot",
+        "jt7-ta-knowledge-bot",
+        "jt7-tasks-bot",
+        "file-state"
+      ]
+    },
+    "memory:memory/2026-04-23.md:12:18": {
+      "key": "memory:memory/2026-04-23.md:12:18",
+      "path": "memory/2026-04-23.md",
+      "startLine": 12,
+      "endLine": 18,
+      "source": "memory",
+      "snippet": "- New run-validity rule: if `job_related_threads > 0` and `signals_created = 0`, treat the run as failed or incomplete and log a warning in `TaskRuns`. - Reporting must now include `signals_created`, `actions_created`, signal-to-job-update mapping, and signal-to-action mapping. - Success condition for the runtime is now explicit traceability from email -> signal -> job -> action, with zero-signals/nonzero-job-threads no longer acceptable. - Implemented a staged ReviewQueue path for JT7 medium-confidence Gmail signals because the available `gog sheets` tooling could not create a new live Google Sheets tab. ReviewQueue artifacts now exist locally, in git history, and mirrored to Drive, and th",
+      "recallCount": 3,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 3,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-04-25T04:32:13.416Z",
+      "lastRecalledAt": "2026-04-25T04:36:33.661Z",
+      "queryHashes": [
+        "547fa4fbef56",
+        "dd2cd80ef77d",
+        "b95de55048fb"
+      ],
+      "recallDays": [
+        "2026-04-24"
+      ],
+      "conceptTags": [
+        "run-validity",
+        "job-related-threads",
+        "signals-created",
+        "actions-created",
+        "signal-to-job-update",
+        "signal-to-action",
+        "zero-signals/nonzero-job-threads",
+        "medium-confidence"
+      ]
+    },
+    "memory:memory/2026-04-09.md:1:12": {
+      "key": "memory:memory/2026-04-09.md:1:12",
+      "path": "memory/2026-04-09.md",
+      "startLine": 1,
+      "endLine": 12,
+      "source": "memory",
+      "snippet": "## Memory Flush - Session direction shifted from fragmented recovery work back toward JT7 2.0 alignment and daily operator usefulness. - Verified state at time of flush: UI POC exists locally with Dashboard + Jobs visible; Google Sheets remains the operational source of truth; Gmail signals are available; job search wrapper works; execution friction was described as removed/unblocked; system framed as ~50% MVP. - User clarified multiple operating frames during the session that matter going forward: - JT7 should be treated as a daily job command center, not just a simplified dashboard. - JT7-1 interaction/operating model should be fused with JT7-2 UI layer. - Full operating model includ",
+      "recallCount": 3,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 3,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-04-25T04:32:41.130Z",
+      "lastRecalledAt": "2026-04-25T10:37:06.466Z",
+      "queryHashes": [
+        "dd2cd80ef77d",
+        "b95de55048fb",
+        "96dc41d218eb"
+      ],
+      "recallDays": [
+        "2026-04-24",
+        "2026-04-25"
+      ],
+      "conceptTags": [
+        "2.0",
+        "removed/unblocked",
+        "jt7-1",
+        "interaction/operating",
+        "jt7-2",
+        "flush",
+        "direction",
+        "shifted"
+      ]
+    },
+    "memory:memory/2026-04-24.md:1:8": {
+      "key": "memory:memory/2026-04-24.md:1:8",
+      "path": "memory/2026-04-24.md",
+      "startLine": 1,
+      "endLine": 8,
+      "source": "memory",
+      "snippet": "## Pre-compaction durable memory - Jonathon established a hard architecture rule for JT7 Phase 3A modular runtime extraction: core business logic must not live inside one orchestration script; Markdown defines contracts, Python modules enforce contracts, data stores reflect current state, and UI renders only verified state. - Approved Phase 3A execution order: audit `job-search-ui/scripts/run_jt7_chain.py`, create runtime package structure, extract only the safest first modules (Actions domain, action generation, action lifecycle, Today’s Plan adapter), refactor the main script toward orchestration-only behavior, preserve current artifacts/UI compatibility, add `ACTIONS.md`, `TODAYS_PLAN.md`",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 1,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-04-25T04:32:41.130Z",
+      "lastRecalledAt": "2026-04-25T04:32:41.130Z",
+      "queryHashes": [
+        "dd2cd80ef77d"
+      ],
+      "recallDays": [
+        "2026-04-24"
+      ],
+      "conceptTags": [
+        "pre-compaction",
+        "orchestration-only",
+        "artifacts/ui",
+        "actions.md",
+        "todays-plan.md",
+        "pre",
+        "compaction",
+        "durable"
+      ]
+    },
+    "memory:memory/2026-04-09.md:16:19": {
+      "key": "memory:memory/2026-04-09.md:16:19",
+      "path": "memory/2026-04-09.md",
+      "startLine": 16,
+      "endLine": 19,
+      "source": "memory",
+      "snippet": "- minimum proof-of-life: read one Gmail thread, match to one application, infer/confirm status, write update to Google Sheet, verify the write, log the action. - rules to preserve: no UI polish first; do not depend on Telegram as only reliable runtime; prefer modular documented logic over hidden chat state; every automated update must be auditable; support manual overrides; mirror logic in Google Docs and local markdown backups. - Important state mismatch to resolve in future sessions: CURRENT.md and ops/focus.md still reflect older recovery-era assumptions, including Telegram/runtime unreliability as an active blocker, while the user later asserted execution is unblocked and the UI POC",
+      "recallCount": 2,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 2,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-04-25T04:32:41.130Z",
+      "lastRecalledAt": "2026-04-25T10:42:55.646Z",
+      "queryHashes": [
+        "dd2cd80ef77d",
+        "b154faaeedd5"
+      ],
+      "recallDays": [
+        "2026-04-24",
+        "2026-04-25"
+      ],
+      "conceptTags": [
+        "backup",
+        "backups",
+        "proof-of-life",
+        "infer/confirm",
+        "current.md",
+        "ops/focus.md",
+        "recovery-era",
+        "telegram/runtime"
+      ]
+    },
+    "memory:memory/2026-04-23.md:1:15": {
+      "key": "memory:memory/2026-04-23.md:1:15",
+      "path": "memory/2026-04-23.md",
+      "startLine": 1,
+      "endLine": 15,
+      "source": "memory",
+      "snippet": "## 2026-04-23 pre-compaction durable memory append - Jonathon directed JT7 to enforce signal-first execution discipline in the runtime. - New runtime requirement: every meaningful Gmail-derived job event must create a `Signal` record, even at medium or low confidence. - New runtime requirement: `Jobs` must only be updated via classified `Signals`; direct raw-parsing-driven job updates are no longer acceptable. - New runtime requirement: each job update must retain traceability through a `signal_id` reference. - New runtime requirement: `Actions` must be generated for signals representing recruiter outreach, interview scheduling, reply received, or follow-up needed, unless explicitly classif",
+      "recallCount": 2,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 2,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-04-25T04:32:41.130Z",
+      "lastRecalledAt": "2026-04-25T04:36:33.661Z",
+      "queryHashes": [
+        "dd2cd80ef77d",
+        "b95de55048fb"
+      ],
+      "recallDays": [
+        "2026-04-24"
+      ],
+      "conceptTags": [
+        "pre-compaction",
+        "signal-first",
+        "gmail-derived",
+        "raw-parsing-driven",
+        "signal-id",
+        "follow-up",
+        "pre",
+        "compaction"
+      ]
+    },
+    "memory:memory/2026-04-09.md:10:17": {
+      "key": "memory:memory/2026-04-09.md:10:17",
+      "path": "memory/2026-04-09.md",
+      "startLine": 10,
+      "endLine": 17,
+      "source": "memory",
+      "snippet": "- User later reframed the relaunch as a modular job operations system with these priorities and constraints: - build order: stable runtime, Gmail read, Calendar read, Sheets read/write, verified proof loop, tracker schema rebuild, modular logic docs, status inference/drafts, then external source ingestion. - core objects: Company, Role, Application, Contact, Interaction, Event, Draft, Status, Source. - required statuses: Target, Applied, Recruiter Outreach, Recruiter Screen, Hiring Manager, Panel / Loop, Take Home / Exercise, Final Round, Offer, Rejected, Withdrawn, Ghosted / Stale, On Hold. - required tabs: Applications, Interactions, Events, Contacts, Drafts, Logic Log. - require",
+      "recallCount": 4,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 2.728094372153282,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-04-25T04:36:33.661Z",
+      "lastRecalledAt": "2026-04-27T00:25:59.851Z",
+      "queryHashes": [
+        "b95de55048fb",
+        "b154faaeedd5",
+        "46f1a51dfb0a",
+        "2c67f3f48353"
+      ],
+      "recallDays": [
+        "2026-04-24",
+        "2026-04-25",
+        "2026-04-26"
+      ],
+      "conceptTags": [
+        "read/write",
+        "inference/drafts",
+        "later",
+        "reframed",
+        "relaunch",
+        "modular",
+        "job",
+        "operations"
+      ]
+    },
+    "memory:memory/2026-04-15.md:16:32": {
+      "key": "memory:memory/2026-04-15.md:16:32",
+      "path": "memory/2026-04-15.md",
+      "startLine": 16,
+      "endLine": 32,
+      "source": "memory",
+      "snippet": "- A control-plane style permission model is now established around capability domains, approval levels, action classes, owning bots, and audit-gated external actions. - Some docs still retain `three-bot` filenames even though their content is now intended to be 4-bot aware; a later cleanup/rename pass is needed so filenames match reality. # 2026-04-15 ## Durable updates - JT7 platform architecture was extended from a 3-bot shared-core model to a 4-bot shared-core model by adding `jrt7_life_bot` for life operating support. - `jrt7_life_bot` should follow the same tenant-scoped structure and cross-surface rules as the other bots: explicit ownership, summary-only default context transfer, no s",
+      "recallCount": 2,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 2,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-04-25T10:37:06.466Z",
+      "lastRecalledAt": "2026-04-25T10:42:55.646Z",
+      "queryHashes": [
+        "96dc41d218eb",
+        "b154faaeedd5"
+      ],
+      "recallDays": [
+        "2026-04-25"
+      ],
+      "conceptTags": [
+        "control-plane",
+        "audit-gated",
+        "three-bot",
+        "4-bot",
+        "cleanup/rename",
+        "3-bot",
+        "shared-core",
+        "jrt7-life-bot"
+      ]
+    },
+    "memory:memory/2026-04-15.md:1:20": {
+      "key": "memory:memory/2026-04-15.md:1:20",
+      "path": "memory/2026-04-15.md",
+      "startLine": 1,
+      "endLine": 20,
+      "source": "memory",
+      "snippet": "# 2026-04-15 ## Durable updates - JT7 platform architecture was extended from a 3-bot shared-core model to a 4-bot shared-core model by adding `jrt7_life_bot` for life operating support. - `jrt7_life_bot` should follow the same tenant-scoped structure and cross-surface rules as the other bots: explicit ownership, summary-only default context transfer, no silent context bleed, and audit-aware handoff behavior. - `jrt7_life_bot` domain is `life`, default agent is `life_agent`, and its intended scope includes routines, habits, wellness, faith, sobriety support, personal admin coordination, and life operating-system support. - The export thread provided by Jonathon was treated as grounding evid",
+      "recallCount": 2,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 2,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-04-25T10:37:06.466Z",
+      "lastRecalledAt": "2026-04-25T10:42:55.646Z",
+      "queryHashes": [
+        "96dc41d218eb",
+        "b154faaeedd5"
+      ],
+      "recallDays": [
+        "2026-04-25"
+      ],
+      "conceptTags": [
+        "3-bot",
+        "shared-core",
+        "4-bot",
+        "jrt7-life-bot",
+        "tenant-scoped",
+        "cross-surface",
+        "summary-only",
+        "audit-aware"
+      ]
+    },
+    "memory:memory/2026-04-15.md:25:41": {
+      "key": "memory:memory/2026-04-15.md:25:41",
+      "path": "memory/2026-04-15.md",
+      "startLine": 25,
+      "endLine": 41,
+      "source": "memory",
+      "snippet": "- New platform permission/control artifacts were created to formalize external actions and integrations: - `schemas/integration_capability.md` - `schemas/external_action_request.md` - `tenants/JT_PERSONAL/integration_permissions.md` - `tenants/JT_PERSONAL/jobboard_access_matrix.md` - `modules/external_action_guard.md` - `modules/jobboard_router.md` - `workflows/external_action_approval_flow.md` - A control-plane style permission model is now established around capability domains, approval levels, action classes, owning bots, and audit-gated external actions. - Some docs still retain `three-bot` filenames even though their content is now intended to be 4-bot aware; a later clean",
+      "recallCount": 2,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 2,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-04-25T10:37:06.466Z",
+      "lastRecalledAt": "2026-04-25T10:42:55.646Z",
+      "queryHashes": [
+        "96dc41d218eb",
+        "b154faaeedd5"
+      ],
+      "recallDays": [
+        "2026-04-25"
+      ],
+      "conceptTags": [
+        "router",
+        "permission/control",
+        "modules/external-action-guard.md",
+        "modules/jobboard-router.md",
+        "control-plane",
+        "audit-gated",
+        "three-bot",
+        "4-bot"
+      ]
+    },
+    "memory:memory/2026-04-15.md:39:46": {
+      "key": "memory:memory/2026-04-15.md:39:46",
+      "path": "memory/2026-04-15.md",
+      "startLine": 39,
+      "endLine": 46,
+      "source": "memory",
+      "snippet": "- JT7 platform architecture must treat all bots/threads as conversation surfaces on one unified platform: one engine, one gateway, one shared brain, no forked systems, and no duplicated logic. - Platform agent is the control plane and owns routing, system rules, orchestration, and decisions about where work should go. - Domain agents are worker agents; each thread defaults to its assigned domain agent and should not behave like a general assistant. - Required platform behavior: determine whether a request belongs to the current thread domain, execute in-thread when it fits, and create an explicit structured handoff when it does not. - Handoffs must be explicit, explain why work is moving, pr",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 1,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-04-25T10:37:06.466Z",
+      "lastRecalledAt": "2026-04-25T10:37:06.466Z",
+      "queryHashes": [
+        "96dc41d218eb"
+      ],
+      "recallDays": [
+        "2026-04-25"
+      ],
+      "conceptTags": [
+        "gateway",
+        "bots/threads",
+        "in-thread",
+        "jt7",
+        "platform",
+        "architecture",
+        "must",
+        "treat"
+      ]
+    },
+    "memory:memory/2026-04-25.md:1:12": {
+      "key": "memory:memory/2026-04-25.md:1:12",
+      "path": "memory/2026-04-25.md",
+      "startLine": 1,
+      "endLine": 12,
+      "source": "memory",
+      "snippet": "## 2026-04-25 - Confirmed active immediate JT7 focus is no longer refactor-first; the current bottleneck is reducing current-message Gmail `review_needed` noise while preserving real recruiter/job/interview signal capture. - Clarified to Jonathon that the last task was only partially complete: persisted action truth, Today state validation, and legacy signal cleanup were done, but current-message Gmail classification quality work remains unfinished. - Retrieved concrete opportunity details from Jonathon’s Wolters Kluwer email thread for later reuse: - Company: Wolters Kluwer - Role: Senior CX/UX Designer (AI-First Innovation | Financial & Corporate Compliance) - Req ID: R0054517 - Pa",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 0.37154206931591033,
+      "maxScore": 0.37154206931591033,
+      "firstRecalledAt": "2026-04-27T00:25:40.303Z",
+      "lastRecalledAt": "2026-04-27T00:25:40.303Z",
+      "queryHashes": [
+        "46f1a51dfb0a"
+      ],
+      "recallDays": [
+        "2026-04-26"
+      ],
+      "conceptTags": [
+        "refactor-first",
+        "current-message",
+        "review-needed",
+        "recruiter/job/interview",
+        "cx/ux",
+        "ai-first",
+        "confirmed",
+        "active"
       ]
     }
   }
