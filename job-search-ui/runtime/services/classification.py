@@ -8,7 +8,7 @@ def classify_signal(subject, sender, labels, body, classification_rules, newslet
         'accepted your invitation', 'just messaged you', 'via linkedin', 'sales navigator',
         'claim your exclusive offer', 'job search program', 'view in browser', 'free interview cheat sheet',
         'design faq', 'why 5 people joined', 'psychology of token remorse', 'meta starts tracking employee laptops',
-        'explore their network'
+        'explore their network', 'was sent to ', 'message replied:', 'people are hiring', 'jobs similar to '
     ]
     signal_type = 'unknown_review_needed'
     confidence = 0.35
@@ -116,6 +116,16 @@ def extract_entities(subject, sender, snippet, extract_domain, linkedin_role_re,
         company = indeed.group('company').strip()
         role = indeed.group('role').strip()
         source = 'indeed_email'
+    elif 'otta.com' in (sender_email or '').lower() or domain == 'otta.com':
+        source = 'otta_email'
+    elif 'greenhouse.io' in (sender_email or '').lower() or domain == 'greenhouse.io':
+        source = 'greenhouse_email'
+    elif 'myworkdayjobs.com' in (sender_email or '').lower() or 'workday.com' in (sender_email or '').lower() or domain in {'myworkdayjobs.com', 'workday.com'}:
+        source = 'workday_email'
+    elif 'builtin.com' in (sender_email or '').lower() or domain == 'builtin.com':
+        source = 'builtin_email'
+    elif 'creativecircle.com' in (sender_email or '').lower() or domain == 'creativecircle.com':
+        source = 'creative_circle_email'
     elif thomson:
         company = 'Thomson Reuters'
         role = thomson.group(1).strip()
@@ -136,10 +146,10 @@ def extract_entities(subject, sender, snippet, extract_domain, linkedin_role_re,
         elif lowered in {'linkedin job alerts', 'linkedin', 'indeed', 'mail', 'linkedin news'}:
             company = ''
 
-    if not company and domain and domain not in {'gmail.com', 'googlemail.com', 'linkedin.com', 'indeed.com', 'mail.linkedin.com', 'substack.com', 'ashbyhq.com'}:
+    if not company and domain and domain not in {'gmail.com', 'googlemail.com', 'linkedin.com', 'indeed.com', 'mail.linkedin.com', 'substack.com', 'ashbyhq.com', 'otta.com', 'greenhouse.io', 'myworkdayjobs.com', 'workday.com', 'builtin.com', 'creativecircle.com'}:
         company = domain.split('.')[0].replace('-', ' ').title()
 
-    if (normalize_text(company) in generic_company_blocklist or normalize_text(company) in {'match', 'substack', 'email', 'ashbyhq', 'recruiting', 'lensa', 'postjobfree', 'sarahdoody'}) and not role:
+    if (normalize_text(company) in generic_company_blocklist or normalize_text(company) in {'match', 'substack', 'email', 'ashbyhq', 'recruiting', 'lensa', 'postjobfree', 'sarahdoody', 'talent', 'efinancialcareers'}) and not role:
         company = ''
 
     return {
@@ -187,6 +197,10 @@ def is_job_related(parsed, newsletter_noise_patterns, job_hints, normalize_text,
     if not any(hint in combined for hint in job_hints) and not (parsed.get('company') or parsed.get('role')):
         return False
     if 'linkedin.com' in parsed.get('sender_email', '').lower() and 'connect' in combined and not parsed.get('role'):
+        return False
+    if 'was sent to ' in combined and not parsed.get('role'):
+        return False
+    if 'jobs similar to ' in combined and not parsed.get('role'):
         return False
     if normalize_text(parsed.get('company', '')) in generic_company_blocklist and not parsed.get('role'):
         return False

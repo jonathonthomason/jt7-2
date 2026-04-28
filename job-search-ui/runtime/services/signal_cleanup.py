@@ -13,6 +13,10 @@ NOISE_COMPANIES = {
     'postjobfree',
     'ashbyhq',
     'mail',
+    'talent',
+    'indeed',
+    'linkedin job alerts',
+    'efinancialcareers',
 }
 
 NOISE_SUBJECT_TOKENS = {
@@ -28,6 +32,8 @@ NOISE_SUBJECT_TOKENS = {
     'accepted your invitation',
     'explore their network',
     'free interview cheat sheet',
+    'was sent to ',
+    'jobs similar to ',
 }
 
 

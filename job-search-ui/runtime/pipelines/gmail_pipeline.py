@@ -26,6 +26,18 @@ def choose_role_from_context(parsed, company_jobs):
     return ''
 
 
+def exact_job_match(parsed, jobs_rows, normalize_company, normalize_text):
+    company_norm = normalize_company(parsed.get('company', ''))
+    role_norm = normalize_text(parsed.get('role', ''))
+    if not company_norm or not role_norm:
+        return None
+    for row in jobs_rows:
+        values = row['values']
+        if normalize_company(values.get('company', '')) == company_norm and normalize_text(values.get('role', '')) == role_norm:
+            return row
+    return None
+
+
 def score_job_match(parsed, job_row, normalize_company, normalize_text):
     job = job_row['values']
     score = 0.0
@@ -182,11 +194,14 @@ def gmail_scan_and_update(
                 recruiter_ids.append(recruiter_id)
                 recruiters_created += 1
 
-            best_job, match_score = find_best_job_match(
-                parsed,
-                jobs_rows,
-                lambda p, row: score_job_match(p, row, normalize_company, normalize_text),
-            )
+            best_job = exact_job_match(parsed, jobs_rows, normalize_company, normalize_text)
+            match_score = 1.0 if best_job else 0.0
+            if not best_job:
+                best_job, match_score = find_best_job_match(
+                    parsed,
+                    jobs_rows,
+                    lambda p, row: score_job_match(p, row, normalize_company, normalize_text),
+                )
             linked_job_id = ''
 
             if best_job and match_score >= 0.6:

@@ -406,14 +406,14 @@
     "",
     "Cold",
     "recruiter_035",
-    "2026-04-28 5:55",
+    "2026-04-27 7:25",
     "Review opportunity and decide whether to apply",
     "",
     "",
     "",
     "",
     "indeed_email",
-    "Created from job_alert Gmail signal thread:19dd3ba9f275a8d7 | signal_id:signal_066"
+    "Created from job_alert Gmail signal thread:19dd3ba9f275a8d7 | signal_id:signal_066 | signal job_alert from indeed_email thread:19dd3ba9f275a8d7 | signal job_alert from indeed_email thread:19dcee72e1e0603d | signal_id:signal_093"
   ],
   [
     "job_026",
@@ -445,7 +445,7 @@
     "",
     "",
     "linkedin_email",
-    "Created from job_alert Gmail signal thread:19dd1c27ebb1efd9 | signal_id:signal_069"
+    "Created from job_alert Gmail signal thread:19dd1c27ebb1efd9 | signal_id:signal_069 | signal job_alert from linkedin_email thread:19dd1c27ebb1efd9"
   ],
   [
     "job_028",
@@ -461,7 +461,7 @@
     "",
     "",
     "indeed_email",
-    "Created from job_alert Gmail signal thread:19dd14dde919c88b | signal_id:signal_074"
+    "Created from job_alert Gmail signal thread:19dd14dde919c88b | signal_id:signal_074 | signal job_alert from indeed_email thread:19dd14dde919c88b"
   ],
   [
     "job_029",
@@ -477,7 +477,7 @@
     "",
     "",
     "linkedin_email",
-    "Created from job_alert Gmail signal thread:19dd11e9bbb617c4 | signal_id:signal_075"
+    "Created from job_alert Gmail signal thread:19dd11e9bbb617c4 | signal_id:signal_075 | signal job_alert from linkedin_email thread:19dd11e9bbb617c4"
   ],
   [
     "job_030",
@@ -493,7 +493,7 @@
     "",
     "",
     "linkedin_email",
-    "Created from job_alert Gmail signal thread:19dd0b0b68b9e956 | signal_id:signal_077"
+    "Created from job_alert Gmail signal thread:19dd0b0b68b9e956 | signal_id:signal_077 | signal job_alert from linkedin_email thread:19dd0b0b68b9e956"
   ],
   [
     "job_031",
@@ -509,7 +509,7 @@
     "",
     "",
     "linkedin_email",
-    "Created from job_alert Gmail signal thread:19dcfd500c48ffed | signal_id:signal_085"
+    "Created from job_alert Gmail signal thread:19dcfd500c48ffed | signal_id:signal_085 | signal job_alert from linkedin_email thread:19dcfd500c48ffed"
   ],
   [
     "job_032",
