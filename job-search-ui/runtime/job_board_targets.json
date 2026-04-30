@@ -1,0 +1,84 @@
+{
+  "builtin": {
+    "enabled": true,
+    "queries": [
+      {"keywords": "senior-product-designer", "location_slug": "remote", "enabled": true},
+      {"keywords": "principal-product-designer", "location_slug": "remote", "enabled": true},
+      {"keywords": "lead-product-designer", "location_slug": "remote", "enabled": true},
+      {"keywords": "staff-product-designer", "location_slug": "remote", "enabled": true},
+      {"keywords": "senior-product-designer", "location_slug": "dallas-fort-worth", "enabled": true},
+      {"keywords": "principal-product-designer", "location_slug": "dallas-fort-worth", "enabled": true},
+      {"keywords": "lead-product-designer", "location_slug": "dallas-fort-worth", "enabled": true},
+      {"keywords": "staff-product-designer", "location_slug": "dallas-fort-worth", "enabled": true}
+    ]
+  },
+  "linkedin": {
+    "enabled": true,
+    "queries": [
+      {"keywords": "senior product designer", "location": "Dallas-Fort Worth Metroplex", "enabled": true},
+      {"keywords": "staff product designer", "location": "Dallas-Fort Worth Metroplex", "enabled": true},
+      {"keywords": "principal product designer", "location": "Dallas-Fort Worth Metroplex", "enabled": true},
+      {"keywords": "product design manager", "location": "Dallas-Fort Worth Metroplex", "enabled": true},
+      {"keywords": "lead product designer", "location": "Dallas-Fort Worth Metroplex", "enabled": true},
+      {"keywords": "product designer", "location": "Remote", "enabled": true}
+    ]
+  },
+  "indeed": {
+    "enabled": true,
+    "queries": [
+      {"keywords": "senior product designer", "location": "Remote", "enabled": true},
+      {"keywords": "senior product designer", "location": "Dallas-Fort Worth, TX", "enabled": true}
+    ]
+  },
+  "greenhouse": {
+    "enabled": true,
+    "boards": [
+      {"token": "webflow", "company": "Webflow", "enabled": true},
+      {"token": "coinbase", "company": "Coinbase", "enabled": true},
+      {"token": "robinhood", "company": "Robinhood", "enabled": true},
+      {"token": "affirm", "company": "Affirm", "enabled": true},
+      {"token": "duolingo", "company": "Duolingo", "enabled": true},
+      {"token": "dropbox", "company": "Dropbox", "enabled": true},
+      {"token": "stripe", "company": "Stripe", "enabled": true}
+    ]
+  },
+  "filters": {
+    "allowed_location_keywords": [
+      "remote",
+      "dallas",
+      "fort worth",
+      "dfw",
+      "dallas-fort worth",
+      "dallas fort worth",
+      "irving",
+      "plano",
+      "frisco",
+      "addison",
+      "grapevine",
+      "arlington",
+      "richardson"
+    ],
+    "include_title_keywords": [
+      "product designer",
+      "senior product designer",
+      "principal product designer",
+      "lead product designer",
+      "staff product designer",
+      "ux designer",
+      "user experience designer",
+      "product design manager",
+      "design lead",
+      "founding product designer"
+    ],
+    "exclude_title_keywords": [
+      "brand designer",
+      "design program manager",
+      "executive assistant",
+      "design technologist",
+      "content designer",
+      "data center design",
+      "onsite",
+      "on-site"
+    ]
+  }
+}

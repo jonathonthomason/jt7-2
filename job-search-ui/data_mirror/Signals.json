@@ -825,7 +825,7 @@
     "2026-04-27 19:45",
     "Product Designer | Remote at DesignMeshAI: up to $115/hour",
     "thread:19dd18c8a3968a3e|message:19dd18c8a3968a3e",
-    "review_required_no_job_create"
+    "ignored"
   ],
   [
     "signal_072",
@@ -971,7 +971,7 @@
     "2026-04-27 12:07",
     "Indeed Application: UI/UX Lead",
     "thread:19dcfe8c2c6cd6d2|message:19dcfe8c2c6cd6d2",
-    "review_required_no_job_create"
+    "ignored"
   ],
   [
     "signal_085",
@@ -1038,7 +1038,7 @@
     "2026-04-27 10:18",
     "Don\u2019t miss conversations in Enterprise AI Product Design",
     "thread:19dcf85a82f3cb87|message:19dcf85a82f3cb87",
-    "review_required_no_job_create"
+    "ignored"
   ],
   [
     "signal_091",
@@ -1049,7 +1049,7 @@
     "2026-04-27 9:45",
     "You may be a fit for Arcadis\u2019 Senior Design Manager - Multi-disciplinary Projects role  - Actively recruiting",
     "thread:19dcf673e6ddb8f4|message:19dcf673e6ddb8f4",
-    "review_required_no_job_create"
+    "ignored"
   ],
   [
     "signal_092",
@@ -1060,7 +1060,7 @@
     "2026-04-27 9:18",
     "Explore new jobs for \u201cproduct designer\u201d",
     "thread:19dcf4e2e5fb5099|message:19dcf4e2e5fb5099",
-    "review_required_no_job_create"
+    "ignored"
   ],
   [
     "signal_093",
@@ -1430,5 +1430,393 @@
     "thread:19db58b5849bdc81|message:19dcfc76176c604c",
     "review_needed",
     "job_017"
+  ],
+  [
+    "signal_125",
+    "workday_email",
+    "unknown_review_needed",
+    "Myworkday",
+    "",
+    "2026-04-30 4:29",
+    "Equinix \u2013 Application Update for JR-159003 User Experience Designer (Filled)",
+    "thread:19dddb91c5c5118d|message:19dddb91c5c5118d",
+    "review_required_no_job_create"
+  ],
+  [
+    "signal_126",
+    "gmail",
+    "unknown_review_needed",
+    "Nurture",
+    "",
+    "2026-04-30 3:42",
+    "State Farm Careers: Inside the Neighborhood - Opportunities Await!",
+    "thread:19ddd8df51a103d8|message:19ddd8df51a103d8",
+    "review_required_no_job_create"
+  ],
+  [
+    "signal_127",
+    "gmail",
+    "unknown_review_needed",
+    "LinkedIn Job Alerts",
+    "was viewed by SJ Mobilita",
+    "2026-04-30 2:12",
+    "Your application was viewed by SJ Mobilita",
+    "thread:19ddd3bdeaa7565d|message:19ddd3bdeaa7565d",
+    "review_required_no_job_create"
+  ],
+  [
+    "signal_128",
+    "gmail",
+    "unknown_review_needed",
+    "",
+    "",
+    "2026-04-29 20:15",
+    "Update from Dandy",
+    "thread:19ddbf48ba70cdb6|message:19ddbf48ba70cdb6",
+    "review_required_no_job_create"
+  ],
+  [
+    "signal_129",
+    "linkedin_email",
+    "job_alert",
+    "Reml AI",
+    "Product Builder (User Experience)",
+    "2026-04-29 19:45",
+    "Product Builder (User Experience) at Reml AI",
+    "thread:19ddb6b66a73422f|message:19ddbd9425e6fdfd",
+    "accepted",
+    "job_047"
+  ],
+  [
+    "signal_130",
+    "linkedin_email",
+    "job_alert",
+    "Reml AI",
+    "Product Builder (User Experience)",
+    "2026-04-29 17:45",
+    "Product Builder (User Experience) at Reml AI",
+    "thread:19ddb6b66a73422f|message:19ddb6b66a73422f",
+    "accepted",
+    "job_048"
+  ],
+  [
+    "signal_131",
+    "indeed_email",
+    "job_alert",
+    "Confidential",
+    "Senior Designer (Digital, UX/UI, Presentations, Adobe + Figma)",
+    "2026-04-29 17:45",
+    "Confidential is hiring for Senior Designer (Digital, UX/UI, Presentations, Adobe + Figma). 5 more graphic designer jobs in Miami, FL.",
+    "thread:19ddb6b37255da3f|message:19ddb6b37255da3f",
+    "accepted",
+    "job_028"
+  ],
+  [
+    "signal_132",
+    "builtin_email",
+    "unknown_review_needed",
+    "",
+    "",
+    "2026-04-29 15:22",
+    "New Staff Engineer Job Matches",
+    "thread:19ddae88b5bf7706|message:19ddae88b5bf7706",
+    "review_required_no_job_create"
+  ],
+  [
+    "signal_133",
+    "linkedin_email",
+    "unknown_review_needed",
+    "Slalom",
+    "Agentic Designer",
+    "2026-04-29 15:18",
+    "Agentic Designer at Slalom",
+    "thread:19ddae47d1064845|message:19ddae47d1064845",
+    "review_required_no_job_create"
+  ],
+  [
+    "signal_134",
+    "gmail",
+    "unknown_review_needed",
+    "LinkedIn Job Alerts",
+    "",
+    "2026-04-29 12:56",
+    "Jonathon, apply now to \u2018Senior Product Designer at Vogo\u2019",
+    "thread:19dda62d17a05a56|message:19dda62d17a05a56",
+    "review_required_no_job_create"
+  ],
+  [
+    "signal_135",
+    "linkedin_email",
+    "job_alert",
+    "SJ Mobilita",
+    "Lead UI/UX Designer",
+    "2026-04-29 13:46",
+    "Lead UI/UX Designer at SJ Mobilita",
+    "thread:19dda223cf0bbe59|message:19dda900d7bff6d0",
+    "accepted",
+    "job_049"
+  ],
+  [
+    "signal_136",
+    "linkedin_email",
+    "job_alert",
+    "SJ Mobilita",
+    "Lead UI/UX Designer",
+    "2026-04-29 11:46",
+    "Lead UI/UX Designer at SJ Mobilita",
+    "thread:19dda223cf0bbe59|message:19dda223cf0bbe59",
+    "accepted",
+    "job_050"
+  ],
+  [
+    "signal_137",
+    "gmail",
+    "unknown_review_needed",
+    "",
+    "",
+    "2026-04-29 11:10",
+    "insights from 600+ UXers about the job search",
+    "thread:19dda012c0970d06|message:19dda012c0970d06",
+    "review_required_no_job_create"
+  ],
+  [
+    "signal_138",
+    "linkedin_email",
+    "job_alert",
+    "Deloitte",
+    "Organization Design Manager",
+    "2026-04-29 15:45",
+    "Organization Design Manager at Deloitte",
+    "thread:19dd9b5ffb7a4e7e|message:19ddafd680aa115e",
+    "accepted",
+    "job_051"
+  ],
+  [
+    "signal_139",
+    "linkedin_email",
+    "job_alert",
+    "Deloitte",
+    "Organization Design Manager",
+    "2026-04-29 9:47",
+    "Organization Design Manager at Deloitte",
+    "thread:19dd9b5ffb7a4e7e|message:19dd9b5ffb7a4e7e",
+    "accepted",
+    "job_052"
+  ],
+  [
+    "signal_140",
+    "gmail",
+    "job_alert",
+    "LinkedIn Job Alerts",
+    "",
+    "2026-04-29 9:18",
+    "iHerb is hiring for a E-commerce role",
+    "thread:19dd99af21153afc|message:19dd99af21153afc",
+    "review_required_no_job_create"
+  ],
+  [
+    "signal_141",
+    "indeed_email",
+    "job_alert",
+    "iFlo",
+    "Creative Director (Full-Time)",
+    "2026-04-29 5:16",
+    "iFlo is hiring for Creative Director (Full-Time). 29 more Immediately Hiring jobs in Miami, FL.",
+    "thread:19dd8bd6267e8628|message:19dd8bd6267e8628",
+    "accepted",
+    "job_053"
+  ],
+  [
+    "signal_142",
+    "gmail",
+    "job_alert",
+    "",
+    "",
+    "2026-04-28 22:22",
+    "Program Manager II (Data & Analytics) at Azaaki LLC in Addison, TX and 6 more new jobs",
+    "thread:19dd74265f3fff8c|message:19dd74265f3fff8c",
+    "review_required_no_job_create"
+  ],
+  [
+    "signal_143",
+    "linkedin_email",
+    "job_alert",
+    "MAJORITY",
+    "Product Design Lead",
+    "2026-04-28 19:45",
+    "Product Design Lead at MAJORITY",
+    "thread:19dd6b2d195d6dc5|message:19dd6b2d195d6dc5",
+    "accepted",
+    "job_027"
+  ],
+  [
+    "signal_144",
+    "indeed_email",
+    "job_alert",
+    "Confidential",
+    "Senior Designer (Digital, UX/UI, Presentations, Adobe + Figma)",
+    "2026-04-28 18:17",
+    "Confidential is hiring for Senior Designer (Digital, UX/UI, Presentations, Adobe + Figma). 6 more graphic designer jobs in Miami, FL.",
+    "thread:19dd66232921e853|message:19dd66232921e853",
+    "accepted",
+    "job_028"
+  ],
+  [
+    "signal_145",
+    "linkedin_email",
+    "job_alert",
+    "Bravo17 Digital",
+    "Experience Design Lead",
+    "2026-04-28 17:45",
+    "Experience Design Lead at Bravo17 Digital",
+    "thread:19dd644ed814b61f|message:19dd644ed814b61f",
+    "accepted",
+    "job_054"
+  ],
+  [
+    "signal_146",
+    "linkedin_email",
+    "job_alert",
+    "Jobgether",
+    "Staff UI/UX Product Designer",
+    "2026-04-28 15:45",
+    "Staff UI/UX Product Designer at Jobgether",
+    "thread:19dd5d70b43008b1|message:19dd5d70b43008b1",
+    "accepted",
+    "job_055"
+  ],
+  [
+    "signal_147",
+    "linkedin_email",
+    "unknown_review_needed",
+    "Xplor Technologies",
+    "Lead Product Designer",
+    "2026-04-28 15:18",
+    "Lead Product Designer at Xplor Technologies",
+    "thread:19dd5be01d2898f2|message:19dd5be01d2898f2",
+    "review_required_no_job_create"
+  ],
+  [
+    "signal_148",
+    "linkedin_email",
+    "job_alert",
+    "KPMG US",
+    "Associate Director, Senior Service Designer (GenAI Experience)",
+    "2026-04-28 13:45",
+    "Associate Director, Senior Service Designer (GenAI Experience) at KPMG US",
+    "thread:19dd56937982ffec|message:19dd56937982ffec",
+    "accepted",
+    "job_056"
+  ],
+  [
+    "signal_149",
+    "gmail",
+    "unknown_review_needed",
+    "",
+    "",
+    "2026-04-28 13:18",
+    "PMG has Product Lead, Creative Team job in Dallas, TX",
+    "thread:19dd55078efde00f|message:19dd55078efde00f",
+    "review_required_no_job_create"
+  ],
+  [
+    "signal_150",
+    "gmail",
+    "job_alert",
+    "LinkedIn Job Alerts",
+    "",
+    "2026-04-28 11:45",
+    "Conversational Designer at Ladders: up to $265K/year",
+    "thread:19dd4fb6f6d30f91|message:19dd4fb6f6d30f91",
+    "review_required_no_job_create"
+  ],
+  [
+    "signal_151",
+    "gmail",
+    "recruiter_outreach",
+    "Jhu",
+    "",
+    "2026-04-28 11:05",
+    "Meet the Recruiter @ Johns Hopkins Engineering for Professionals",
+    "thread:19dd4d655261f1fc|message:19dd4d655261f1fc",
+    "review_required_no_job_create"
+  ],
+  [
+    "signal_152",
+    "gmail",
+    "unknown_review_needed",
+    "Us",
+    "",
+    "2026-04-28 10:04",
+    "Your April Dream Job is waiting",
+    "thread:19dd49f3d4202116|message:19dd49f3d4202116",
+    "review_required_no_job_create"
+  ],
+  [
+    "signal_153",
+    "linkedin_email",
+    "job_alert",
+    "Sundayy",
+    "UX Designer, AI",
+    "2026-04-28 9:45",
+    "UX Designer, AI at Sundayy",
+    "thread:19dd48d946f0b491|message:19dd48d946f0b491",
+    "accepted",
+    "job_029"
+  ],
+  [
+    "signal_154",
+    "gmail",
+    "job_alert",
+    "LinkedIn Job Alerts",
+    "",
+    "2026-04-28 9:18",
+    "Alpine Home Air is hiring for a E-commerce role",
+    "thread:19dd474fad870016|message:19dd474fad870016",
+    "review_required_no_job_create"
+  ],
+  [
+    "signal_155",
+    "gmail",
+    "unknown_review_needed",
+    "Avaconsulting",
+    "",
+    "2026-04-28 8:34",
+    "REMOTE JOB - \"Senior Product Designer / UX Designer (Mobile, Figma, Design Systems)\" - W2-Contract",
+    "thread:19dd4527dd0c530c|message:19dd4527dd0c530c",
+    "review_required_no_job_create"
+  ],
+  [
+    "signal_156",
+    "gmail",
+    "unknown_review_needed",
+    "ZipRecruiter",
+    "",
+    "2026-04-28 8:07",
+    "Got the job? Share your win \ud83c\udf89",
+    "thread:19dd433781b51293|message:19dd433781b51293",
+    "review_required_no_job_create"
+  ],
+  [
+    "signal_157",
+    "gmail",
+    "unknown_review_needed",
+    "",
+    "",
+    "2026-04-28 7:18",
+    "3B Staffing LLC has Senior User Experience Designer job in Dallas, TX, 75215",
+    "thread:19dd40714f0d7256|message:19dd40714f0d7256",
+    "review_required_no_job_create"
+  ],
+  [
+    "signal_158",
+    "gmail",
+    "unknown_review_needed",
+    "Alerts",
+    "",
+    "2026-04-28 7:04",
+    "Designer @Kimley-horn And Associates, Inc. | SUBMIT your application",
+    "thread:19dd3f9d9a53536c|message:19dd3f9d9a53536c",
+    "review_required_no_job_create"
   ]
 ]
