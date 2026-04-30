@@ -338,3 +338,67 @@
   - docs/openclaw-thread-routing-config-spec.md
 - **related_entity_ids:** []
 - **next_review_at:** null
+
+### decision_17
+- **id:** decision_warn_before_possible_quota_or_consumption_events
+- **title:** Warn before requests that may trigger quota, rate-limit, or CRUD-like consumption
+- **domain:** system
+- **status:** active
+- **decision_date:** 2026-04-30
+- **owner:** Jonathon
+- **summary:** JT7 should warn Jonathon before potentially consumptive or state-mutating actions when a cheaper or durable-path answer is likely sufficient, including cases where quota exhaustion, rate limits, token or embedding burn, or other CRUD-like consumption is plausible.
+- **why:** Jonathon wants explicit warning before potentially consumptive checks or operations when the same answer could often be reached from existing durable state or cheaper verification.
+- **implications:**
+  - prefer durable files and existing state first when they are sufficient
+  - pre-warn before memory, API, or write-heavy operations when exhaustion is plausible
+  - warn before state-mutating actions when a cheaper read-only or durable-path answer is likely enough
+  - avoid unnecessary checks that spend quota or mutate systems just to confirm already-known state
+- **related_files:**
+  - USER.md
+  - CURRENT.md
+  - DECISIONS.md
+- **related_entity_ids:** []
+- **next_review_at:** null
+
+### decision_18
+- **id:** decision_direct_board_imports_use_staging_not_canonical_jobs
+- **title:** Route direct-board imports into staging instead of canonical Jobs
+- **domain:** system
+- **status:** active
+- **decision_date:** 2026-04-30
+- **owner:** Jonathon
+- **summary:** Broad direct-board imports should land in a staging layer and not flow directly into canonical `Jobs` tracker state until filters, duplicate checks, and trust review are applied.
+- **why:** The 2026-04-30 import created a 184-row local-only Jobs delta, proving that broad direct imports are too noisy to be treated as trusted tracker truth by default.
+- **implications:**
+  - Google Sheets `Jobs` remains canonical trusted state
+  - broad direct imports should be treated as intake or staging, not trusted pipeline rows
+  - future promotion into canonical `Jobs` should happen only after filtering and review
+  - a dedicated staging surface or tab is preferred over silent local-only divergence
+- **related_files:**
+  - docs/direct-board-import-policy.md
+  - job-search-ui/runtime/direct_board_import_preview.json
+  - job-search-ui/data_mirror/Jobs.json
+- **related_entity_ids:** []
+- **next_review_at:** null
+
+### decision_19
+- **id:** decision_jobops_workspace_auth_and_binding_scaffold
+- **title:** Give JobOps its own workspace and auth scaffold before live Telegram activation
+- **domain:** system
+- **status:** active
+- **decision_date:** 2026-04-30
+- **owner:** Jonathon
+- **summary:** The `jobops` agent should have its own workspace instructions and isolated auth/model store before the live JobOps Telegram bot account is activated, while keeping account-based routing on the same OpenClaw core.
+- **why:** A separate bot lane is only meaningful if JobOps has distinct instructions and isolated state instead of sharing the exact same workspace/persona as Platform.
+- **implications:**
+  - JobOps now needs its own workspace bootstrap files
+  - JobOps auth/model files should be present in its own `agentDir`
+  - live second-bot activation is blocked only on the full JobOps Telegram token
+  - existing account-based bindings can remain the routing model
+- **related_files:**
+  - agents/jobops/
+  - docs/jobops-rollout-checklist.md
+  - docs/jobops-telegram-config-snippet.jsonc
+  - /Users/jtemp/.openclaw/openclaw.json
+- **related_entity_ids:** []
+- **next_review_at:** null

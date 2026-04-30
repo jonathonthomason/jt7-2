@@ -1,0 +1,31 @@
+{
+  "channels": {
+    "telegram": {
+      "enabled": true,
+      "allowFrom": ["8458375017"],
+      "dmPolicy": "allowlist",
+      "accounts": {
+        "default": {
+          "name": "JT7 Platform Bot",
+          "botToken": "<existing-platform-token>"
+        },
+        "jobops": {
+          "name": "JT7 Job Ops Bot",
+          "botToken": "<insert-full-jobops-token>"
+        }
+      }
+    }
+  },
+  "bindings": [
+    {
+      "type": "route",
+      "agentId": "platform",
+      "match": { "channel": "telegram", "accountId": "default" }
+    },
+    {
+      "type": "route",
+      "agentId": "jobops",
+      "match": { "channel": "telegram", "accountId": "jobops" }
+    }
+  ]
+}
