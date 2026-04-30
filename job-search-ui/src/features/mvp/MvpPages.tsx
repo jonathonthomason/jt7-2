@@ -1,5 +1,6 @@
 import type { CSSProperties, ReactNode } from 'react'
 import { useMvpState, type MvpAction, type MvpSignal } from '../../state/mvpState'
+import type { ReviewItem } from '../../domain/cockpit/types'
 
 function SectionTitle({ title, count }: { title: string; count?: number }) {
   return <div style={styles.sectionHeader}><h2 style={styles.sectionTitle}>{title}</h2>{count !== undefined ? <span style={styles.countTag}>{count}</span> : null}</div>
@@ -7,8 +8,97 @@ function SectionTitle({ title, count }: { title: string; count?: number }) {
 
 function StatusTag({ value }: { value: string }) {
   const lower = value.toLowerCase()
-  const color = lower.includes('reject') || lower.includes('blocked') ? '#fa4d56' : lower.includes('waiting') || lower.includes('review') ? '#f1c21b' : lower.includes('done') || lower.includes('applied') || lower.includes('active') ? '#42be65' : '#78a9ff'
+  const color = lower.includes('reject') || lower.includes('blocked') || lower.includes('dismiss') ? '#fa4d56' : lower.includes('waiting') || lower.includes('review') || lower.includes('pending') || lower.includes('defer') ? '#f1c21b' : lower.includes('done') || lower.includes('applied') || lower.includes('active') || lower.includes('confirm') || lower.includes('link') ? '#42be65' : '#78a9ff'
   return <span style={{ ...styles.tag, borderColor: color, color }}>{value}</span>
+}
+
+function confidenceLabel(value: number) {
+  if (value >= 0.75) return 'high confidence'
+  if (value >= 0.5) return 'medium confidence'
+  return 'low confidence'
+}
+
+export function ReviewQueueCard({ item }: { item: ReviewItem }) {
+  const { openPanel, reviewCommand } = useMvpState()
+  return (
+    <article style={styles.reviewCard}>
+      <div style={styles.rowBetween}>
+        <div style={styles.tagRow}>
+          <span style={styles.priorityTag}>{item.priority.toUpperCase()}</span>
+          <StatusTag value={item.status} />
+          <span style={styles.tag}>{confidenceLabel(item.confidence)}</span>
+        </div>
+        <button style={styles.linkButton} onClick={() => openPanel('review', item.id)} type="button">Detail</button>
+      </div>
+      <h3 style={styles.actionTitle}>{item.extractedRole || 'Unknown role'}</h3>
+      <p style={styles.meta}>{item.extractedCompany || 'Unknown company'} · {item.source}</p>
+      <p style={styles.copy}>{item.evidenceSummary}</p>
+      <p style={styles.meta}>Reason: {item.reasonForReview}</p>
+      <div style={styles.buttonRow}>
+        <button style={styles.primaryButton} onClick={() => reviewCommand(item.id, 'Confirm')} type="button">Confirm</button>
+        <button style={styles.secondaryButton} onClick={() => reviewCommand(item.id, 'Link')} type="button">Link</button>
+        <button style={styles.secondaryButton} onClick={() => reviewCommand(item.id, 'Dismiss')} type="button">Dismiss</button>
+        <button style={styles.secondaryButton} onClick={() => reviewCommand(item.id, 'Defer')} type="button">Defer</button>
+      </div>
+    </article>
+  )
+}
+
+export function ReviewQueuePage() {
+  const { reviewSummary, state, openPanel } = useMvpState()
+  return (
+    <section style={styles.page}>
+      <section style={styles.hero}>
+        <div>
+          <p style={styles.kicker}>Trust / Review Queue</p>
+          <h1 style={styles.title}>Review Queue</h1>
+          <p style={styles.copy}>Signals are untrusted on arrival. Review determines what becomes real pipeline state.</p>
+        </div>
+        <div>
+          <p style={styles.meta}>Pending</p>
+          <strong>{reviewSummary.pending.length}</strong>
+        </div>
+        <div>
+          <p style={styles.meta}>High priority</p>
+          <strong>{reviewSummary.highPriority.length}</strong>
+        </div>
+      </section>
+      <div style={styles.grid}>
+        <main style={styles.stack}>
+          <SectionTitle title="Pending reviews" count={reviewSummary.pending.length} />
+          <div style={styles.stack}>
+            {reviewSummary.pending.slice(0, 12).map((item) => <ReviewQueueCard key={item.id} item={item} />)}
+          </div>
+        </main>
+        <aside style={styles.stack}>
+          <section style={styles.tile}>
+            <SectionTitle title="High-priority queue" count={reviewSummary.highPriority.length} />
+            <ul style={styles.cleanList}>
+              {reviewSummary.highPriority.slice(0, 8).map((item) => (
+                <li key={item.id} style={styles.listItem}>
+                  <button style={styles.linkButton} onClick={() => openPanel('review', item.id)} type="button">{item.extractedCompany || 'Unknown company'} — {item.extractedRole || 'Unknown role'}</button>
+                  <span style={styles.meta}>{item.reasonForReview}</span>
+                </li>
+              ))}
+            </ul>
+          </section>
+          <section style={styles.tile}>
+            <SectionTitle title="Recent review events" count={state.reviewEvents.length} />
+            {state.reviewEvents.length ? (
+              <ul style={styles.cleanList}>
+                {state.reviewEvents.slice(0, 8).map((event) => (
+                  <li key={event.id} style={styles.listItem}>
+                    <span>{event.command}</span>
+                    <span style={styles.meta}>{event.reviewId} · {event.timestamp}</span>
+                  </li>
+                ))}
+              </ul>
+            ) : <p style={styles.meta}>No review actions recorded yet.</p>}
+          </section>
+        </aside>
+      </div>
+    </section>
+  )
 }
 
 export function SignalCard({ signal }: { signal: MvpSignal }) {
@@ -54,13 +144,13 @@ export function MvpExecutionCard({ action, emphasis = 'secondary' }: { action: M
 }
 
 export function TodayPlanPage() {
-  const { today, state, runSweep, refreshPlan } = useMvpState()
+  const { today, state, runSweep, refreshPlan, reviewSummary } = useMvpState()
   return (
     <section style={styles.page}>
       <section style={styles.hero}>
         <div><p style={styles.kicker}>/execute/today</p><h1 style={styles.title}>Today’s Plan</h1></div>
         <div><p style={styles.meta}>Progress</p><strong>{today.completedCount}/{today.totalCount}</strong></div>
-        <div><p style={styles.meta}>Next up</p><p style={styles.copy}>{today.nextAction?.title ?? 'No action queued'}</p></div>
+        <div><p style={styles.meta}>Review backlog</p><p style={styles.copy}>{reviewSummary.pending.length} pending review items</p></div>
       </section>
       <section style={styles.operatorBand}>
         <div><p style={styles.kicker}>Operator Band</p><strong>{today.latestRun?.status ?? 'ready'}</strong><p style={styles.meta}>{today.latestRun?.lastRunAt ?? state.lastUpdated}</p></div>
@@ -71,7 +161,7 @@ export function TodayPlanPage() {
           {today.nextAction ? <MvpExecutionCard action={today.nextAction} emphasis="primary" /> : null}
           <SectionTitle title="Execution Cards" count={today.openActions.length} />
           <div style={styles.stack}>{today.openActions.map((action) => <MvpExecutionCard key={action.id} action={action} />)}</div>
-          <details style={styles.tile}><summary style={styles.summary}>Why this plan</summary><p style={styles.copy}>Ranked from open/blocked actions, recent recruiter/job signals, urgency, and current action state. Latest run: {today.latestRun?.summary ?? 'local state only'}.</p></details>
+          <details style={styles.tile}><summary style={styles.summary}>Why this plan</summary><p style={styles.copy}>Ranked from open/blocked actions, pending reviews, recent recruiter/job signals, urgency, and current action state. Latest run: {today.latestRun?.summary ?? 'local state only'}.</p></details>
         </main>
         <aside style={styles.stack}>
           <section style={styles.tile}><SectionTitle title="New Signals" count={today.newSignals.length} /><div style={styles.stack}>{today.newSignals.slice(0, 5).map((signal) => <SignalCard key={signal.id} signal={signal} />)}</div></section>
@@ -115,16 +205,16 @@ export function CompetitionPage() {
 }
 
 export function WikiPage() {
-  return <SimpleIntelligence title="Wiki" items={['Reusable answer: systems-minded product designer', 'Narrative: AI operations + design leadership', 'Framework: signal → decision → action → tracker', 'Company research: attach to job detail notes']} />
+  return <SimpleIntelligence title="Wiki" items={['Reusable answer: systems-minded product designer', 'Narrative: AI operations + design leadership', 'Framework: signal → review → decision → action → tracker', 'Company research: attach to job detail notes']} />
 }
 
 export function ReportsPage() {
-  const { state, today } = useMvpState()
-  return <SimpleIntelligence title="Reports" items={[`Pipeline health: ${state.jobs.length} jobs / ${state.recruiters.length} recruiters`, `Applications by status: ${new Set(state.jobs.map((j) => j.status)).size} statuses active`, `Recruiter response trend: ${state.messages.filter((m) => m.direction === 'inbound').length} inbound messages`, `Completed actions: ${today.completedToday.length}`, `Weekly summary: ${today.latestRun?.summary ?? 'No run summary'}`]} />
+  const { state, today, reviewSummary } = useMvpState()
+  return <SimpleIntelligence title="Reports" items={[`Pipeline health: ${state.jobs.length} jobs / ${state.recruiters.length} recruiters`, `Pending reviews: ${reviewSummary.pending.length}`, `Resolved reviews: ${reviewSummary.resolved.length}`, `Recruiter response trend: ${state.messages.filter((m) => m.direction === 'inbound').length} inbound messages`, `Completed actions: ${today.completedToday.length}`, `Weekly summary: ${today.latestRun?.summary ?? 'No run summary'}`]} />
 }
 
 export function ComponentsPage() {
-  return <SimpleIntelligence title="Design System / Components" items={['Execution Card: priority, channel, CTA, composer, state mutation', 'Signal Card: source/type/summary/action', 'Operator Band: run status, sweep, refresh, counts', 'Right Detail Panel: persistent, no modal stacks', 'Status Tags: semantic color', 'Data Tables: compact Carbon-like rows', 'Inline Composer: logs notes to local state']} />
+  return <SimpleIntelligence title="Design System / Components" items={['Review Queue card: trust state, evidence, decision actions', 'Execution Card: priority, channel, CTA, composer, state mutation', 'Signal Card: source/type/summary/action', 'Operator Band: run status, sweep, refresh, counts', 'Right Detail Panel: persistent, no modal stacks', 'Status Tags: semantic color', 'Data Tables: compact Carbon-like rows', 'Inline Composer: logs notes to local state']} />
 }
 
 export function FoundationsPage() {
@@ -149,13 +239,14 @@ function Td({ children }: { children: ReactNode }) { return <td style={styles.td
 
 const styles: Record<string, CSSProperties> = {
   page: { display: 'flex', flexDirection: 'column', gap: '0.75rem', textAlign: 'left' },
-  hero: { border: '1px solid #2a2f3a', borderTop: '3px solid #0f62fe', backgroundColor: '#161616', padding: '1rem', display: 'grid', gridTemplateColumns: '1fr auto minmax(220px, 360px)', gap: '1rem', alignItems: 'end' },
+  hero: { border: '1px solid #2a2f3a', borderTop: '3px solid #0f62fe', backgroundColor: '#161616', padding: '1rem', display: 'grid', gridTemplateColumns: '1fr auto minmax(220px, 320px)', gap: '1rem', alignItems: 'end' },
   operatorBand: { border: '1px solid #2a2f3a', borderLeft: '3px solid #0f62fe', backgroundColor: '#161616', padding: '0.75rem', display: 'flex', justifyContent: 'space-between', gap: '0.75rem', alignItems: 'center', flexWrap: 'wrap' },
   grid: { display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) 340px', gap: '0.75rem', alignItems: 'start' },
   stack: { display: 'flex', flexDirection: 'column', gap: '0.5rem' },
   tile: { border: '1px solid #2a2f3a', backgroundColor: '#161616', padding: '0.75rem' },
   executionCard: { border: '1px solid #2a2f3a', borderLeft: '3px solid #0f62fe', backgroundColor: '#161616', padding: '0.75rem', display: 'flex', flexDirection: 'column', gap: '0.5rem' },
   executionPrimary: { backgroundColor: '#0b0f17', borderLeftColor: '#78a9ff' },
+  reviewCard: { border: '1px solid #393939', borderLeft: '3px solid #0f62fe', backgroundColor: '#161616', padding: '0.75rem', display: 'flex', flexDirection: 'column', gap: '0.45rem' },
   signalCard: { border: '1px solid #393939', borderLeft: '3px solid #33b1ff', backgroundColor: '#1f1f1f', padding: '0.6rem', display: 'flex', flexDirection: 'column', gap: '0.35rem' },
   title: { margin: 0, color: '#f4f4f4', fontSize: '2rem', lineHeight: 1.15 },
   sectionHeader: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '0.5rem' },

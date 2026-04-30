@@ -271,3 +271,48 @@
   - job-search-ui/docs/local-git-drive-rules.md
 - **related_entity_ids:** []
 - **next_review_at:** null
+
+### decision_14
+- **id:** decision_architectural_boundary_platform_builder_vs_jobops
+- **title:** Separate JT7 platform-building responsibilities from JobOps operational responsibilities
+- **domain:** system
+- **status:** active
+- **decision_date:** 2026-04-29
+- **owner:** Jonathon
+- **summary:** JT7 should operate as the system architect and platform builder for JT7-2, focusing on the job-search-ui, React/TypeScript implementation, business requirements, and the synchronization layer between Google Sheets, markdown mirrors, and the OpenClaw gateway, while daily operational job-search work will transition to JobOps once the platform is solid.
+- **why:** Jonathon explicitly established a strict separation of concerns so platform building and operational job-search execution do not blur together.
+- **implications:**
+  - JT7 should prioritize building the cockpit rather than acting as the long-term daily JobOps operator
+  - business requirements refinement and platform implementation are core JT7 responsibilities
+  - infrastructure logic across Sheets, markdown mirrors, and gateway remains inside JT7 scope
+  - Gmail signal triage, recruiter follow-ups, and interview scheduling belong to JobOps after handoff
+  - JT7 should prepare for a clear engineer-to-pilot transition model
+- **related_files:**
+  - MEMORY.md
+  - CURRENT.md
+  - job-search-ui/
+- **related_entity_ids:** []
+- **next_review_at:** null
+
+### decision_15
+- **id:** decision_review_queue_first_cockpit_surface
+- **title:** Make Review Queue the first JT7-2 cockpit surface and default landing route
+- **domain:** product
+- **status:** active
+- **decision_date:** 2026-04-30
+- **owner:** Jonathon
+- **summary:** JT7-2 should establish trust before dashboarding by shipping Review Queue v1 first, routing `/` to `/review-queue`, and using review-state/action/event primitives as the foundation for later cockpit surfaces.
+- **why:** Raw signals were still too noisy to safely treat as trusted pipeline state, so the cockpit needed an explicit trust gateway before broader execution and reporting surfaces.
+- **implications:**
+  - Review Queue is now the primary entry point for the cockpit MVP
+  - review decisions should emit explicit events and preserve source/evidence boundaries
+  - downstream views should treat trusted state as the output of review rather than raw intake
+  - future cockpit surfaces should adapt to the review-first model instead of bypassing it
+- **related_files:**
+  - job-search-ui/src/App.tsx
+  - job-search-ui/src/state/mvpState.tsx
+  - job-search-ui/src/features/mvp/MvpPages.tsx
+  - job-search-ui/src/domain/cockpit/
+  - job-search-ui/docs/review-queue-build-brief.md
+- **related_entity_ids:** []
+- **next_review_at:** null

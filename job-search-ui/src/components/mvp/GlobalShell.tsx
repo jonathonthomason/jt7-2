@@ -1,11 +1,13 @@
 import type { CSSProperties, ReactNode } from 'react'
 import type { MvpAction, MvpJob, MvpMessage, MvpRecruiter, MvpSignal } from '../../state/mvpState'
+import type { ReviewItem } from '../../domain/cockpit/types'
 import { NavLink, Outlet } from 'react-router-dom'
 import { useMvpState } from '../../state/mvpState'
 
 type NavGroup = { label: string; items: { label: string; to: string }[] }
 
 const navGroups: NavGroup[] = [
+  { label: 'Trust', items: [{ label: 'Review Queue', to: '/review-queue' }] },
   { label: 'Execute', items: [{ label: 'Today', to: '/execute/today' }] },
   {
     label: 'Manage',
@@ -35,28 +37,31 @@ const navGroups: NavGroup[] = [
 ]
 
 function PanelBody() {
-  const { state, closePanel, updatePanelNote, actionCommand, jobCommand, recruiterCommand } = useMvpState()
+  const { state, closePanel, updatePanelNote, actionCommand, jobCommand, recruiterCommand, reviewCommand } = useMvpState()
   const { type, id } = state.selectedPanel
-  if (!type || !id) return <p style={styles.panelEmpty}>Open a signal, job, recruiter, action, or message.</p>
+  if (!type || !id) return <p style={styles.panelEmpty}>Open a review item, signal, job, recruiter, action, or message.</p>
 
-  const object: MvpSignal | MvpJob | MvpRecruiter | MvpAction | MvpMessage | undefined = type === 'signal'
-    ? state.signals.find((item) => item.id === id)
-    : type === 'job'
-      ? state.jobs.find((item) => item.id === id)
-      : type === 'recruiter'
-        ? state.recruiters.find((item) => item.id === id)
-        : type === 'action'
-          ? state.actions.find((item) => item.id === id)
-          : state.messages.find((item) => item.id === id)
+  const object: MvpSignal | MvpJob | MvpRecruiter | MvpAction | MvpMessage | ReviewItem | undefined = type === 'review'
+    ? state.reviewQueue.find((item) => item.id === id)
+    : type === 'signal'
+      ? state.signals.find((item) => item.id === id)
+      : type === 'job'
+        ? state.jobs.find((item) => item.id === id)
+        : type === 'recruiter'
+          ? state.recruiters.find((item) => item.id === id)
+          : type === 'action'
+            ? state.actions.find((item) => item.id === id)
+            : state.messages.find((item) => item.id === id)
 
   if (!object) return <p style={styles.panelEmpty}>Object not found.</p>
 
   const panelRecord = object as Record<string, string | undefined>
-  const title = panelRecord.title || panelRecord.role || panelRecord.name || panelRecord.subject || panelRecord.summary || 'Detail'
+  const title = panelRecord.title || panelRecord.extractedRole || panelRecord.role || panelRecord.name || panelRecord.subject || panelRecord.summary || panelRecord.extractedCompany || 'Detail'
   const status = panelRecord.status || 'unknown'
   const source = panelRecord.source || panelRecord.channel || 'local state'
-  const summary = panelRecord.summary || panelRecord.whyNow || panelRecord.nextAction || panelRecord.recommendedAction || ''
-  const notes = panelRecord.notes || panelRecord.note || ''
+  const summary = panelRecord.summary || panelRecord.evidenceSummary || panelRecord.whyNow || panelRecord.nextAction || panelRecord.recommendedAction || panelRecord.reasonForReview || ''
+  const notes = panelRecord.notes || panelRecord.note || panelRecord.resolutionNotes || ''
+  const related = panelRecord.company || panelRecord.extractedCompany || panelRecord.target || 'JT7'
 
   return (
     <div style={styles.panelStack}>
@@ -74,13 +79,21 @@ function PanelBody() {
       <p style={styles.panelCopy}>{summary}</p>
       <div>
         <p style={styles.kicker}>Related</p>
-        <p style={styles.panelCopy}>{panelRecord.company || panelRecord.target || 'JT7'}</p>
+        <p style={styles.panelCopy}>{related}</p>
       </div>
       <label style={styles.noteLabel}>
         Note / status detail
         <textarea style={styles.noteArea} value={notes} onChange={(event) => updatePanelNote(event.target.value)} placeholder="Add operator note…" />
       </label>
       <div style={styles.panelActions}>
+        {type === 'review' ? (
+          <>
+            <button style={styles.primaryButton} onClick={() => reviewCommand(id, 'Confirm')} type="button">Confirm</button>
+            <button style={styles.secondaryButton} onClick={() => reviewCommand(id, 'Link')} type="button">Link</button>
+            <button style={styles.secondaryButton} onClick={() => reviewCommand(id, 'Dismiss')} type="button">Dismiss</button>
+            <button style={styles.secondaryButton} onClick={() => reviewCommand(id, 'Escalate')} type="button">Escalate</button>
+          </>
+        ) : null}
         {type === 'action' ? <button style={styles.primaryButton} onClick={() => actionCommand(id, 'Complete')} type="button">Complete</button> : null}
         {type === 'job' ? <button style={styles.primaryButton} onClick={() => jobCommand(id, 'Review')} type="button">Review</button> : null}
         {type === 'recruiter' ? <button style={styles.primaryButton} onClick={() => recruiterCommand(id, 'Draft Reply')} type="button">Draft Reply</button> : null}
@@ -91,7 +104,7 @@ function PanelBody() {
 }
 
 export function GlobalShell({ children }: { children?: ReactNode }) {
-  const { state, today, runSweep, refreshPlan } = useMvpState()
+  const { state, today, reviewSummary, runSweep, refreshPlan } = useMvpState()
 
   return (
     <div style={styles.shell}>
@@ -117,6 +130,7 @@ export function GlobalShell({ children }: { children?: ReactNode }) {
           <div style={styles.headerActions}>
             <button style={styles.secondaryButton} onClick={refreshPlan} type="button">Refresh</button>
             <button style={styles.primaryButton} onClick={runSweep} type="button">Run Sweep</button>
+            <span style={styles.signalTray}>{reviewSummary.pending.length} pending reviews</span>
             <span style={styles.signalTray}>{today.newSignals.length} signals</span>
           </div>
         </header>
@@ -174,14 +188,14 @@ const styles: Record<string, CSSProperties> = {
   },
   mainRegion: { minWidth: 0, display: 'flex', flexDirection: 'column' },
   header: {
-    height: '56px',
+    minHeight: '56px',
     borderBottom: '1px solid #262626',
     backgroundColor: '#161616',
     display: 'grid',
     gridTemplateColumns: '180px minmax(220px, 1fr) auto',
     gap: '0.75rem',
     alignItems: 'center',
-    padding: '0 1rem',
+    padding: '0.5rem 1rem',
   },
   contextSwitcher: { color: '#c6c6c6', fontSize: '0.85rem' },
   commandInput: {
@@ -192,7 +206,7 @@ const styles: Record<string, CSSProperties> = {
     color: '#f4f4f4',
     padding: '0.45rem 0.65rem',
   },
-  headerActions: { display: 'flex', gap: '0.5rem', alignItems: 'center' },
+  headerActions: { display: 'flex', gap: '0.5rem', alignItems: 'center', flexWrap: 'wrap' },
   content: { padding: '1rem', overflow: 'auto' },
   rightPanel: {
     borderLeft: '1px solid #262626',

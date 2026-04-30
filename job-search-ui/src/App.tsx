@@ -10,6 +10,7 @@ import {
   OutreachPage,
   RecruitersPage,
   ReportsPage,
+  ReviewQueuePage,
   SettingsPage,
   TodayPlanPage,
   WikiPage,
@@ -19,7 +20,7 @@ import { MvpStateProvider } from './state/mvpState'
 const DEMO_AUTH_KEY = 'demo_auth'
 
 function isAuthenticated() {
-  return localStorage.getItem(DEMO_AUTH_KEY) === '1'
+  return localStorage.getItem(DEMO_AUTH_KEY) === '1' || localStorage.getItem(DEMO_AUTH_KEY) === 'true'
 }
 
 function ProtectedRoute() {
@@ -39,13 +40,13 @@ function SignInPage() {
 
   const handleSignIn = () => {
     localStorage.setItem(DEMO_AUTH_KEY, '1')
-    navigate(from || '/execute/today', { replace: true })
+    navigate(from || '/review-queue', { replace: true })
   }
 
   return (
     <section style={styles.signInPage}>
       <div style={styles.signInCard}>
-        <p style={styles.kicker}>JT7 v1.5</p>
+        <p style={styles.kicker}>JT7 v1.6</p>
         <h1 style={styles.title}>Sign in</h1>
         <p style={styles.copy}>Use demo auth to access the local MVP operator surface.</p>
         <button style={styles.primaryButton} onClick={handleSignIn} type="button">Sign in</button>
@@ -69,7 +70,8 @@ export default function App() {
         <Route path="/auth/sign-in" element={<SignInPage />} />
         <Route element={<ProtectedRoute />}>
           <Route element={<ShellRoute />}>
-            <Route path="/" element={<Navigate to="/execute/today" replace />} />
+            <Route path="/" element={<Navigate to="/review-queue" replace />} />
+            <Route path="/review-queue" element={<ReviewQueuePage />} />
             <Route path="/execute/today" element={<TodayPlanPage />} />
             <Route path="/app/dashboard" element={<TodayPlanPage />} />
             <Route path="/jobs" element={<Navigate to="/manage/jobs" replace />} />
@@ -85,7 +87,7 @@ export default function App() {
             <Route path="/settings" element={<SettingsPage />} />
           </Route>
         </Route>
-        <Route path="*" element={<Navigate to="/execute/today" replace />} />
+        <Route path="*" element={<Navigate to="/review-queue" replace />} />
       </Routes>
     </BrowserRouter>
   )

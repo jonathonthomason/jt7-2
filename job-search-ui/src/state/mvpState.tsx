@@ -3,13 +3,19 @@ import actionsMirror from '../../data_mirror/Actions.json'
 import competitionMirror from '../../data_mirror/Competition.json'
 import jobsMirror from '../../data_mirror/Jobs.json'
 import recruitersMirror from '../../data_mirror/Recruiters.json'
+import reviewQueueMirror from '../../data_mirror/ReviewQueue.json'
 import signalsMirror from '../../data_mirror/Signals.json'
 import taskRunsMirror from '../../data_mirror/TaskRuns.json'
+import { buildFallbackReviewSelection } from '../domain/cockpit/fixtures'
+import { rowsToObjects, adaptReviewQueue } from '../domain/cockpit/mirrorAdapters'
+import { confirmAsNewOpportunity, deferSignal, dismissSignal, escalateSignal, linkToExistingOpportunity, markDuplicate } from '../domain/cockpit/reviewActions'
+import type { ReviewCommand } from '../domain/cockpit/enums'
+import type { ReviewEvent, ReviewItem } from '../domain/cockpit/types'
 
 const STORAGE_KEY = 'jt7_mvp_state_v1_5'
 
 type MirrorRow = Record<string, string>
-type PanelType = 'signal' | 'job' | 'recruiter' | 'action' | 'message' | null
+type PanelType = 'signal' | 'job' | 'recruiter' | 'action' | 'message' | 'review' | null
 
 export type MvpSignal = {
   id: string
@@ -30,7 +36,7 @@ export type MvpJob = {
   id: string
   role: string
   company: string
-  status: 'Found' | 'Saved' | 'Reviewing' | 'Applied' | 'Interviewing' | 'Offer' | 'Rejected' | 'Archived'
+  status: 'Found' | 'Saved' | 'Reviewing' | 'Applied' | 'Interviewing' | 'Offer' | 'Rejected' | 'Archived' | 'Cold' | 'Recruiter Contacted'
   source: string
   priority: 'critical' | 'high' | 'medium' | 'low'
   dateFound: string
@@ -115,6 +121,8 @@ export type MvpState = {
   outreach: MvpOutreach[]
   messages: MvpMessage[]
   taskRuns: MvpTaskRun[]
+  reviewQueue: ReviewItem[]
+  reviewEvents: ReviewEvent[]
   competition: MirrorRow[]
   selectedPanel: { type: PanelType; id?: string }
   lastUpdated: string
@@ -132,20 +140,21 @@ type MvpContextValue = {
     totalCount: number
     latestRun: MvpTaskRun | null
   }
+  reviewSummary: {
+    pending: ReviewItem[]
+    resolved: ReviewItem[]
+    highPriority: ReviewItem[]
+  }
   runSweep: () => void
   refreshPlan: () => void
   openPanel: (type: Exclude<PanelType, null>, id: string) => void
   closePanel: () => void
   actionCommand: (actionId: string, command: string, note?: string) => void
   signalCommand: (signalId: string, command: string) => void
+  reviewCommand: (reviewId: string, command: ReviewCommand, notes?: string) => void
   jobCommand: (jobId: string, command: string, value?: string) => void
   recruiterCommand: (recruiterId: string, command: string, note?: string) => void
   updatePanelNote: (text: string) => void
-}
-
-function rowsToObjects(rows: string[][]): MirrorRow[] {
-  const [header, ...data] = rows
-  return data.map((row) => Object.fromEntries(header.map((key, index) => [key, row[index] ?? ''])))
 }
 
 const jobsRows = rowsToObjects(jobsMirror as string[][])
@@ -171,6 +180,8 @@ function jobStatus(status: string): MvpJob['status'] {
   if (lower.includes('archive')) return 'Archived'
   if (lower.includes('review')) return 'Reviewing'
   if (lower.includes('save')) return 'Saved'
+  if (lower.includes('recruiter')) return 'Recruiter Contacted'
+  if (lower.includes('cold') || lower.includes('not applied')) return 'Cold'
   return 'Found'
 }
 
@@ -190,6 +201,7 @@ function actionStatus(status: string): MvpAction['status'] {
   if (status === 'waiting') return 'waiting'
   if (status === 'blocked') return 'blocked'
   if (status === 'deferred') return 'deferred'
+  if (status === 'dismissed') return 'dismissed'
   return 'open'
 }
 
@@ -215,7 +227,7 @@ function buildInitialState(): MvpState {
     id: row.recruiter_id,
     name: row.contact_name || row.company_name || 'Unknown recruiter',
     company: row.company_name || 'Unknown company',
-    status: recruiterStatus(row.tracking_status),
+    status: recruiterStatus(row.tracking_status || ''),
     lastContact: '',
     nextAction: row.tracking_status?.toLowerCase().includes('follow') ? 'Follow up' : 'Review relationship',
     relatedJobs: jobsRows.filter((job) => job.contact === row.recruiter_id).map((job) => job.job_id),
@@ -229,11 +241,11 @@ function buildInitialState(): MvpState {
       id: row.job_id,
       role: row.role || 'Unknown role',
       company: row.company || 'Unknown company',
-      status: jobStatus(row.status),
+      status: jobStatus(row.status || ''),
       source: row.source || 'local mirror',
       priority: priorityFrom(`${row.status} ${row.next_step}`),
       dateFound: row.last_contact_date || '2026-04-22',
-      dateApplied: row.status.toLowerCase().includes('applied') ? row.last_contact_date : undefined,
+      dateApplied: row.status?.toLowerCase().includes('applied') ? row.last_contact_date : undefined,
       lastSignal: signalRows.find((signal) => signal.linked_job_id === row.job_id)?.signal_id,
       nextAction: row.next_step || 'Review job fit',
       recruiterId: recruiter?.id,
@@ -258,9 +270,11 @@ function buildInitialState(): MvpState {
     linkedJobId: row.linked_job_id || undefined,
   })) satisfies MvpSignal[]
 
+  const reviewQueue = buildFallbackReviewSelection(adaptReviewQueue(reviewQueueMirror as string[][], signalRows))
+
   const actions = actionRows.map((row) => {
     const job = jobs.find((item) => item.id === row.job_id)
-    const actionType = actionTypeFrom(row.instruction)
+    const actionType = actionTypeFrom(row.instruction || '')
     return {
       id: row.action_id,
       jobId: row.job_id || undefined,
@@ -270,7 +284,7 @@ function buildInitialState(): MvpState {
       target: job?.recruiterName || row.company || job?.company || 'JT7',
       whyNow: row.reason || 'Generated from existing action tracker.',
       priority: row.urgency === 'high' ? 1 : row.urgency === 'medium' ? 2 : 3,
-      status: actionStatus(row.status),
+      status: actionStatus(row.status || ''),
       actionType,
       primaryCta: primaryCtaFor(actionType),
       secondaryActions: ['Mark Waiting', 'Defer', 'Complete'],
@@ -319,6 +333,8 @@ function buildInitialState(): MvpState {
     outreach,
     messages,
     taskRuns,
+    reviewQueue,
+    reviewEvents: [],
     competition: rowsToObjects(competitionMirror as string[][]),
     selectedPanel: { type: null },
     lastUpdated: taskRuns[0]?.lastRunAt || new Date().toISOString(),
@@ -380,6 +396,12 @@ export function MvpStateProvider({ children }: { children: ReactNode }) {
     }
   }, [state])
 
+  const reviewSummary = useMemo(() => ({
+    pending: state.reviewQueue.filter((item) => item.status === 'pending' || item.status === 'deferred'),
+    resolved: state.reviewQueue.filter((item) => !['pending', 'deferred'].includes(item.status)),
+    highPriority: state.reviewQueue.filter((item) => item.priority === 'high'),
+  }), [state.reviewQueue])
+
   const setPersistedState = (updater: (current: MvpState) => MvpState) => {
     setState((current) => persist(updater(current)))
   }
@@ -433,6 +455,74 @@ export function MvpStateProvider({ children }: { children: ReactNode }) {
       ...current,
       signals: current.signals.map((item) => item.id === signalId ? { ...item, status: linkedStatus } : item),
       actions: newAction && !current.actions.some((action) => action.id === newAction.id) ? [newAction, ...current.actions] : current.actions,
+      lastUpdated: now,
+    }
+  })
+
+  const reviewCommand = (reviewId: string, command: ReviewCommand, notes?: string) => setPersistedState((current) => {
+    const item = current.reviewQueue.find((entry) => entry.id === reviewId)
+    if (!item) return current
+
+    const payload = { notes, linkedJobId: item.proposedJobUpdate.linkedJobId }
+    const result = command === 'Confirm'
+      ? confirmAsNewOpportunity(item, payload)
+      : command === 'Link'
+        ? linkToExistingOpportunity(item, payload)
+        : command === 'Dismiss'
+          ? dismissSignal(item, payload)
+          : command === 'Mark Duplicate'
+            ? markDuplicate(item, payload)
+            : command === 'Defer'
+              ? deferSignal(item, payload)
+              : escalateSignal(item, payload)
+
+    const now = result.event.timestamp
+    const actionFromReview = (command === 'Confirm' || command === 'Link') && item.proposedAction
+      ? {
+          id: `action_review_${reviewId}`,
+          jobId: item.proposedJobUpdate.linkedJobId,
+          company: item.extractedCompany || item.proposedJobUpdate.company || 'Unknown company',
+          title: item.proposedAction,
+          channel: item.source,
+          target: item.extractedRecruiter || item.extractedCompany || 'JT7',
+          whyNow: item.reasonForReview,
+          priority: item.priority === 'high' ? 1 : item.priority === 'medium' ? 2 : 3,
+          status: 'open' as const,
+          actionType: 'review_follow_up',
+          primaryCta: 'Review Job',
+          secondaryActions: ['Mark Waiting', 'Defer', 'Complete'],
+          createdAt: now,
+        }
+      : null
+
+    const jobFromReview = command === 'Confirm' && item.extractedCompany
+      ? {
+          id: item.proposedJobUpdate.linkedJobId || `job_from_${reviewId}`,
+          role: item.extractedRole || item.proposedJobUpdate.role || 'Unknown role',
+          company: item.extractedCompany || item.proposedJobUpdate.company || 'Unknown company',
+          status: jobStatus(item.proposedJobUpdate.proposedStatus || 'Reviewing'),
+          source: item.source,
+          priority: item.priority,
+          dateFound: item.timestamp,
+          lastSignal: item.signalId,
+          nextAction: item.proposedAction || 'Review opportunity',
+          recruiterId: item.extractedRecruiter || undefined,
+          recruiterName: current.recruiters.find((r) => r.id === item.extractedRecruiter)?.name,
+          notes: item.resolutionNotes || notes,
+        }
+      : null
+
+    return {
+      ...current,
+      reviewQueue: current.reviewQueue.map((entry) => entry.id === reviewId ? { ...entry, status: result.nextStatus, resolutionNotes: notes ?? entry.resolutionNotes } : entry),
+      reviewEvents: [result.event, ...current.reviewEvents],
+      signals: current.signals.map((signal) => signal.id === item.signalId
+        ? { ...signal, status: command === 'Dismiss' || command === 'Mark Duplicate' ? 'dismissed' : 'linked', linkedJobId: item.proposedJobUpdate.linkedJobId || signal.linkedJobId }
+        : signal),
+      jobs: jobFromReview && !current.jobs.some((job) => job.id === jobFromReview.id)
+        ? [jobFromReview, ...current.jobs]
+        : current.jobs.map((job) => job.id === item.proposedJobUpdate.linkedJobId ? { ...job, status: jobStatus(item.proposedJobUpdate.proposedStatus || job.status), lastSignal: item.signalId } : job),
+      actions: actionFromReview && !current.actions.some((action) => action.id === actionFromReview.id) ? [actionFromReview, ...current.actions] : current.actions,
       lastUpdated: now,
     }
   })
@@ -499,6 +589,7 @@ export function MvpStateProvider({ children }: { children: ReactNode }) {
     if (type === 'job') return { ...current, jobs: current.jobs.map((item) => item.id === id ? { ...item, notes: text } : item) }
     if (type === 'recruiter') return { ...current, recruiters: current.recruiters.map((item) => item.id === id ? { ...item, notes: text } : item) }
     if (type === 'action') return { ...current, actions: current.actions.map((item) => item.id === id ? { ...item, note: text } : item) }
+    if (type === 'review') return { ...current, reviewQueue: current.reviewQueue.map((item) => item.id === id ? { ...item, resolutionNotes: text } : item) }
     return current
   })
 
@@ -554,7 +645,7 @@ export function MvpStateProvider({ children }: { children: ReactNode }) {
   const refreshPlan = () => setPersistedState((current) => ({ ...current, lastUpdated: new Date().toISOString() }))
 
   return (
-    <MvpContext.Provider value={{ state, today, runSweep, refreshPlan, openPanel, closePanel, actionCommand, signalCommand, jobCommand, recruiterCommand, updatePanelNote }}>
+    <MvpContext.Provider value={{ state, today, reviewSummary, runSweep, refreshPlan, openPanel, closePanel, actionCommand, signalCommand, reviewCommand, jobCommand, recruiterCommand, updatePanelNote }}>
       {children}
     </MvpContext.Provider>
   )

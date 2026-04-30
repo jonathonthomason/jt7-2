@@ -1,40 +1,40 @@
 # CURRENT.md
 
 ## Current State Record
-- **id:** current_state_2026_04_22
-- **updated_at:** 2026-04-22T21:04:00-05:00
-- **system_phase:** Execution Layer Hardening
-- **current_step:** improve parsing accuracy, reduce false positives, and keep runtime/docs aligned to live JT7 behavior
+- **id:** current_state_2026_04_30
+- **updated_at:** 2026-04-30T06:45:00-05:00
+- **system_phase:** Cockpit + Runtime Hardening
+- **current_step:** Review Queue v1 is implemented and verified; latest runtime scrub and direct-board import pass completed; next work should narrow signal quality and board-import precision
 - **confidence_level:** medium_high
 
 ## State Summary
-- **state_summary:** JT7 now performs real Gmail ingestion, runtime classification, probabilistic matching, Sheets CRUD, TaskRuns logging, local mirror sync, git sync, and Drive-aware documentation maintenance. The main remaining gap is parsing precision, not missing execution.
+- **state_summary:** JT7 now has a real Review Queue cockpit surface in `job-search-ui`, plus a fresh 2026-04-30 runtime scrub and direct board refresh. The main remaining gaps are Indeed access, direct-import precision, and tighter prioritization of imported opportunities.
 
 ## Top Priorities
 - **top_priorities:**
-  - improve parsing accuracy so newsletter and digest noise stop polluting the tracker
-  - keep runtime persistence consistent across Sheets, local mirror, git, and Drive-accessible artifacts
-  - keep system requirements and docs current with actual JT7 runtime behavior
+  - improve parsing and import precision so review noise and off-target board results stop polluting the tracker
+  - keep cockpit/runtime persistence consistent across Sheets, local mirror, git, and Drive-accessible artifacts
+  - turn the new Review Queue surface into the foundation for the rest of the JT7-2 cockpit
 
 ## Active Risks
 - **active_risks:**
-  - low-quality Gmail signals can still create or reinforce weak tracker rows if source filtering remains too loose
-  - some legacy docs and filenames still reflect older platform assumptions instead of the current execution-layer reality
+  - low-quality Gmail signals and broad direct-board imports can still create weak review items or cold jobs if filtering remains too loose
+  - Indeed remains blocked by anti-bot flow, leaving one source partially inaccessible
+  - some legacy docs and filenames still reflect older platform assumptions instead of the current cockpit/runtime reality
   - Drive mirror behavior currently uploads fresh copies rather than updating a single canonical mirrored doc in place
-  - job-board adapters beyond Gmail-delivered board emails remain only partially implemented
 
 ## Open Questions
 - **open_questions:**
-  - which existing low-quality jobs/signals/actions should be cleaned from the tracker after the looser earlier parsing passes?
+  - what filters should gate direct-board imports so only Jonathon-fit roles land in the apply set by default?
   - what canonical Drive update mechanism should replace duplicate file uploads?
   - which remaining docs still materially misrepresent the live JT7 app/runtime state?
 
 ## Required Next Moves
 - **required_next_moves:**
   - tighten source-specific Gmail filtering for newsletters, digests, and reply notifications unless they contain a valid role/company pattern
-  - improve recruiter/company/job extraction so generic sender artifacts stop becoming review noise or weak entities
+  - add stronger direct-board filtering and ranking so imported jobs favor senior/principal product design fit, remote, and DFW relevance
   - normalize Drive mirror behavior so updated docs refresh canonical mirrored copies rather than creating duplicates
-  - continue keeping runtime docs and storage rules aligned with the actual live JT7 execution path
+  - continue keeping cockpit/runtime docs and storage rules aligned with the actual live JT7 execution path
 
 ## Related Files
 - **related_files:**
@@ -43,6 +43,8 @@
   - DECISIONS.md
   - docs/storage-rules.md
   - job-search-ui/docs/local-git-drive-rules.md
+  - job-search-ui/docs/review-queue-build-brief.md
   - job-search-ui/scripts/run_jt7_chain.py
+  - job-search-ui/scripts/import_direct_board_jobs.py
   - job-search-ui/runtime/jt7_tasks.json
   - job-search-ui/runtime/jt7_scheduler.json
