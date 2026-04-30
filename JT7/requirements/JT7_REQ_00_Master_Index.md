@@ -36,10 +36,16 @@ SYSTEM
 
 ## Build Order
 1. Shell + routing
-2. Today’s Plan
-3. Signal cards
-4. Jobs table
-5. Right panel
+2. Review Queue
+3. trusted-state model wiring
+4. Pipeline Overview
+5. Opportunity Detail
 6. Design system
 7. Remaining manage surfaces
 8. Intelligence layer
+
+## Related Artifacts
+- `JT7_REQ_09_Cockpit_Operator_Model.md`
+- `../../docs/cockpit-strategy-note.md`
+- `../../docs/signal-verification-sop.md`
+- `../../job-search-ui/docs/review-queue-build-brief.md`
