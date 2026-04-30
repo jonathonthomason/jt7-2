@@ -21,6 +21,10 @@ Enable multiple thread or bot surfaces such that:
 - orchestration remains centralized
 - all surfaces run through one platform core
 
+Important clarification:
+- one user-facing bot can technically front multiple internal agents
+- but each bot surface should still map to one primary domain/default agent for user-facing clarity
+
 ---
 
 ## 2. Routing Layers

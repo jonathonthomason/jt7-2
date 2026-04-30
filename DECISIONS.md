@@ -316,3 +316,25 @@
   - job-search-ui/docs/review-queue-build-brief.md
 - **related_entity_ids:** []
 - **next_review_at:** null
+
+### decision_16
+- **id:** decision_jobops_separate_bot_same_openclaw_core
+- **title:** Run JobOps as a separate bot surface on the same OpenClaw core
+- **domain:** system
+- **status:** active
+- **decision_date:** 2026-04-30
+- **owner:** Jonathon
+- **summary:** JT7 Job Ops should launch as a separate Telegram bot surface with its own dedicated JobOps agent behavior, while remaining on the same OpenClaw Gateway/core as JT7 Platform unless hard isolation later becomes necessary.
+- **why:** Jonathon wants a clean direct channel for job-search operations without fragmenting the platform into multiple independent systems too early.
+- **implications:**
+  - separate bot identity should provide a separate user-facing operational lane
+  - JobOps should have one primary domain role even if internal subagents are used behind the scenes
+  - platform-building work stays with JT7 Platform, while review/triage/pipeline operations move to JobOps
+  - multi-account Telegram on one Gateway is the preferred starting architecture
+  - separate Gateway/profile remains a later option for harder isolation if needed
+- **related_files:**
+  - docs/jt7-job-ops-bot-agent-spec.md
+  - docs/three-bot-surface-model.md
+  - docs/openclaw-thread-routing-config-spec.md
+- **related_entity_ids:** []
+- **next_review_at:** null

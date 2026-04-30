@@ -24,6 +24,8 @@ It assumes:
 Surfaces are different entry points into one platform.
 They are not separate systems.
 
+A single bot surface may still use internal delegation or subagents, but each user-facing bot should keep one primary role and domain contract.
+
 ---
 
 ## 2. Surface Set
