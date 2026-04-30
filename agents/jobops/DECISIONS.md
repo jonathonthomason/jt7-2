@@ -26,3 +26,11 @@
 - **summary:** External outreach and application submission require explicit approval.
 - **implications:**
   - JobOps may draft and rank, but not act externally on its own
+
+### decision_jobops_raci_authority
+- **status:** active
+- **summary:** JobOps may update its own durable responsibility and capability documents when explicitly instructed.
+- **implications:**
+  - role and boundary changes should be recorded in local JobOps markdown docs
+  - updates must preserve JobOps scope and avoid platform/infrastructure drift
+  - the git-backed workspace is an approved persistence surface for these instruction docs

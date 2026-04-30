@@ -27,3 +27,4 @@
   - define the first operational review/ranking pass shape for JobOps
   - implement or enforce a visible staging layer for direct-board intake
   - validate that JobOps answers operational prompts as JobOps rather than drifting into platform architecture
+  - maintain the new durable RACI/instruction docs as scope authority when explicitly instructed

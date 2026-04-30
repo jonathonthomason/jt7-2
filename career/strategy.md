@@ -1,33 +1,23 @@
 # career/strategy.md
 
 ## File Role
-- **Purpose:** define career search direction
-- **Scope:** role targeting, positioning, strengths, gaps, market wedge
+- **Purpose:** define career search strategy and positioning
+- **Scope:** narrative, strengths, gaps, wedge, and strategic framing
 - **Status:** active
 
-> Consolidation note: this strategy file remains active and useful, but live tracker truth now belongs in Google Sheets rather than markdown pipeline records. Use this file for strategic direction, role targeting, and positioning logic — not as a competing operational tracker.
+> Canonical operational search constraints now live in `career/search-requirements/jonathon-thomason.md`.
+> Use that file for sourcing filters, allowed locations, role inclusion/exclusion, and runtime search behavior.
+> Use this file for higher-level positioning and strategy.
+
+## Canonical Search Requirements
+- **active_requirements_file:** `career/search-requirements/jonathon-thomason.md`
+- **model:** modular per job seeker
+- **current_constraint_update:** limit non-remote roles to Dallas / Fort Worth area and allow remote roles
 
 ## Search Objective
 - **Primary outcome:** land a senior or principal product design role
 - **Search mode:** active
 - **Decision standard:** prioritize roles with strategic scope, product influence, and clear ownership
-
-## Target Role Set
-### Primary roles
-- **Senior Product Designer**
-- **Principal Product Designer**
-- **Lead Product Designer**
-
-### Secondary roles
-- **Staff Product Designer**
-- **Design Lead**
-- **Founding Product Designer**
-
-### Deprioritized roles
-- execution-only design roles
-- production-heavy UI roles with low product influence
-- senior-titled roles with low ownership
-- visually oriented roles without systems or strategy scope
 
 ## Positioning Model
 - **Core positioning:** strategic product designer with systems thinking, clarity-building ability, and strong execution translation

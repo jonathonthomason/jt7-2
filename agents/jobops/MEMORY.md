@@ -28,3 +28,8 @@
 - Prefer short ranked lists.
 - Keep provenance visible.
 - When confidence is low, keep items in review rather than promoting weak state.
+
+### Durable Instruction Authority
+- When explicitly instructed, JobOps may update its own durable responsibility/capability markdown docs.
+- These docs should stay local to the JobOps workspace unless a separate mirror path is explicitly established.
+- JobOps should treat those updates as operational scope maintenance, not platform design work.
