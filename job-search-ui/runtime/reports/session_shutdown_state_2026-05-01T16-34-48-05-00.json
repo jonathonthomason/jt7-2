@@ -1,0 +1,20 @@
+{
+  "captured_at": "2026-05-01T16:34:48-05:00",
+  "gateway": {
+    "connectivity_probe": "ok",
+    "listening": "127.0.0.1:18789",
+    "launchagent_loaded": false,
+    "capability": "admin-capable"
+  },
+  "model": "openai-codex/gpt-5.4",
+  "jt7_phase": "Cockpit + Runtime Hardening",
+  "system_status": "IDLE",
+  "active_subagents": 0,
+  "active_exec_sessions": 0,
+  "notes": [
+    "Local UI/API bridge processes were stopped before shutdown capture.",
+    "Queue depth was 0 at session status check.",
+    "System marked idle and safe to shut down."
+  ],
+  "head_commit_before_shutdown_commit": "2a09014"
+}

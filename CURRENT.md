@@ -2,14 +2,14 @@
 
 ## Current State Record
 - **id:** current_state_2026_04_30
-- **updated_at:** 2026-05-01T15:07:00-05:00
+- **updated_at:** 2026-05-01T16:34:48-05:00
 - **system_phase:** Cockpit + Runtime Hardening
 - **system_status:** IDLE
-- **current_step:** System is paused cleanly after implementing resume-time catch-up semantics for the JT7 scheduler and persisting the new scheduler contract. Gateway is healthy on loopback, the active model is `openai-codex/gpt-5.4`, no active executions are running, and the workspace is safe to shut down
+- **current_step:** System is paused cleanly. Gateway health is confirmed on loopback, the active model is `openai-codex/gpt-5.4`, local UI/API execution processes have been stopped, no active subagents are running, and the workspace is safe to shut down.
 - **confidence_level:** high
 
 ## State Summary
-- **state_summary:** JT7 has a real Review Queue cockpit surface in `job-search-ui`, a live JobOps bot lane with dedicated routing and operating memory, and an explicit staging-intake UI that scores fit, auto-gates obvious off-target imports, and supports duplicate-safe local merge behavior for broad direct-board intake. A runtime-side planner defines tracker-facing create/merge/hold/reject decisions while filtering duplicate checks against canonical jobs only. This session added resume-time catch-up semantics (`single-pass-on-resume`) to the scheduler, hardened the JT7 chain’s Sheets path with explicit `gog` account + `--no-input` usage and better stderr capture, proved live staging→canonical create writeback into Google Sheets `Jobs`, added a thin local API bridge so UI promotion/merge actions can hit the real runtime apply path instead of only mutating demo state, and surfaced writeback success/failure more clearly in the staging UI. Read-only Sheets access is verified, but the specific 2026-05-01 08:30 scheduler-only failure is still only narrowed to a transient or opaque `gog` exit-2 condition rather than fully explained. The system is otherwise in a controlled state.
+- **state_summary:** JT7 still sits in `Cockpit + Runtime Hardening`, but it is materially further along inside that phase. This session added resume-time catch-up semantics (`single-pass-on-resume`) to the scheduler, hardened the JT7 chain’s Sheets path with explicit `gog` account + `--no-input` usage and better stderr capture, proved two live staging→canonical create writebacks into Google Sheets `Jobs`, added a thin local API bridge so UI promotion/merge actions can hit the real runtime apply path, surfaced writeback success/failure more clearly in the staging UI, refreshed local mirrors, pushed the intentional code/evidence set to git, and uploaded a Drive snapshot of those artifacts. What did not happen: no real click-path operator audit yet, no real merge writeback proven in normal use, no true root cause found for the 2026-05-01 08:30 scheduler failure, and Drive mirroring still creates snapshot copies instead of updating a single canonical mirrored file in place.
 
 ## Top Priorities
 - **top_priorities:**
@@ -24,9 +24,10 @@
   - low-quality Gmail signals and broad direct-board imports can still create weak review items or cold jobs if filtering and promotion rules remain too loose
   - Indeed remains blocked by anti-bot flow, leaving one source partially inaccessible
   - some legacy docs and filenames still reflect older platform assumptions instead of the current cockpit/runtime reality
-  - gateway is reachable but still not loaded as a clean LaunchAgent service, so lifecycle transitions remain fragile
-  - scheduler now has resume-time catch-up semantics, but the specific 2026-05-01 morning failure is only narrowed to a transient or opaque `gog` exit-2 condition because direct live and launchd-like-env `gog sheets get Jobs!A1:Z1000` both succeed now
-  - Drive mirror behavior currently uploads fresh copies rather than updating a single canonical mirrored doc in place
+  - gateway is healthy but still not loaded as a clean LaunchAgent service, so lifecycle transitions remain fragile
+  - scheduler now has resume-time catch-up semantics, but the specific 2026-05-01 morning failure is still not root-caused; it is only narrowed to a transient or opaque `gog` exit-2 condition
+  - Drive mirror behavior currently creates snapshot copies rather than refreshing a single canonical mirrored file, so mirror sprawl is growing
+  - the UI→runtime bridge is proven technically, but not yet proven through a normal operator click audit
 
 ## Open Questions
 - **open_questions:**
