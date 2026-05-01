@@ -63,7 +63,9 @@ export type StagedOpportunity = {
   status: StagingDecision
   trustLevel: 'staged' | 'reviewed'
   fitBand: StagingFitBand
+  fitScore?: number
   duplicateRisk: 'low' | 'medium' | 'high'
+  duplicateMatches?: string[]
   recommendedAction: string
   reasons: string[]
   link?: string

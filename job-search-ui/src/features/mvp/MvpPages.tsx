@@ -106,6 +106,11 @@ function FitTag({ value }: { value: StagedOpportunity['fitBand'] }) {
   return <span style={{ ...styles.tag, borderColor: color, color }}>{value}</span>
 }
 
+function DuplicateTag({ item }: { item: StagedOpportunity }) {
+  if (!item.duplicateMatches?.length) return null
+  return <span style={{ ...styles.tag, borderColor: '#fa4d56', color: '#fa4d56' }}>{item.duplicateMatches.length} canonical match{item.duplicateMatches.length > 1 ? 'es' : ''}</span>
+}
+
 function StagingCard({ item }: { item: StagedOpportunity }) {
   const { openPanel, stagingCommand } = useMvpState()
   return (
@@ -114,8 +119,10 @@ function StagingCard({ item }: { item: StagedOpportunity }) {
         <div style={styles.tagRow}>
           <FitTag value={item.fitBand} />
           <StatusTag value={item.status} />
+          <span style={styles.tag}>score {item.fitScore ?? 0}</span>
           <span style={styles.tag}>{item.sourceBoard}</span>
           <span style={styles.tag}>{item.duplicateRisk} duplicate risk</span>
+          <DuplicateTag item={item} />
         </div>
         <button style={styles.linkButton} onClick={() => openPanel('staging', item.id)} type="button">Detail</button>
       </div>
@@ -123,6 +130,7 @@ function StagingCard({ item }: { item: StagedOpportunity }) {
       <p style={styles.meta}>{item.company} · {item.location}</p>
       <p style={styles.copy}>{item.recommendedAction}</p>
       <p style={styles.meta}>Why: {item.reasons.join(' · ')}</p>
+      {item.duplicateMatches?.length ? <p style={styles.meta}>Canonical matches: {item.duplicateMatches.join(', ')}</p> : null}
       <div style={styles.buttonRow}>
         <button style={styles.primaryButton} onClick={() => stagingCommand(item.id, 'Promote')} type="button">Promote</button>
         <button style={styles.secondaryButton} onClick={() => stagingCommand(item.id, 'Hold')} type="button">Hold</button>
@@ -165,7 +173,7 @@ export function StagingIntakePage() {
               {stagingSummary.strongFit.slice(0, 8).map((item) => (
                 <li key={item.id} style={styles.listItem}>
                   <button style={styles.linkButton} onClick={() => openPanel('staging', item.id)} type="button">{item.company} — {item.role}</button>
-                  <span style={styles.meta}>{item.location} · {item.sourceBoard}</span>
+                  <span style={styles.meta}>{item.location} · score {item.fitScore ?? 0}</span>
                 </li>
               ))}
             </ul>
@@ -174,9 +182,10 @@ export function StagingIntakePage() {
             <SectionTitle title="Trust boundary" />
             <ul style={styles.cleanList}>
               <li style={styles.listItem}>Canonical Jobs remain trusted tracker state.</li>
-              <li style={styles.listItem}>Staged imports keep board provenance and duplicate risk visible.</li>
+              <li style={styles.listItem}>Staged imports keep board provenance, fit score, and duplicate risk visible.</li>
               <li style={styles.listItem}>Only explicit promotion should create or update tracker-facing jobs.</li>
               <li style={styles.listItem}>Current staged corpus: {state.stagingQueue.length} imported roles.</li>
+              <li style={styles.listItem}>Potential canonical duplicates currently flagged: {state.stagingQueue.filter((item) => item.duplicateMatches?.length).length}.</li>
             </ul>
           </section>
         </aside>

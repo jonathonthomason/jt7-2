@@ -402,3 +402,24 @@
   - /Users/jtemp/.openclaw/openclaw.json
 - **related_entity_ids:** []
 - **next_review_at:** null
+
+### decision_20
+- **id:** decision_budget_phase_warn_on_thresholds_and_wait_times
+- **title:** During budget-constrained build phase, warn on usage thresholds and recommend wait times
+- **domain:** execution
+- **status:** active
+- **decision_date:** 2026-04-30
+- **owner:** Jonathon
+- **summary:** JT7 should proactively warn Jonathon when session/task budget moves into defined warning bands, include a short budget-status line at the end of meaningful work turns, and recommend how long to wait before sending the next non-urgent input when exhaustion risk rises.
+- **why:** Jonathon wants tighter budget discipline while building, with explicit pacing guidance before avoidable exhaustion loops happen.
+- **implications:**
+  - default threshold bands should be treated as green above 70% left, yellow at 50-70%, orange at 25-50%, red below 25%, and critical below 10%
+  - JT7 should recommend pause timing in proportion to remaining budget pressure
+  - JT7 should prefer smaller slices, read-only checks first, and durable-state reuse when budget pressure rises
+  - this rule remains active until Jonathon changes it
+- **related_files:**
+  - USER.md
+  - CURRENT.md
+  - DECISIONS.md
+- **related_entity_ids:** []
+- **next_review_at:** null

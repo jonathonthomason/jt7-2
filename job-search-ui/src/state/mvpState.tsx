@@ -230,6 +230,84 @@ function primaryCtaFor(type: string) {
   return 'Open Detail'
 }
 
+function normalizeText(value: string) {
+  return value.toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim()
+}
+
+function locationAllowed(location: string) {
+  const text = normalizeText(location)
+  return text.includes('remote') || ['dallas', 'fort worth', 'dfw', 'irving', 'plano', 'frisco', 'addison', 'grapevine', 'arlington', 'richardson'].some((token) => text.includes(token))
+}
+
+function roleTier(role: string) {
+  const text = normalizeText(role)
+  if (['principal product designer', 'lead product designer', 'staff product designer', 'product design manager'].some((token) => text.includes(token))) return 3
+  if (text.includes('senior product designer')) return 2
+  if (text.includes('product designer') || text.includes('design lead') || text.includes('founding product designer')) return 1
+  return 0
+}
+
+function weakRolePenalty(role: string) {
+  const text = normalizeText(role)
+  let penalty = 0
+  if (['design system', 'mobile', 'visual', 'brand', 'ui designer'].some((token) => text.includes(token))) penalty += 2
+  if (['ux ui', 'production', 'marketing designer'].some((token) => text.includes(token))) penalty += 2
+  return penalty
+}
+
+function duplicateMatchesFor(staged: StagedOpportunity, jobs: MvpJob[]) {
+  const stagedCompany = normalizeText(staged.company)
+  const stagedRole = normalizeText(staged.role)
+  return jobs.filter((job) => {
+    const jobCompany = normalizeText(job.company)
+    const jobRole = normalizeText(job.role)
+    const sameCompany = stagedCompany && jobCompany === stagedCompany
+    const exactRole = stagedRole && jobRole === stagedRole
+    const nearRole = stagedRole && jobRole && (jobRole.includes(stagedRole) || stagedRole.includes(jobRole))
+    return sameCompany && (exactRole || nearRole)
+  }).map((job) => job.id)
+}
+
+function scoreStagedOpportunity(staged: StagedOpportunity, jobs: MvpJob[]) {
+  let score = 0
+  const duplicateMatches = duplicateMatchesFor(staged, jobs)
+  const tier = roleTier(staged.role)
+  score += tier * 25
+  if (locationAllowed(staged.location)) score += 20
+  if (normalizeText(staged.location).includes('remote')) score += 10
+  score -= weakRolePenalty(staged.role) * 10
+  score -= duplicateMatches.length > 0 ? 35 : 0
+  score += staged.sourceBoard === 'builtin' ? 5 : 0
+  const fitBand: StagedOpportunity['fitBand'] = score >= 55 ? 'strong' : score >= 25 ? 'maybe' : 'weak'
+  const duplicateRisk: StagedOpportunity['duplicateRisk'] = duplicateMatches.length > 1 ? 'high' : duplicateMatches.length === 1 ? 'medium' : staged.duplicateRisk
+  const reasons = [...staged.reasons]
+  if (duplicateMatches.length) reasons.unshift(`possible canonical duplicate (${duplicateMatches.length})`)
+  if (!locationAllowed(staged.location)) reasons.push('outside preferred location rule')
+  const recommendedAction = duplicateMatches.length
+    ? 'Hold for duplicate review before any promotion'
+    : fitBand === 'strong'
+      ? 'Promote after final human check'
+      : fitBand === 'maybe'
+        ? 'Hold for ranked review'
+        : 'Reject unless strategic exception'
+
+  return {
+    ...staged,
+    fitScore: score,
+    fitBand,
+    duplicateRisk,
+    duplicateMatches,
+    reasons,
+    recommendedAction,
+  }
+}
+
+function enrichStagingQueue(stagingQueue: StagedOpportunity[], jobs: MvpJob[]) {
+  return stagingQueue
+    .map((item) => scoreStagedOpportunity(item, jobs))
+    .sort((a, b) => (b.fitScore ?? 0) - (a.fitScore ?? 0))
+}
+
 function buildInitialState(): MvpState {
   const recruiters = recruiterRows.map((row) => ({
     id: row.recruiter_id,
@@ -279,7 +357,7 @@ function buildInitialState(): MvpState {
   })) satisfies MvpSignal[]
 
   const reviewQueue = buildFallbackReviewSelection(adaptReviewQueue(reviewQueueMirror as string[][], signalRows))
-  const stagingQueue = adaptDirectBoardPreview((directBoardImportPreview.proposed_rows || []) as string[][])
+  const stagingQueue = enrichStagingQueue(adaptDirectBoardPreview((directBoardImportPreview.proposed_rows || []) as string[][]), jobs)
 
   const actions = actionRows.map((row) => {
     const job = jobs.find((item) => item.id === row.job_id)
@@ -354,7 +432,7 @@ function buildInitialState(): MvpState {
 function normalizeState(state: MvpState): MvpState {
   return {
     ...state,
-    stagingQueue: state.stagingQueue ?? adaptDirectBoardPreview((directBoardImportPreview.proposed_rows || []) as string[][]),
+    stagingQueue: enrichStagingQueue(state.stagingQueue ?? adaptDirectBoardPreview((directBoardImportPreview.proposed_rows || []) as string[][]), state.jobs),
   }
 }
 
@@ -421,7 +499,7 @@ export function MvpStateProvider({ children }: { children: ReactNode }) {
 
   const stagingSummary = useMemo(() => ({
     pending: state.stagingQueue.filter((item) => item.status === 'pending' || item.status === 'hold'),
-    strongFit: state.stagingQueue.filter((item) => item.fitBand === 'strong'),
+    strongFit: state.stagingQueue.filter((item) => item.fitBand === 'strong' && !item.duplicateMatches?.length),
     reviewed: state.stagingQueue.filter((item) => item.status === 'promote' || item.status === 'reject'),
   }), [state.stagingQueue])
 
@@ -555,7 +633,7 @@ export function MvpStateProvider({ children }: { children: ReactNode }) {
     const target = current.stagingQueue.find((item) => item.id === stagingId)
     if (!target) return current
 
-    const status = command === 'Promote' ? 'promote' : command === 'Reject' ? 'reject' : 'hold'
+    const status: StagedOpportunity['status'] = command === 'Promote' ? 'promote' : command === 'Reject' ? 'reject' : 'hold'
     const promotedJob: MvpJob | null = command === 'Promote' ? {
       id: target.canonicalJobId || `job_${stagingId}`,
       role: target.role,
@@ -569,10 +647,13 @@ export function MvpStateProvider({ children }: { children: ReactNode }) {
       notes: [target.provenance, notes].filter(Boolean).join(' | '),
     } : null
 
+    const nextJobs = promotedJob && !current.jobs.some((job) => job.id === promotedJob.id) ? [promotedJob, ...current.jobs] : current.jobs
+    const nextStaging = current.stagingQueue.map((item) => item.id === stagingId ? { ...item, status, trustLevel: command === 'Promote' ? 'reviewed' : item.trustLevel, notes: notes ?? item.notes } : item)
+
     return {
       ...current,
-      stagingQueue: current.stagingQueue.map((item) => item.id === stagingId ? { ...item, status, trustLevel: command === 'Promote' ? 'reviewed' : item.trustLevel, notes: notes ?? item.notes } : item),
-      jobs: promotedJob && !current.jobs.some((job) => job.id === promotedJob.id) ? [promotedJob, ...current.jobs] : current.jobs,
+      stagingQueue: enrichStagingQueue(nextStaging, nextJobs),
+      jobs: nextJobs,
       lastUpdated: now,
     }
   })
@@ -640,7 +721,7 @@ export function MvpStateProvider({ children }: { children: ReactNode }) {
     if (type === 'recruiter') return { ...current, recruiters: current.recruiters.map((item) => item.id === id ? { ...item, notes: text } : item) }
     if (type === 'action') return { ...current, actions: current.actions.map((item) => item.id === id ? { ...item, note: text } : item) }
     if (type === 'review') return { ...current, reviewQueue: current.reviewQueue.map((item) => item.id === id ? { ...item, resolutionNotes: text } : item) }
-    if (type === 'staging') return { ...current, stagingQueue: current.stagingQueue.map((item) => item.id === id ? { ...item, notes: text } : item) }
+    if (type === 'staging') return { ...current, stagingQueue: enrichStagingQueue(current.stagingQueue.map((item) => item.id === id ? { ...item, notes: text } : item), current.jobs) }
     return current
   })
 
