@@ -2,6 +2,7 @@
 import csv
 import json
 import re
+import shutil
 import subprocess
 import sys
 from datetime import datetime, timedelta
@@ -78,6 +79,8 @@ NEWSLETTER_NOISE_PATTERNS = [
     r'meta starts tracking employee laptops',
     r'just messaged you',
 ]
+
+GOG_BIN = shutil.which('gog') or '/opt/homebrew/bin/gog'
 GENERIC_COMPANY_BLOCKLIST = {'linkedin job alerts', 'linkedin', 'indeed', 'mail', 'em', 'builtin', 'built in'}
 NO_JOB_CREATE_SOURCES = {'linkedin job alerts', 'builtin', 'built in', 'indeed job alerts', 'job alerts'}
 CLASSIFICATION_RULES = [
@@ -135,24 +138,25 @@ def append_log(entry):
 
 
 def gog_json(args):
-    result = subprocess.run(args, check=True, capture_output=True, text=True)
+    cmd = [GOG_BIN, *args]
+    result = subprocess.run(cmd, check=True, capture_output=True, text=True)
     return json.loads(result.stdout)
 
 
 def sheets_get(range_name):
-    return gog_json(['gog', 'sheets', 'get', SHEET_ID, range_name, '--json'])
+    return gog_json(['sheets', 'get', SHEET_ID, range_name, '--json'])
 
 
 def sheets_update(range_name, values):
     subprocess.run(
-        ['gog', 'sheets', 'update', SHEET_ID, range_name, '--values-json', json.dumps(values), '--input', 'USER_ENTERED'],
+        [GOG_BIN, 'sheets', 'update', SHEET_ID, range_name, '--values-json', json.dumps(values), '--input', 'USER_ENTERED'],
         check=True, capture_output=True, text=True,
     )
 
 
 def sheets_append(range_name, values):
     subprocess.run(
-        ['gog', 'sheets', 'append', SHEET_ID, range_name, '--values-json', json.dumps(values), '--insert', 'INSERT_ROWS'],
+        [GOG_BIN, 'sheets', 'append', SHEET_ID, range_name, '--values-json', json.dumps(values), '--insert', 'INSERT_ROWS'],
         check=True, capture_output=True, text=True,
     )
 
