@@ -1,5 +1,10 @@
 {
   "timezone": "America/Chicago",
+  "catchUpPolicy": "single-pass-on-resume",
+  "lastTriggerMode": "failed-scheduled",
+  "lastExecutedAt": "2026-05-01T08:30:43.760075-05:00",
+  "lastScheduledFor": "2026-05-01T08:30:00-05:00",
+  "lastMissedSlots": [],
   "schedule": [
     {
       "runId": "morning_run",

@@ -35,7 +35,7 @@ from runtime.storage.taskruns_repo import update_taskruns
 from runtime.utils.file_utils import load_json, save_json, write_csv
 from runtime.utils.id_utils import next_id
 from runtime.utils.text_utils import extract_domain, normalize_company, normalize_text
-from runtime.utils.time_utils import next_global_run, next_run_after, parse_dt
+from runtime.utils.time_utils import missed_run_slots, next_global_run, next_run_after, parse_dt
 
 ROOT = Path('/Users/jtemp/.openclaw/workspace/job-search-ui')
 RUNTIME = ROOT / 'runtime'
@@ -121,13 +121,46 @@ def update_task_state(task_name, status, summary, run_at, next_at):
     save_json(TASKS_FILE, data)
 
 
-def update_scheduler_state(status, summary, run_at):
+def enabled_run_times():
+    data = load_json(SCHEDULER_FILE)
+    return [run['time'] for run in data['schedule'] if run.get('isEnabled', True)]
+
+
+# Resume-time policy: if one or more schedule windows were missed since the last
+# recorded scheduler execution, the next invocation becomes a single consolidated
+# catch-up pass rather than silently skipping those windows.
+def scheduler_context(current):
+    data = load_json(SCHEDULER_FILE)
+    runs = data.get('schedule', [])
+    enabled_times = [run['time'] for run in runs if run.get('isEnabled', True)]
+    last_run_values = [parse_dt(run.get('lastRunAt')) for run in runs if run.get('lastRunAt')]
+    last_run_values = [dt for dt in last_run_values if dt]
+    last_run_at = max(last_run_values) if last_run_values else None
+    missed_slots = missed_run_slots(last_run_at, current, enabled_times)
+    scheduled_for = missed_slots[0] if missed_slots else current
+    trigger_mode = 'catch-up' if missed_slots else 'scheduled'
+    return {
+        'enabled_times': enabled_times,
+        'lastRunAt': last_run_at,
+        'missedSlots': missed_slots,
+        'scheduledFor': scheduled_for,
+        'triggerMode': trigger_mode,
+    }
+
+
+def update_scheduler_state(status, summary, executed_at, scheduled_for=None, trigger_mode='scheduled', missed_slots=None):
     data = load_json(SCHEDULER_FILE)
     for run in data['schedule']:
-        run['lastRunAt'] = iso(run_at)
-        run['nextRunAt'] = iso(next_run_after(run_at, run['time']))
+        run['lastRunAt'] = iso(executed_at)
+        run['nextRunAt'] = iso(next_run_after(executed_at, run['time']))
         run['lastStatus'] = status
         run['lastSummary'] = summary
+
+    data['lastTriggerMode'] = trigger_mode
+    data['lastExecutedAt'] = iso(executed_at)
+    data['lastScheduledFor'] = iso(scheduled_for or executed_at)
+    data['lastMissedSlots'] = [iso(slot) for slot in (missed_slots or [])]
+    data['catchUpPolicy'] = 'single-pass-on-resume'
     save_json(SCHEDULER_FILE, data)
 
 
@@ -285,10 +318,16 @@ def maybe_git_commit(run_at):
 
 
 def run_chain():
-    run_at = now_local()
-    next_at = next_global_run(run_at, RUN_TIMES)
+    wall_clock_at = now_local()
+    sched = scheduler_context(wall_clock_at)
+    run_at = wall_clock_at
+    scheduled_for = sched['scheduledFor']
+    next_at = next_global_run(wall_clock_at, sched['enabled_times'] or RUN_TIMES)
     run_log = {
         'runTimestamp': iso(run_at),
+        'scheduledFor': iso(scheduled_for),
+        'triggerMode': sched['triggerMode'],
+        'missedSlotsCount': len(sched['missedSlots']),
         'chain': CHAIN,
         'taskResults': [],
         'status': 'complete',
@@ -383,7 +422,7 @@ def run_chain():
         run_log['warnings'].extend(job_board_report.get('warnings', []))
         run_log['summary'] = 'Full JT7 chain completed'
         run_log['assessment'] = 'JT7 now performs real Gmail ingestion since last run, runtime signal classification, probabilistic entity matching, live tracker CRUD, calendar verification, TaskRuns logging, local mirror sync, and git persistence.'
-        update_scheduler_state('complete', run_log['summary'], run_at)
+        update_scheduler_state('complete', run_log['summary'], run_at, scheduled_for=scheduled_for, trigger_mode=sched['triggerMode'], missed_slots=sched['missedSlots'])
         report_path = write_run_report(run_log, REPORTS_DIR)
         run_log['reportPath'] = report_path
         append_log(run_log)
@@ -393,7 +432,7 @@ def run_chain():
         run_log['summary'] = str(e)
         run_log['errors'].append(str(e))
         run_log['assessment'] = 'Chain failed. Inspect errors and partial outputs.'
-        update_scheduler_state('failed', str(e), run_at)
+        update_scheduler_state('failed', str(e), run_at, scheduled_for=scheduled_for, trigger_mode=sched['triggerMode'], missed_slots=sched['missedSlots'])
         report_path = write_run_report(run_log, REPORTS_DIR)
         run_log['reportPath'] = report_path
         append_log(run_log)

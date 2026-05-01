@@ -2,14 +2,14 @@
 
 ## Current State Record
 - **id:** current_state_2026_04_30
-- **updated_at:** 2026-05-01T09:51:00-05:00
+- **updated_at:** 2026-05-01T15:07:00-05:00
 - **system_phase:** Cockpit + Runtime Hardening
 - **system_status:** IDLE
-- **current_step:** System is paused cleanly after restoring the `gog` command path for the JT7 chain, verifying read-only Sheets/Gmail/Calendar access, and capturing scheduler redesign as the next pass. Gateway is healthy on loopback, no active executions are running, and the workspace is safe to shut down
+- **current_step:** System is paused cleanly after implementing resume-time catch-up semantics for the JT7 scheduler and persisting the new scheduler contract. Gateway is healthy on loopback, the active model is `openai-codex/gpt-5.4`, no active executions are running, and the workspace is safe to shut down
 - **confidence_level:** high
 
 ## State Summary
-- **state_summary:** JT7 has a real Review Queue cockpit surface in `job-search-ui`, a live JobOps bot lane with dedicated routing and operating memory, and an explicit staging-intake UI that scores fit, auto-gates obvious off-target imports, and supports duplicate-safe local merge behavior for broad direct-board intake. A runtime-side planner defines tracker-facing create/merge/hold/reject decisions while filtering duplicate checks against canonical jobs only. This session restored the JT7 chain’s `gog` binary resolution to an absolute path, verified read-only Sheets/Gmail/Calendar access, and confirmed the remaining scheduler issue is not a simple live Sheets-read failure. The system is intentionally paused in an IDLE shutdown-safe state.
+- **state_summary:** JT7 has a real Review Queue cockpit surface in `job-search-ui`, a live JobOps bot lane with dedicated routing and operating memory, and an explicit staging-intake UI that scores fit, auto-gates obvious off-target imports, and supports duplicate-safe local merge behavior for broad direct-board intake. A runtime-side planner defines tracker-facing create/merge/hold/reject decisions while filtering duplicate checks against canonical jobs only. This session added resume-time catch-up semantics (`single-pass-on-resume`) to the scheduler and persisted scheduler metadata for `scheduledFor`, `triggerMode`, and missed slots. The JT7 chain’s `gog` binary resolution remains stabilized to an absolute path. Read-only Sheets/Gmail/Calendar access is verified, but the specific 2026-05-01 08:30 scheduler-only failure still lacks root-cause explanation. The system is intentionally paused in an IDLE shutdown-safe state.
 
 ## Top Priorities
 - **top_priorities:**
@@ -25,7 +25,7 @@
   - Indeed remains blocked by anti-bot flow, leaving one source partially inaccessible
   - some legacy docs and filenames still reflect older platform assumptions instead of the current cockpit/runtime reality
   - gateway is reachable but still not loaded as a clean LaunchAgent service, so lifecycle transitions remain fragile
-  - scheduler state currently shows a failed 2026-05-01 morning run even though direct live `gog sheets get Jobs!A1:Z1000` succeeds now, so the scheduler-only failure path remains unresolved
+  - scheduler now has resume-time catch-up semantics, but the specific 2026-05-01 morning failure still needs root-cause explanation because direct live `gog sheets get Jobs!A1:Z1000` succeeds now
   - Drive mirror behavior currently uploads fresh copies rather than updating a single canonical mirrored doc in place
 
 ## Open Questions
@@ -37,8 +37,8 @@
 
 ## Required Next Moves
 - **required_next_moves:**
-  - switch the scheduler from fixed local schedule semantics to resume-time catch-up so missed runs are handled when the system resumes
-  - inspect the 2026-05-01 08:30 scheduler-only failure path and then redesign scheduling from fixed local schedule semantics to resume-time catch-up
+  - inspect the 2026-05-01 08:30 scheduler-only failure path now that resume-time catch-up semantics are in place
+  - validate the new single-pass-on-resume scheduler behavior against the next real resume/use cycle
   - connect the new staging writeback planner to real Sheets-side create/update behavior with safe dry-run and apply modes
   - convert the validated JobOps shortlist format into a standing durable JobOps instruction if it continues to prove useful
   - normalize Drive mirror behavior so updated docs refresh canonical mirrored copies rather than creating duplicates
