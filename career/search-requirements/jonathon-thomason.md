@@ -5,6 +5,8 @@
 - **owner_name:** Jonathon Thomason
 - **active_for_search_runtime:** yes
 - **canonical_search_requirements:** yes
+- **derived_from_persona_profile:** yes
+- **persona_profile_source:** `career/user_persona_reference.md`
 - **status:** active
 
 ## Search Objective
@@ -102,3 +104,8 @@ This file should drive:
 - tracker intake filtering
 - fit scoring defaults
 - role inclusion / exclusion behavior
+
+## Derivation Rule
+This search requirements file is an operational layer, not an isolated preference sheet.
+It should be maintained as a runtime translation of the active persona/profile document for Jonathon.
+When persona/profile information changes materially, update the persona/profile source first, then align this file to match the relevant job criteria.

@@ -2,13 +2,14 @@
 
 ## Current State Record
 - **id:** current_state_2026_04_30
-- **updated_at:** 2026-04-30T22:33:00-05:00
+- **updated_at:** 2026-04-30T22:46:00-05:00
 - **system_phase:** Cockpit + Runtime Hardening
-- **current_step:** A runtime-side staging writeback planner now exists for create/merge/hold/reject decisions, using canonical-job filtering to avoid treating legacy direct-import drift as trusted duplicates
-- **confidence_level:** medium_high
+- **system_status:** IDLE
+- **current_step:** System paused cleanly after staging writeback planning and requirements mapping; gateway probe is healthy, no active executions are running, and the workspace is safe to shut down
+- **confidence_level:** high
 
 ## State Summary
-- **state_summary:** JT7 now has a real Review Queue cockpit surface in `job-search-ui`, a live JobOps bot lane with dedicated routing and operating memory, and an explicit staging-intake UI that scores fit, auto-gates obvious off-target imports, and supports duplicate-safe local merge behavior for broad direct-board intake. A runtime-side planner now defines tracker-facing create/merge/hold/reject decisions while filtering duplicate checks against canonical jobs only. The main remaining gaps are Indeed access and connecting this planner to real Sheets writeback behavior.
+- **state_summary:** JT7 now has a real Review Queue cockpit surface in `job-search-ui`, a live JobOps bot lane with dedicated routing and operating memory, and an explicit staging-intake UI that scores fit, auto-gates obvious off-target imports, and supports duplicate-safe local merge behavior for broad direct-board intake. A runtime-side planner now defines tracker-facing create/merge/hold/reject decisions while filtering duplicate checks against canonical jobs only. Gateway connectivity is healthy on loopback, the active model remains `openai-codex/gpt-5.4`, and the system is intentionally paused in an IDLE shutdown-safe state.
 
 ## Top Priorities
 - **top_priorities:**

@@ -34,3 +34,11 @@
   - role and boundary changes should be recorded in local JobOps markdown docs
   - updates must preserve JobOps scope and avoid platform/infrastructure drift
   - the git-backed workspace is an approved persistence surface for these instruction docs
+
+### decision_persona_driven_search_requirements
+- **status:** active
+- **summary:** Search requirements should be based on the active persona/profile document and then translated into operational job criteria.
+- **implications:**
+  - JobOps should not treat search criteria as free-floating personal preferences when an active persona/profile source exists
+  - persona/profile changes should flow into search requirements before intake/ranking logic is updated
+  - operational filtering should reflect both persona identity and concrete job criteria

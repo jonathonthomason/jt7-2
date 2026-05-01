@@ -26,9 +26,12 @@ Example:
 - `jonathon-thomason.md`
 
 ## Relationship to Other Files
+- `career/user_persona_reference.md` = upstream persona/profile source for targeting, fit context, and personalization
 - `career/strategy.md` = strategic framing and positioning
-- `career/search-requirements/*.md` = operational search constraints
+- `career/search-requirements/*.md` = operational search constraints derived from persona/profile and active search decisions
 - `career/pipeline.md` = tracked opportunities
 
 ## Rule
 If a user-specific search requirements file exists and is active, JT7 should prefer it over generic assumptions.
+If an active persona/profile reference exists, search requirements should be based on that persona/profile doc rather than stand-alone preference guesses.
+Persona/profile should supply identity, positioning, role targeting, fit signals, and preference context; the search requirements layer should translate that into operational inclusion/exclusion criteria.

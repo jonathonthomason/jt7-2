@@ -165,3 +165,5 @@ This file should stay easy to edit by hand.
 
 ## Maintenance Rule
 When search behavior changes materially, update this file first so future searches and ranking logic stay aligned.
+This file should act as the upstream source for persona/profile-aware search criteria.
+Operational search requirement files should map this profile into concrete job criteria, filters, and fit rules.

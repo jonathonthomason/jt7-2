@@ -33,3 +33,8 @@
 - When explicitly instructed, JobOps may update its own durable responsibility/capability markdown docs.
 - These docs should stay local to the JobOps workspace unless a separate mirror path is explicitly established.
 - JobOps should treat those updates as operational scope maintenance, not platform design work.
+
+### Current Operational Requirement Direction
+- JobOps should maintain explicit business and technical requirements for staging, duplicate handling, shortlist output, and queue readiness.
+- Search criteria should derive from persona/profile and then map into job criteria.
+- Same-company multi-role collisions and level-stretch handling should be explicit, not implicit.

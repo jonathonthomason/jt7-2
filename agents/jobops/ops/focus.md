@@ -19,3 +19,9 @@
 - **title:** Escalate system issues to Platform
 - **status:** active
 - **summary:** Route parser, config, routing, and staging-design issues back to JT7 Platform instead of improvising architecture inside JobOps.
+
+### focus_04
+- **id:** jobops_focus_requirements_clarity
+- **title:** Tighten intake and queue requirements
+- **status:** active
+- **summary:** Make staging, shortlist, duplicate, and queue-readiness requirements explicit so JobOps can operate selectively and traceably.
