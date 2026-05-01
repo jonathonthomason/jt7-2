@@ -1,0 +1,40 @@
+{
+  "executedAt": "2026-05-01T16:03:33.124618-05:00",
+  "sheetId": "1acPkcUQFDIVNY0sgMo7ZsVzEnBKIbjU2veEjDFRu0Ks",
+  "staged": {
+    "staged_id": "staged_job_057",
+    "preview_index": "1",
+    "company": "Possible Finance",
+    "role": "Senior Product Designer",
+    "location": "Remote",
+    "job_posting_link": "https://builtin.com/job/senior-product-designer/9189688",
+    "source": "builtin_direct"
+  },
+  "plan": {
+    "action": "create",
+    "reason": "no_duplicate_and_fit_passed",
+    "staged_company": "Possible Finance",
+    "staged_role": "Senior Product Designer",
+    "matched_job_id": "",
+    "create_row": [
+      "job_057",
+      "Possible Finance",
+      "Senior Product Designer",
+      "Remote",
+      "Reviewing",
+      "",
+      "2026-05-01T16:03:33.124618-05:00",
+      "Review promoted staging opportunity and decide whether to apply",
+      "",
+      "",
+      "https://builtin.com/job/senior-product-designer/9189688",
+      "",
+      "builtin_direct",
+      "Imported from direct board scan (builtin) | board_token:remote | job_board_id:9189688"
+    ],
+    "update_values": null
+  },
+  "mode": "plan",
+  "result": "planned",
+  "mirror": null
+}

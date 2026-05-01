@@ -81,6 +81,8 @@ NEWSLETTER_NOISE_PATTERNS = [
 ]
 
 GOG_BIN = shutil.which('gog') or '/opt/homebrew/bin/gog'
+GOG_ACCOUNT = 'jonathon.thomason@gmail.com'
+GOG_BASE_ARGS = ['--json', '--no-input', '--account', GOG_ACCOUNT]
 GENERIC_COMPANY_BLOCKLIST = {'linkedin job alerts', 'linkedin', 'indeed', 'mail', 'em', 'builtin', 'built in'}
 NO_JOB_CREATE_SOURCES = {'linkedin job alerts', 'builtin', 'built in', 'indeed job alerts', 'job alerts'}
 CLASSIFICATION_RULES = [
@@ -172,24 +174,30 @@ def append_log(entry):
 
 def gog_json(args):
     cmd = [GOG_BIN, *args]
-    result = subprocess.run(cmd, check=True, capture_output=True, text=True)
+    try:
+        result = subprocess.run(cmd, check=True, capture_output=True, text=True)
+    except subprocess.CalledProcessError as e:
+        stderr = (e.stderr or '').strip()
+        stdout = (e.stdout or '').strip()
+        detail = stderr or stdout or str(e)
+        raise RuntimeError(f'gog command failed: {cmd} :: {detail}') from e
     return json.loads(result.stdout)
 
 
 def sheets_get(range_name):
-    return gog_json(['sheets', 'get', SHEET_ID, range_name, '--json'])
+    return gog_json(['sheets', 'get', SHEET_ID, range_name, *GOG_BASE_ARGS])
 
 
 def sheets_update(range_name, values):
     subprocess.run(
-        [GOG_BIN, 'sheets', 'update', SHEET_ID, range_name, '--values-json', json.dumps(values), '--input', 'USER_ENTERED'],
+        [GOG_BIN, 'sheets', 'update', SHEET_ID, range_name, '--values-json', json.dumps(values), '--input', 'USER_ENTERED', '--no-input', '--account', GOG_ACCOUNT],
         check=True, capture_output=True, text=True,
     )
 
 
 def sheets_append(range_name, values):
     subprocess.run(
-        [GOG_BIN, 'sheets', 'append', SHEET_ID, range_name, '--values-json', json.dumps(values), '--insert', 'INSERT_ROWS'],
+        [GOG_BIN, 'sheets', 'append', SHEET_ID, range_name, '--values-json', json.dumps(values), '--insert', 'INSERT_ROWS', '--no-input', '--account', GOG_ACCOUNT],
         check=True, capture_output=True, text=True,
     )
 

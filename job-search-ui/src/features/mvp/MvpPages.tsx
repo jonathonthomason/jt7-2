@@ -111,8 +111,22 @@ function DuplicateTag({ item }: { item: StagedOpportunity }) {
   return <span style={{ ...styles.tag, borderColor: '#fa4d56', color: '#fa4d56' }}>{item.duplicateMatches.length} canonical match{item.duplicateMatches.length > 1 ? 'es' : ''}</span>
 }
 
+function writebackState(item: StagedOpportunity): { tone: 'success' | 'error' | 'neutral'; text: string } | null {
+  const notes = item.notes || ''
+  if (notes.includes('Writeback failed:')) {
+    const detail = notes.split('Writeback failed:').pop()?.trim() || 'Runtime writeback failed'
+    return { tone: 'error', text: `Writeback failed · ${detail}` }
+  }
+  if (notes.includes('Runtime created via')) return { tone: 'success', text: 'Canonical create applied' }
+  if (notes.includes('Runtime merged via')) return { tone: 'success', text: 'Canonical merge applied' }
+  if (item.status === 'hold') return { tone: 'neutral', text: 'Held for manual review' }
+  if (item.status === 'reject') return { tone: 'error', text: 'Rejected from canonical promotion' }
+  return null
+}
+
 function StagingCard({ item }: { item: StagedOpportunity }) {
   const { openPanel, stagingCommand } = useMvpState()
+  const writeback = writebackState(item)
   return (
     <article style={styles.reviewCard}>
       <div style={styles.rowBetween}>
@@ -130,6 +144,7 @@ function StagingCard({ item }: { item: StagedOpportunity }) {
       <p style={styles.meta}>{item.company} · {item.location}</p>
       <p style={styles.copy}>{item.recommendedAction}</p>
       <p style={styles.meta}>Why: {item.reasons.join(' · ')}</p>
+      {writeback ? <p style={{ ...styles.meta, color: writeback.tone === 'success' ? '#42be65' : writeback.tone === 'error' ? '#fa4d56' : '#c6c6c6' }}>{writeback.text}</p> : null}
       {item.duplicateMatches?.length ? <p style={styles.meta}>Canonical matches: {item.duplicateMatches.join(', ')}</p> : null}
       <div style={styles.buttonRow}>
         {item.duplicateMatches?.length ? <button style={styles.primaryButton} onClick={() => stagingCommand(item.id, 'Merge')} type="button">Merge</button> : <button style={styles.primaryButton} onClick={() => stagingCommand(item.id, 'Promote')} type="button">Promote</button>}
@@ -142,6 +157,8 @@ function StagingCard({ item }: { item: StagedOpportunity }) {
 
 export function StagingIntakePage() {
   const { stagingSummary, state, openPanel } = useMvpState()
+  const promotedCount = state.stagingQueue.filter((item) => writebackState(item)?.tone === 'success').length
+  const failedCount = state.stagingQueue.filter((item) => writebackState(item)?.tone === 'error' && (item.notes || '').includes('Writeback failed:')).length
   return (
     <section style={styles.page}>
       <section style={styles.hero}>
@@ -157,6 +174,11 @@ export function StagingIntakePage() {
         <div>
           <p style={styles.meta}>Strong fit</p>
           <strong>{stagingSummary.strongFit.length}</strong>
+        </div>
+        <div>
+          <p style={styles.meta}>Writebacks</p>
+          <strong>{promotedCount}</strong>
+          <p style={styles.meta}>{failedCount ? `${failedCount} failed` : '0 failed'}</p>
         </div>
       </section>
       <div style={styles.grid}>

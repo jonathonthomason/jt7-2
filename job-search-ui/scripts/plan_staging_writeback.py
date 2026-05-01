@@ -25,6 +25,7 @@ def load_staged():
     for row in rows:
         values = dict(zip(JOB_COLUMNS, row + [''] * (len(JOB_COLUMNS) - len(row))))
         values['provenance'] = values.get('notes', '')
+        values['notes'] = ''
         staged.append(values)
     return staged
 

@@ -6,6 +6,17 @@ import { useMvpState } from '../../state/mvpState'
 
 type NavGroup = { label: string; items: { label: string; to: string }[] }
 
+function stagingWritebackSummary(item: StagedOpportunity): { tone: string; text: string } | null {
+  const notes = item.notes || ''
+  if (notes.includes('Writeback failed:')) {
+    const detail = notes.split('Writeback failed:').pop()?.trim() || 'Runtime writeback failed'
+    return { tone: '#fa4d56', text: `Writeback failed · ${detail}` }
+  }
+  if (notes.includes('Runtime created via')) return { tone: '#42be65', text: 'Canonical create applied via runtime bridge' }
+  if (notes.includes('Runtime merged via')) return { tone: '#42be65', text: 'Canonical merge applied via runtime bridge' }
+  return null
+}
+
 const navGroups: NavGroup[] = [
   { label: 'Trust', items: [{ label: 'Review Queue', to: '/review-queue' }, { label: 'Staging Intake', to: '/trust/staging' }] },
   { label: 'Execute', items: [{ label: 'Today', to: '/execute/today' }] },
@@ -64,6 +75,7 @@ function PanelBody() {
   const summary = panelRecord.summary || panelRecord.evidenceSummary || panelRecord.whyNow || panelRecord.nextAction || panelRecord.recommendedAction || panelRecord.reasonForReview || ''
   const notes = panelRecord.notes || panelRecord.note || panelRecord.resolutionNotes || ''
   const related = panelRecord.company || panelRecord.extractedCompany || panelRecord.target || 'JT7'
+  const stagingWriteback = type === 'staging' ? stagingWritebackSummary(object as StagedOpportunity) : null
 
   return (
     <div style={styles.panelStack}>
@@ -83,6 +95,7 @@ function PanelBody() {
         <p style={styles.kicker}>Related</p>
         <p style={styles.panelCopy}>{related}</p>
       </div>
+      {stagingWriteback ? <p style={{ ...styles.panelCopy, color: stagingWriteback.tone }}>{stagingWriteback.text}</p> : null}
       <label style={styles.noteLabel}>
         Note / status detail
         <textarea style={styles.noteArea} value={notes} onChange={(event) => updatePanelNote(event.target.value)} placeholder="Add operator note…" />

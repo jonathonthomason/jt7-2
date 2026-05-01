@@ -1,0 +1,26 @@
+{
+  "created_at": "2026-05-01T16:30:26.147924",
+  "purpose": "JT7 MVP persistence sweep after scheduler hardening and staging writeback/UI bridge work",
+  "drive_parent_folder_id": "1Jj-5SxHujM-XrIT1SebdO86KrA57XQG-",
+  "files": [
+    "CURRENT.md",
+    "docs/direct-board-import-policy.md",
+    "job-search-ui/package.json",
+    "job-search-ui/scripts/run_jt7_chain.py",
+    "job-search-ui/scripts/plan_staging_writeback.py",
+    "job-search-ui/scripts/apply_staging_writeback.py",
+    "job-search-ui/scripts/local_api_server.mjs",
+    "job-search-ui/src/state/mvpState.tsx",
+    "job-search-ui/src/features/mvp/MvpPages.tsx",
+    "job-search-ui/src/components/mvp/GlobalShell.tsx",
+    "job-search-ui/src/domain/cockpit/runtimeApi.ts",
+    "job-search-ui/data_mirror/Jobs.csv",
+    "job-search-ui/data_mirror/Jobs.json",
+    "job-search-ui/runtime/reports/staging_writeback_2026-05-01T16-03-11.466450-05-00.json",
+    "job-search-ui/runtime/reports/staging_writeback_2026-05-01T16-03-33.124618-05-00.json",
+    "job-search-ui/runtime/reports/staging_writeback_2026-05-01T16-05-51.970182-05-00.json",
+    "job-search-ui/runtime/reports/staging_writeback_2026-05-01T16-12-14.936175-05-00.json",
+    "job-search-ui/runtime/reports/drive_persistence_manifest_2026-05-01_163026.json"
+  ],
+  "drive_folder_id": "1nu-tgFzVHQMNV8MEICanO9jJ--Z9bt4X"
+}

@@ -9,7 +9,7 @@
 - **confidence_level:** high
 
 ## State Summary
-- **state_summary:** JT7 has a real Review Queue cockpit surface in `job-search-ui`, a live JobOps bot lane with dedicated routing and operating memory, and an explicit staging-intake UI that scores fit, auto-gates obvious off-target imports, and supports duplicate-safe local merge behavior for broad direct-board intake. A runtime-side planner defines tracker-facing create/merge/hold/reject decisions while filtering duplicate checks against canonical jobs only. This session added resume-time catch-up semantics (`single-pass-on-resume`) to the scheduler and persisted scheduler metadata for `scheduledFor`, `triggerMode`, and missed slots. The JT7 chain’s `gog` binary resolution remains stabilized to an absolute path. Read-only Sheets/Gmail/Calendar access is verified, but the specific 2026-05-01 08:30 scheduler-only failure still lacks root-cause explanation. The system is intentionally paused in an IDLE shutdown-safe state.
+- **state_summary:** JT7 has a real Review Queue cockpit surface in `job-search-ui`, a live JobOps bot lane with dedicated routing and operating memory, and an explicit staging-intake UI that scores fit, auto-gates obvious off-target imports, and supports duplicate-safe local merge behavior for broad direct-board intake. A runtime-side planner defines tracker-facing create/merge/hold/reject decisions while filtering duplicate checks against canonical jobs only. This session added resume-time catch-up semantics (`single-pass-on-resume`) to the scheduler, hardened the JT7 chain’s Sheets path with explicit `gog` account + `--no-input` usage and better stderr capture, proved live staging→canonical create writeback into Google Sheets `Jobs`, added a thin local API bridge so UI promotion/merge actions can hit the real runtime apply path instead of only mutating demo state, and surfaced writeback success/failure more clearly in the staging UI. Read-only Sheets access is verified, but the specific 2026-05-01 08:30 scheduler-only failure is still only narrowed to a transient or opaque `gog` exit-2 condition rather than fully explained. The system is otherwise in a controlled state.
 
 ## Top Priorities
 - **top_priorities:**
@@ -25,7 +25,7 @@
   - Indeed remains blocked by anti-bot flow, leaving one source partially inaccessible
   - some legacy docs and filenames still reflect older platform assumptions instead of the current cockpit/runtime reality
   - gateway is reachable but still not loaded as a clean LaunchAgent service, so lifecycle transitions remain fragile
-  - scheduler now has resume-time catch-up semantics, but the specific 2026-05-01 morning failure still needs root-cause explanation because direct live `gog sheets get Jobs!A1:Z1000` succeeds now
+  - scheduler now has resume-time catch-up semantics, but the specific 2026-05-01 morning failure is only narrowed to a transient or opaque `gog` exit-2 condition because direct live and launchd-like-env `gog sheets get Jobs!A1:Z1000` both succeed now
   - Drive mirror behavior currently uploads fresh copies rather than updating a single canonical mirrored doc in place
 
 ## Open Questions
@@ -37,8 +37,10 @@
 
 ## Required Next Moves
 - **required_next_moves:**
-  - inspect the 2026-05-01 08:30 scheduler-only failure path now that resume-time catch-up semantics are in place
-  - validate the new single-pass-on-resume scheduler behavior against the next real resume/use cycle
+  - validate the hardened `gog` invocation and new single-pass-on-resume scheduler behavior against the next real resume/use cycle
+  - validate the new UI→runtime promotion bridge during normal operator use and prove at least one normal click-driven promotion path end-to-end
+  - prove the staging writeback merge path against a real duplicate when one naturally appears or through a controlled UI-safe harness
+  - if another scheduler failure occurs, use the improved stderr capture to isolate exact `gog` failure cause immediately
   - connect the new staging writeback planner to real Sheets-side create/update behavior with safe dry-run and apply modes
   - convert the validated JobOps shortlist format into a standing durable JobOps instruction if it continues to prove useful
   - normalize Drive mirror behavior so updated docs refresh canonical mirrored copies rather than creating duplicates

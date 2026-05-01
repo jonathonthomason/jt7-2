@@ -32,5 +32,6 @@ Rejected for now because filters are not mature enough and risk polluting canoni
 
 ## Current recommendation
 - near term: keep broad import rows out of canonical `Jobs`
+- staging promotion should happen one item at a time through the explicit runtime writeback path, not bulk import
 - next implementation target: create an explicit staging layer for direct-board imports
 - JobOps should operate on staged import data as intake, not as trusted state by default

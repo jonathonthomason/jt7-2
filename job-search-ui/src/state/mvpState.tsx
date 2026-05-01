@@ -9,6 +9,7 @@ import taskRunsMirror from '../../data_mirror/TaskRuns.json'
 import directBoardImportPreview from '../../runtime/direct_board_import_preview.json'
 import { buildFallbackReviewSelection } from '../domain/cockpit/fixtures'
 import { rowsToObjects, adaptDirectBoardPreview, adaptReviewQueue } from '../domain/cockpit/mirrorAdapters'
+import { applyStagingWriteback } from '../domain/cockpit/runtimeApi'
 import { confirmAsNewOpportunity, deferSignal, dismissSignal, escalateSignal, linkToExistingOpportunity, markDuplicate } from '../domain/cockpit/reviewActions'
 import type { ReviewCommand } from '../domain/cockpit/enums'
 import type { ReviewEvent, ReviewItem, StagedOpportunity } from '../domain/cockpit/types'
@@ -159,7 +160,7 @@ type MvpContextValue = {
   actionCommand: (actionId: string, command: string, note?: string) => void
   signalCommand: (signalId: string, command: string) => void
   reviewCommand: (reviewId: string, command: ReviewCommand, notes?: string) => void
-  stagingCommand: (stagingId: string, command: 'Promote' | 'Merge' | 'Hold' | 'Reject', notes?: string) => void
+  stagingCommand: (stagingId: string, command: 'Promote' | 'Merge' | 'Hold' | 'Reject', notes?: string) => void | Promise<void>
   jobCommand: (jobId: string, command: string, value?: string) => void
   recruiterCommand: (recruiterId: string, command: string, note?: string) => void
   updatePanelNote: (text: string) => void
@@ -314,6 +315,41 @@ function enrichStagingQueue(stagingQueue: StagedOpportunity[], jobs: MvpJob[]) {
   return stagingQueue
     .map((item) => scoreStagedOpportunity(item, jobs))
     .sort((a, b) => (b.fitScore ?? 0) - (a.fitScore ?? 0))
+}
+
+function priorityForStagedFit(fitBand: StagedOpportunity['fitBand']): MvpJob['priority'] {
+  if (fitBand === 'strong') return 'high'
+  if (fitBand === 'maybe') return 'medium'
+  return 'low'
+}
+
+function buildJobFromCreateRow(createRow: string[], fitBand: StagedOpportunity['fitBand']): MvpJob {
+  return {
+    id: createRow[0],
+    company: createRow[1] || 'Unknown company',
+    role: createRow[2] || 'Unknown role',
+    status: jobStatus(createRow[4] || 'Reviewing'),
+    source: createRow[12] || 'staging_writeback',
+    priority: priorityForStagedFit(fitBand),
+    dateFound: createRow[6] || new Date().toISOString(),
+    nextAction: createRow[7] || 'Review promoted staging opportunity',
+    link: createRow[9] || createRow[10] || undefined,
+    notes: createRow[13] || undefined,
+  }
+}
+
+function buildJobFromUpdateValues(values: Record<string, string>, existing: MvpJob): MvpJob {
+  return {
+    ...existing,
+    company: values.company || existing.company,
+    role: values.role || existing.role,
+    status: jobStatus(values.status || existing.status),
+    source: values.source || existing.source,
+    dateFound: values.last_contact_date || existing.dateFound,
+    nextAction: values.next_step || existing.nextAction,
+    link: values.direct_application_link || values.job_posting_link || existing.link,
+    notes: values.notes || existing.notes,
+  }
 }
 
 function buildInitialState(): MvpState {
@@ -636,39 +672,62 @@ export function MvpStateProvider({ children }: { children: ReactNode }) {
     }
   })
 
-  const stagingCommand = (stagingId: string, command: 'Promote' | 'Merge' | 'Hold' | 'Reject', notes?: string) => setPersistedState((current) => {
+  const stagingCommand = async (stagingId: string, command: 'Promote' | 'Merge' | 'Hold' | 'Reject', notes?: string) => {
+    if (command === 'Promote' || command === 'Merge') {
+      try {
+        const response = await applyStagingWriteback(stagingId, command)
+        setPersistedState((current) => {
+          const target = current.stagingQueue.find((item) => item.id === stagingId)
+          if (!target) return current
+
+          const nextJobs = response.result === 'created' && response.plan.create_row
+            ? current.jobs.some((job) => job.id === response.plan.create_row?.[0])
+              ? current.jobs
+              : [buildJobFromCreateRow(response.plan.create_row, target.fitBand), ...current.jobs]
+            : response.result === 'merged' && response.plan.update_values && response.merged_job_id
+              ? current.jobs.map((job) => job.id === response.merged_job_id ? buildJobFromUpdateValues(response.plan.update_values as Record<string, string>, job) : job)
+              : current.jobs
+
+          const nextStaging = current.stagingQueue.map((item) => item.id === stagingId
+            ? {
+                ...item,
+                status: response.result === 'merged' || response.result === 'created' ? 'promote' : item.status,
+                trustLevel: response.result === 'merged' || response.result === 'created' ? 'reviewed' : item.trustLevel,
+                notes: [notes ?? item.notes, `Runtime ${response.result} via ${response.reportPath}`].filter(Boolean).join(' | '),
+              }
+            : item)
+
+          return {
+            ...current,
+            jobs: nextJobs,
+            stagingQueue: enrichStagingQueue(nextStaging, nextJobs),
+            lastUpdated: response.executedAt,
+          }
+        })
+        return
+      } catch (error) {
+        const message = error instanceof Error ? error.message : 'Runtime writeback failed'
+        setPersistedState((current) => ({
+          ...current,
+          stagingQueue: current.stagingQueue.map((item) => item.id === stagingId
+            ? { ...item, notes: [item.notes, `Writeback failed: ${message}`].filter(Boolean).join(' | ') }
+            : item),
+          lastUpdated: new Date().toISOString(),
+        }))
+        return
+      }
+    }
+
+    setPersistedState((current) => {
     const now = new Date().toISOString()
     const target = current.stagingQueue.find((item) => item.id === stagingId)
     if (!target) return current
 
-    const status: StagedOpportunity['status'] = command === 'Promote' || command === 'Merge' ? 'promote' : command === 'Reject' ? 'reject' : 'hold'
-    const blockedByDuplicate = command === 'Promote' && (target.duplicateMatches?.length ?? 0) > 0
-    const mergeTargetId = command === 'Merge' ? target.duplicateMatches?.[0] : undefined
-    const promotedJob: MvpJob | null = command === 'Promote' && !blockedByDuplicate ? {
-      id: target.canonicalJobId || `job_${stagingId}`,
-      role: target.role,
-      company: target.company,
-      status: 'Reviewing',
-      source: `${target.source}_staged`,
-      priority: target.fitBand === 'strong' ? 'high' : target.fitBand === 'maybe' ? 'medium' : 'low',
-      dateFound: now,
-      nextAction: 'Confirm duplicate check and decide whether to apply',
-      link: target.link,
-      notes: [target.provenance, notes].filter(Boolean).join(' | '),
-    } : null
-
-    const mergedJobs = mergeTargetId
-      ? current.jobs.map((job) => job.id === mergeTargetId ? {
-          ...job,
-          status: job.status === 'Cold' ? 'Reviewing' : job.status,
-          nextAction: 'Review fresh staged evidence and confirm canonical state',
-          link: job.link || target.link,
-          notes: [job.notes, `Merged staged evidence: ${target.provenance}`, notes].filter(Boolean).join(' | '),
-        } : job)
-      : current.jobs
-
-    const nextJobs = promotedJob && !mergedJobs.some((job) => job.id === promotedJob.id) ? [promotedJob, ...mergedJobs] : mergedJobs
-    const nextStaging = current.stagingQueue.map((item) => item.id === stagingId ? { ...item, status: blockedByDuplicate ? 'hold' : status, trustLevel: command === 'Promote' || command === 'Merge' ? 'reviewed' : item.trustLevel, notes: blockedByDuplicate ? [item.notes, 'Promotion blocked by duplicate; merge or hold instead.', notes].filter(Boolean).join(' | ') : notes ?? item.notes } : item)
+    const status: StagedOpportunity['status'] = command === 'Reject' ? 'reject' : 'hold'
+    const nextJobs = current.jobs
+    const nextStaging = current.stagingQueue.map((item) => item.id === stagingId
+      ? { ...item, status, notes: notes ?? item.notes }
+      : item)
 
     return {
       ...current,
@@ -676,7 +735,8 @@ export function MvpStateProvider({ children }: { children: ReactNode }) {
       jobs: nextJobs,
       lastUpdated: now,
     }
-  })
+    })
+  }
 
   const jobCommand = (jobId: string, command: string, value?: string) => setPersistedState((current) => {
     const now = new Date().toISOString()
