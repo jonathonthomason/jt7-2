@@ -2,20 +2,20 @@
 
 ## Current State Record
 - **id:** current_state_2026_04_30
-- **updated_at:** 2026-04-30T20:52:00-05:00
+- **updated_at:** 2026-04-30T21:07:00-05:00
 - **system_phase:** Cockpit + Runtime Hardening
-- **current_step:** Review Queue v1 is implemented and verified; JobOps bot/account routing is live; staging intake now scores fit, flags likely canonical duplicates, and ranks promotion candidates locally
+- **current_step:** Top-3 execution stack is persisted; staging intake now supports duplicate-safe merge vs promote decisions and auto-gates obvious off-target imports; live JobOps loop validation is blocked on direct session visibility from Platform
 - **confidence_level:** medium_high
 
 ## State Summary
-- **state_summary:** JT7 now has a real Review Queue cockpit surface in `job-search-ui`, a live JobOps bot lane with dedicated routing and operating memory, and an explicit staging-intake UI that scores fit and warns on likely canonical duplicates for broad direct-board imports. The main remaining gaps are Indeed access, tighter filter precision, and true canonical promotion/writeback behavior beyond local UI state.
+- **state_summary:** JT7 now has a real Review Queue cockpit surface in `job-search-ui`, a live JobOps bot lane with dedicated routing and operating memory, and an explicit staging-intake UI that scores fit, auto-gates obvious off-target imports, and supports duplicate-safe local merge behavior for broad direct-board intake. The main remaining gaps are Indeed access, true canonical promotion/writeback behavior beyond local UI state, and direct visibility into a live JobOps operating loop from Platform.
 
 ## Top Priorities
 - **top_priorities:**
-  - improve parsing and import precision so review noise and off-target board results stop polluting the tracker
+  - implement a real staging-to-canonical promotion and merge model so trusted tracker updates stop depending on ad hoc local behavior
+  - tighten intake filtering and ranking against Jonathon’s search requirements so weak-fit backlog stops forming upstream
+  - validate one real JobOps operating loop and tighten its instructions from actual use
   - keep cockpit/runtime persistence consistent across Sheets, local mirror, git, and Drive-accessible artifacts
-  - turn the new Review Queue and Staging Intake surfaces into the foundation for the rest of the JT7-2 cockpit
-  - validate and tighten actual JobOps behavior now that the separate bot surface is live
   - keep cross-bot checkpoint rules clean so Platform remains the final commit/push authority
 
 ## Active Risks
@@ -35,12 +35,10 @@
 
 ## Required Next Moves
 - **required_next_moves:**
-  - tighten source-specific Gmail filtering for newsletters, digests, and reply notifications unless they contain a valid role/company pattern
-  - push the new staging intake surface from preview-backed local state into a real canonical staging model with true writeback and controlled promotion
+  - move the local promotion/merge model into real canonical tracker writeback behavior
+  - validate one real JobOps operating loop and tighten its instructions based on observed drift or ambiguity
   - normalize Drive mirror behavior so updated docs refresh canonical mirrored copies rather than creating duplicates
   - continue keeping cockpit/runtime docs and storage rules aligned with the actual live JT7 execution path
-  - validate JobOps behavior against real operational prompts and tighten its scope docs where it drifts
-  - create an explicit staging layer for direct-board imports and reconcile the current local-only Jobs delta into it
 
 ## Related Files
 - **related_files:**

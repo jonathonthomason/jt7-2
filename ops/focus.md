@@ -215,6 +215,60 @@
   - Do not assume Telegram is a valid execution surface unless verified
   - remaining problem is parsing quality and source filtering, not basic execution capability
 
+### focus_13
+- **id:** focus_define_staging_promotion_model
+- **title:** Define staging promotion and merge model
+- **type:** next_action
+- **domain:** product
+- **status:** active
+- **priority_rank:** 1
+- **summary:** Formalize and implement how staged roles become canonical Jobs, including duplicate-aware merge behavior.
+- **related_files:**
+  - CURRENT.md
+  - docs/direct-board-import-policy.md
+  - job-search-ui/src/state/mvpState.tsx
+- **related_entity_ids:** []
+- **owner:** shared
+- **due_at:** null
+- **notes:**
+  - highest current trust bottleneck
+
+### focus_14
+- **id:** focus_tighten_intake_filters
+- **title:** Tighten intake filters before backlog forms
+- **type:** next_action
+- **domain:** product
+- **status:**active
+- **priority_rank:** 2
+- **summary:** Apply Jonathon-fit constraints earlier so weak roles are filtered or downgraded before swelling review.
+- **related_files:**
+  - CURRENT.md
+  - career/search-requirements/jonathon-thomason.md
+  - job-search-ui/src/domain/cockpit/mirrorAdapters.ts
+- **related_entity_ids:** []
+- **owner:** shared
+- **due_at:** null
+- **notes:**
+  - supports review queue quality and staging trust
+
+### focus_15
+- **id:** focus_validate_jobops_live_loop
+- **title:** Validate one real JobOps operating loop
+- **type:** next_action
+- **domain:** product
+- **status:** active
+- **priority_rank:** 3
+- **summary:** Use one real JobOps task loop to expose drift, missing rules, or poor handoff behavior.
+- **related_files:**
+  - CURRENT.md
+  - agents/jobops/
+  - docs/jt7-job-ops-bot-agent-spec.md
+- **related_entity_ids:** []
+- **owner:** shared
+- **due_at:** null
+- **notes:**
+  - behavior validation now matters more than more scaffolding
+
 ### focus_09
 - **id:** focus_avoid_overbuilding_before_use
 - **title:** Avoid overbuilding before career workflow is active

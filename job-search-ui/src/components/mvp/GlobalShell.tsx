@@ -98,7 +98,7 @@ function PanelBody() {
         ) : null}
         {type === 'staging' ? (
           <>
-            <button style={styles.primaryButton} onClick={() => stagingCommand(id, 'Promote')} type="button">Promote</button>
+            {'duplicateMatches' in object && Array.isArray(object.duplicateMatches) && object.duplicateMatches.length ? <button style={styles.primaryButton} onClick={() => stagingCommand(id, 'Merge')} type="button">Merge</button> : <button style={styles.primaryButton} onClick={() => stagingCommand(id, 'Promote')} type="button">Promote</button>}
             <button style={styles.secondaryButton} onClick={() => stagingCommand(id, 'Hold')} type="button">Hold</button>
             <button style={styles.secondaryButton} onClick={() => stagingCommand(id, 'Reject')} type="button">Reject</button>
           </>

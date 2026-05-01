@@ -132,7 +132,7 @@ function StagingCard({ item }: { item: StagedOpportunity }) {
       <p style={styles.meta}>Why: {item.reasons.join(' · ')}</p>
       {item.duplicateMatches?.length ? <p style={styles.meta}>Canonical matches: {item.duplicateMatches.join(', ')}</p> : null}
       <div style={styles.buttonRow}>
-        <button style={styles.primaryButton} onClick={() => stagingCommand(item.id, 'Promote')} type="button">Promote</button>
+        {item.duplicateMatches?.length ? <button style={styles.primaryButton} onClick={() => stagingCommand(item.id, 'Merge')} type="button">Merge</button> : <button style={styles.primaryButton} onClick={() => stagingCommand(item.id, 'Promote')} type="button">Promote</button>}
         <button style={styles.secondaryButton} onClick={() => stagingCommand(item.id, 'Hold')} type="button">Hold</button>
         <button style={styles.secondaryButton} onClick={() => stagingCommand(item.id, 'Reject')} type="button">Reject</button>
       </div>

@@ -159,7 +159,7 @@ type MvpContextValue = {
   actionCommand: (actionId: string, command: string, note?: string) => void
   signalCommand: (signalId: string, command: string) => void
   reviewCommand: (reviewId: string, command: ReviewCommand, notes?: string) => void
-  stagingCommand: (stagingId: string, command: 'Promote' | 'Hold' | 'Reject', notes?: string) => void
+  stagingCommand: (stagingId: string, command: 'Promote' | 'Merge' | 'Hold' | 'Reject', notes?: string) => void
   jobCommand: (jobId: string, command: string, value?: string) => void
   recruiterCommand: (recruiterId: string, command: string, note?: string) => void
   updatePanelNote: (text: string) => void
@@ -272,8 +272,9 @@ function scoreStagedOpportunity(staged: StagedOpportunity, jobs: MvpJob[]) {
   let score = 0
   const duplicateMatches = duplicateMatchesFor(staged, jobs)
   const tier = roleTier(staged.role)
+  const allowedLocation = locationAllowed(staged.location)
   score += tier * 25
-  if (locationAllowed(staged.location)) score += 20
+  if (allowedLocation) score += 20
   if (normalizeText(staged.location).includes('remote')) score += 10
   score -= weakRolePenalty(staged.role) * 10
   score -= duplicateMatches.length > 0 ? 35 : 0
@@ -282,17 +283,24 @@ function scoreStagedOpportunity(staged: StagedOpportunity, jobs: MvpJob[]) {
   const duplicateRisk: StagedOpportunity['duplicateRisk'] = duplicateMatches.length > 1 ? 'high' : duplicateMatches.length === 1 ? 'medium' : staged.duplicateRisk
   const reasons = [...staged.reasons]
   if (duplicateMatches.length) reasons.unshift(`possible canonical duplicate (${duplicateMatches.length})`)
-  if (!locationAllowed(staged.location)) reasons.push('outside preferred location rule')
+  if (!allowedLocation) reasons.push('outside preferred location rule')
+  if (tier === 0) reasons.push('outside target role set')
+  const autoStatus: StagedOpportunity['status'] = staged.status === 'promote' || staged.status === 'reject' ? staged.status : tier === 0 ? 'reject' : !allowedLocation ? 'hold' : staged.status
   const recommendedAction = duplicateMatches.length
-    ? 'Hold for duplicate review before any promotion'
-    : fitBand === 'strong'
-      ? 'Promote after final human check'
-      : fitBand === 'maybe'
-        ? 'Hold for ranked review'
-        : 'Reject unless strategic exception'
+    ? 'Merge into canonical job or hold for duplicate review'
+    : autoStatus === 'reject'
+      ? 'Reject by search requirements unless strategic exception'
+      : autoStatus === 'hold'
+        ? 'Hold for manual location/fit review'
+        : fitBand === 'strong'
+          ? 'Promote after final human check'
+          : fitBand === 'maybe'
+            ? 'Hold for ranked review'
+            : 'Reject unless strategic exception'
 
   return {
     ...staged,
+    status: autoStatus,
     fitScore: score,
     fitBand,
     duplicateRisk,
@@ -628,13 +636,15 @@ export function MvpStateProvider({ children }: { children: ReactNode }) {
     }
   })
 
-  const stagingCommand = (stagingId: string, command: 'Promote' | 'Hold' | 'Reject', notes?: string) => setPersistedState((current) => {
+  const stagingCommand = (stagingId: string, command: 'Promote' | 'Merge' | 'Hold' | 'Reject', notes?: string) => setPersistedState((current) => {
     const now = new Date().toISOString()
     const target = current.stagingQueue.find((item) => item.id === stagingId)
     if (!target) return current
 
-    const status: StagedOpportunity['status'] = command === 'Promote' ? 'promote' : command === 'Reject' ? 'reject' : 'hold'
-    const promotedJob: MvpJob | null = command === 'Promote' ? {
+    const status: StagedOpportunity['status'] = command === 'Promote' || command === 'Merge' ? 'promote' : command === 'Reject' ? 'reject' : 'hold'
+    const blockedByDuplicate = command === 'Promote' && (target.duplicateMatches?.length ?? 0) > 0
+    const mergeTargetId = command === 'Merge' ? target.duplicateMatches?.[0] : undefined
+    const promotedJob: MvpJob | null = command === 'Promote' && !blockedByDuplicate ? {
       id: target.canonicalJobId || `job_${stagingId}`,
       role: target.role,
       company: target.company,
@@ -647,8 +657,18 @@ export function MvpStateProvider({ children }: { children: ReactNode }) {
       notes: [target.provenance, notes].filter(Boolean).join(' | '),
     } : null
 
-    const nextJobs = promotedJob && !current.jobs.some((job) => job.id === promotedJob.id) ? [promotedJob, ...current.jobs] : current.jobs
-    const nextStaging = current.stagingQueue.map((item) => item.id === stagingId ? { ...item, status, trustLevel: command === 'Promote' ? 'reviewed' : item.trustLevel, notes: notes ?? item.notes } : item)
+    const mergedJobs = mergeTargetId
+      ? current.jobs.map((job) => job.id === mergeTargetId ? {
+          ...job,
+          status: job.status === 'Cold' ? 'Reviewing' : job.status,
+          nextAction: 'Review fresh staged evidence and confirm canonical state',
+          link: job.link || target.link,
+          notes: [job.notes, `Merged staged evidence: ${target.provenance}`, notes].filter(Boolean).join(' | '),
+        } : job)
+      : current.jobs
+
+    const nextJobs = promotedJob && !mergedJobs.some((job) => job.id === promotedJob.id) ? [promotedJob, ...mergedJobs] : mergedJobs
+    const nextStaging = current.stagingQueue.map((item) => item.id === stagingId ? { ...item, status: blockedByDuplicate ? 'hold' : status, trustLevel: command === 'Promote' || command === 'Merge' ? 'reviewed' : item.trustLevel, notes: blockedByDuplicate ? [item.notes, 'Promotion blocked by duplicate; merge or hold instead.', notes].filter(Boolean).join(' | ') : notes ?? item.notes } : item)
 
     return {
       ...current,
