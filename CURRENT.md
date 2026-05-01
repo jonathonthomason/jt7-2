@@ -2,13 +2,13 @@
 
 ## Current State Record
 - **id:** current_state_2026_04_30
-- **updated_at:** 2026-04-30T21:07:00-05:00
+- **updated_at:** 2026-04-30T22:00:00-05:00
 - **system_phase:** Cockpit + Runtime Hardening
-- **current_step:** Top-3 execution stack is persisted; staging intake now supports duplicate-safe merge vs promote decisions and auto-gates obvious off-target imports; live JobOps loop validation is blocked on direct session visibility from Platform
+- **current_step:** Top-3 execution stack has been worked through; staging intake now supports duplicate-safe merge vs promote decisions and auto-gates obvious off-target imports; one real JobOps loop was validated successfully from live output
 - **confidence_level:** medium_high
 
 ## State Summary
-- **state_summary:** JT7 now has a real Review Queue cockpit surface in `job-search-ui`, a live JobOps bot lane with dedicated routing and operating memory, and an explicit staging-intake UI that scores fit, auto-gates obvious off-target imports, and supports duplicate-safe local merge behavior for broad direct-board intake. The main remaining gaps are Indeed access, true canonical promotion/writeback behavior beyond local UI state, and direct visibility into a live JobOps operating loop from Platform.
+- **state_summary:** JT7 now has a real Review Queue cockpit surface in `job-search-ui`, a live JobOps bot lane with dedicated routing and operating memory, and an explicit staging-intake UI that scores fit, auto-gates obvious off-target imports, and supports duplicate-safe local merge behavior for broad direct-board intake. A live JobOps output sample confirmed good lane discipline and useful ranked staging judgments. The main remaining gaps are Indeed access and true canonical promotion/writeback behavior beyond local UI state.
 
 ## Top Priorities
 - **top_priorities:**
@@ -36,7 +36,7 @@
 ## Required Next Moves
 - **required_next_moves:**
   - move the local promotion/merge model into real canonical tracker writeback behavior
-  - validate one real JobOps operating loop and tighten its instructions based on observed drift or ambiguity
+  - convert the validated JobOps shortlist format into a standing durable JobOps instruction if it continues to prove useful
   - normalize Drive mirror behavior so updated docs refresh canonical mirrored copies rather than creating duplicates
   - continue keeping cockpit/runtime docs and storage rules aligned with the actual live JT7 execution path
 

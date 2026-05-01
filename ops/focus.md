@@ -256,7 +256,7 @@
 - **title:** Validate one real JobOps operating loop
 - **type:** next_action
 - **domain:** product
-- **status:** active
+- **status:** done
 - **priority_rank:** 3
 - **summary:** Use one real JobOps task loop to expose drift, missing rules, or poor handoff behavior.
 - **related_files:**
@@ -268,6 +268,8 @@
 - **due_at:** null
 - **notes:**
   - behavior validation now matters more than more scaffolding
+  - validated from live JobOps output on 2026-04-30
+  - result: JobOps stayed in-lane, respected staging vs canonical distinction, and produced a stronger mechanical shortlist when prompted with stricter structure
 
 ### focus_09
 - **id:** focus_avoid_overbuilding_before_use
