@@ -2,13 +2,13 @@
 
 ## Current State Record
 - **id:** current_state_2026_04_30
-- **updated_at:** 2026-04-30T22:00:00-05:00
+- **updated_at:** 2026-04-30T22:33:00-05:00
 - **system_phase:** Cockpit + Runtime Hardening
-- **current_step:** Top-3 execution stack has been worked through; staging intake now supports duplicate-safe merge vs promote decisions and auto-gates obvious off-target imports; one real JobOps loop was validated successfully from live output
+- **current_step:** A runtime-side staging writeback planner now exists for create/merge/hold/reject decisions, using canonical-job filtering to avoid treating legacy direct-import drift as trusted duplicates
 - **confidence_level:** medium_high
 
 ## State Summary
-- **state_summary:** JT7 now has a real Review Queue cockpit surface in `job-search-ui`, a live JobOps bot lane with dedicated routing and operating memory, and an explicit staging-intake UI that scores fit, auto-gates obvious off-target imports, and supports duplicate-safe local merge behavior for broad direct-board intake. A live JobOps output sample confirmed good lane discipline and useful ranked staging judgments. The main remaining gaps are Indeed access and true canonical promotion/writeback behavior beyond local UI state.
+- **state_summary:** JT7 now has a real Review Queue cockpit surface in `job-search-ui`, a live JobOps bot lane with dedicated routing and operating memory, and an explicit staging-intake UI that scores fit, auto-gates obvious off-target imports, and supports duplicate-safe local merge behavior for broad direct-board intake. A runtime-side planner now defines tracker-facing create/merge/hold/reject decisions while filtering duplicate checks against canonical jobs only. The main remaining gaps are Indeed access and connecting this planner to real Sheets writeback behavior.
 
 ## Top Priorities
 - **top_priorities:**
@@ -35,7 +35,7 @@
 
 ## Required Next Moves
 - **required_next_moves:**
-  - move the local promotion/merge model into real canonical tracker writeback behavior
+  - connect the new staging writeback planner to real Sheets-side create/update behavior with safe dry-run and apply modes
   - convert the validated JobOps shortlist format into a standing durable JobOps instruction if it continues to prove useful
   - normalize Drive mirror behavior so updated docs refresh canonical mirrored copies rather than creating duplicates
   - continue keeping cockpit/runtime docs and storage rules aligned with the actual live JT7 execution path
