@@ -12,6 +12,7 @@ import {
   ReportsPage,
   ReviewQueuePage,
   SettingsPage,
+  StagingIntakePage,
   TodayPlanPage,
   WikiPage,
 } from './features/mvp/MvpPages'
@@ -72,6 +73,7 @@ export default function App() {
           <Route element={<ShellRoute />}>
             <Route path="/" element={<Navigate to="/review-queue" replace />} />
             <Route path="/review-queue" element={<ReviewQueuePage />} />
+            <Route path="/trust/staging" element={<StagingIntakePage />} />
             <Route path="/execute/today" element={<TodayPlanPage />} />
             <Route path="/app/dashboard" element={<TodayPlanPage />} />
             <Route path="/jobs" element={<Navigate to="/manage/jobs" replace />} />

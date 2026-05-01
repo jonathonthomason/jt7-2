@@ -1,5 +1,8 @@
 import type { OpportunityStatus, PriorityLevel, ReviewCommand, ReviewEventType, ReviewStatus } from './enums'
 
+export type StagingFitBand = 'strong' | 'maybe' | 'weak'
+export type StagingDecision = 'pending' | 'promote' | 'hold' | 'reject'
+
 export type MirrorRow = Record<string, string>
 
 export type ReviewProposedJobUpdate = {
@@ -45,4 +48,24 @@ export type ReviewEvent = {
   actor: string
   notes?: string
   linkedJobId?: string
+}
+
+export type StagedOpportunity = {
+  id: string
+  canonicalJobId?: string
+  company: string
+  role: string
+  location: string
+  source: string
+  sourceBoard: string
+  boardJobId?: string
+  provenance: string
+  status: StagingDecision
+  trustLevel: 'staged' | 'reviewed'
+  fitBand: StagingFitBand
+  duplicateRisk: 'low' | 'medium' | 'high'
+  recommendedAction: string
+  reasons: string[]
+  link?: string
+  notes?: string
 }

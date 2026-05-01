@@ -1,13 +1,13 @@
 import type { CSSProperties, ReactNode } from 'react'
 import type { MvpAction, MvpJob, MvpMessage, MvpRecruiter, MvpSignal } from '../../state/mvpState'
-import type { ReviewItem } from '../../domain/cockpit/types'
+import type { ReviewItem, StagedOpportunity } from '../../domain/cockpit/types'
 import { NavLink, Outlet } from 'react-router-dom'
 import { useMvpState } from '../../state/mvpState'
 
 type NavGroup = { label: string; items: { label: string; to: string }[] }
 
 const navGroups: NavGroup[] = [
-  { label: 'Trust', items: [{ label: 'Review Queue', to: '/review-queue' }] },
+  { label: 'Trust', items: [{ label: 'Review Queue', to: '/review-queue' }, { label: 'Staging Intake', to: '/trust/staging' }] },
   { label: 'Execute', items: [{ label: 'Today', to: '/execute/today' }] },
   {
     label: 'Manage',
@@ -37,21 +37,23 @@ const navGroups: NavGroup[] = [
 ]
 
 function PanelBody() {
-  const { state, closePanel, updatePanelNote, actionCommand, jobCommand, recruiterCommand, reviewCommand } = useMvpState()
+  const { state, closePanel, updatePanelNote, actionCommand, jobCommand, recruiterCommand, reviewCommand, stagingCommand } = useMvpState()
   const { type, id } = state.selectedPanel
   if (!type || !id) return <p style={styles.panelEmpty}>Open a review item, signal, job, recruiter, action, or message.</p>
 
-  const object: MvpSignal | MvpJob | MvpRecruiter | MvpAction | MvpMessage | ReviewItem | undefined = type === 'review'
+  const object: MvpSignal | MvpJob | MvpRecruiter | MvpAction | MvpMessage | ReviewItem | StagedOpportunity | undefined = type === 'review'
     ? state.reviewQueue.find((item) => item.id === id)
-    : type === 'signal'
-      ? state.signals.find((item) => item.id === id)
-      : type === 'job'
-        ? state.jobs.find((item) => item.id === id)
-        : type === 'recruiter'
-          ? state.recruiters.find((item) => item.id === id)
-          : type === 'action'
-            ? state.actions.find((item) => item.id === id)
-            : state.messages.find((item) => item.id === id)
+    : type === 'staging'
+      ? state.stagingQueue.find((item) => item.id === id)
+      : type === 'signal'
+        ? state.signals.find((item) => item.id === id)
+        : type === 'job'
+          ? state.jobs.find((item) => item.id === id)
+          : type === 'recruiter'
+            ? state.recruiters.find((item) => item.id === id)
+            : type === 'action'
+              ? state.actions.find((item) => item.id === id)
+              : state.messages.find((item) => item.id === id)
 
   if (!object) return <p style={styles.panelEmpty}>Object not found.</p>
 
@@ -92,6 +94,13 @@ function PanelBody() {
             <button style={styles.secondaryButton} onClick={() => reviewCommand(id, 'Link')} type="button">Link</button>
             <button style={styles.secondaryButton} onClick={() => reviewCommand(id, 'Dismiss')} type="button">Dismiss</button>
             <button style={styles.secondaryButton} onClick={() => reviewCommand(id, 'Escalate')} type="button">Escalate</button>
+          </>
+        ) : null}
+        {type === 'staging' ? (
+          <>
+            <button style={styles.primaryButton} onClick={() => stagingCommand(id, 'Promote')} type="button">Promote</button>
+            <button style={styles.secondaryButton} onClick={() => stagingCommand(id, 'Hold')} type="button">Hold</button>
+            <button style={styles.secondaryButton} onClick={() => stagingCommand(id, 'Reject')} type="button">Reject</button>
           </>
         ) : null}
         {type === 'action' ? <button style={styles.primaryButton} onClick={() => actionCommand(id, 'Complete')} type="button">Complete</button> : null}

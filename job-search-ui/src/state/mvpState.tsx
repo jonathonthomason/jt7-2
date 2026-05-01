@@ -6,16 +6,17 @@ import recruitersMirror from '../../data_mirror/Recruiters.json'
 import reviewQueueMirror from '../../data_mirror/ReviewQueue.json'
 import signalsMirror from '../../data_mirror/Signals.json'
 import taskRunsMirror from '../../data_mirror/TaskRuns.json'
+import directBoardImportPreview from '../../runtime/direct_board_import_preview.json'
 import { buildFallbackReviewSelection } from '../domain/cockpit/fixtures'
-import { rowsToObjects, adaptReviewQueue } from '../domain/cockpit/mirrorAdapters'
+import { rowsToObjects, adaptDirectBoardPreview, adaptReviewQueue } from '../domain/cockpit/mirrorAdapters'
 import { confirmAsNewOpportunity, deferSignal, dismissSignal, escalateSignal, linkToExistingOpportunity, markDuplicate } from '../domain/cockpit/reviewActions'
 import type { ReviewCommand } from '../domain/cockpit/enums'
-import type { ReviewEvent, ReviewItem } from '../domain/cockpit/types'
+import type { ReviewEvent, ReviewItem, StagedOpportunity } from '../domain/cockpit/types'
 
 const STORAGE_KEY = 'jt7_mvp_state_v1_5'
 
 type MirrorRow = Record<string, string>
-type PanelType = 'signal' | 'job' | 'recruiter' | 'action' | 'message' | 'review' | null
+type PanelType = 'signal' | 'job' | 'recruiter' | 'action' | 'message' | 'review' | 'staging' | null
 
 export type MvpSignal = {
   id: string
@@ -123,6 +124,7 @@ export type MvpState = {
   taskRuns: MvpTaskRun[]
   reviewQueue: ReviewItem[]
   reviewEvents: ReviewEvent[]
+  stagingQueue: StagedOpportunity[]
   competition: MirrorRow[]
   selectedPanel: { type: PanelType; id?: string }
   lastUpdated: string
@@ -145,6 +147,11 @@ type MvpContextValue = {
     resolved: ReviewItem[]
     highPriority: ReviewItem[]
   }
+  stagingSummary: {
+    pending: StagedOpportunity[]
+    strongFit: StagedOpportunity[]
+    reviewed: StagedOpportunity[]
+  }
   runSweep: () => void
   refreshPlan: () => void
   openPanel: (type: Exclude<PanelType, null>, id: string) => void
@@ -152,6 +159,7 @@ type MvpContextValue = {
   actionCommand: (actionId: string, command: string, note?: string) => void
   signalCommand: (signalId: string, command: string) => void
   reviewCommand: (reviewId: string, command: ReviewCommand, notes?: string) => void
+  stagingCommand: (stagingId: string, command: 'Promote' | 'Hold' | 'Reject', notes?: string) => void
   jobCommand: (jobId: string, command: string, value?: string) => void
   recruiterCommand: (recruiterId: string, command: string, note?: string) => void
   updatePanelNote: (text: string) => void
@@ -271,6 +279,7 @@ function buildInitialState(): MvpState {
   })) satisfies MvpSignal[]
 
   const reviewQueue = buildFallbackReviewSelection(adaptReviewQueue(reviewQueueMirror as string[][], signalRows))
+  const stagingQueue = adaptDirectBoardPreview((directBoardImportPreview.proposed_rows || []) as string[][])
 
   const actions = actionRows.map((row) => {
     const job = jobs.find((item) => item.id === row.job_id)
@@ -335,20 +344,28 @@ function buildInitialState(): MvpState {
     taskRuns,
     reviewQueue,
     reviewEvents: [],
+    stagingQueue,
     competition: rowsToObjects(competitionMirror as string[][]),
     selectedPanel: { type: null },
     lastUpdated: taskRuns[0]?.lastRunAt || new Date().toISOString(),
   }
 }
 
+function normalizeState(state: MvpState): MvpState {
+  return {
+    ...state,
+    stagingQueue: state.stagingQueue ?? adaptDirectBoardPreview((directBoardImportPreview.proposed_rows || []) as string[][]),
+  }
+}
+
 function loadInitialState(): MvpState {
   try {
     const stored = localStorage.getItem(STORAGE_KEY)
-    if (stored) return JSON.parse(stored) as MvpState
+    if (stored) return normalizeState(JSON.parse(stored) as MvpState)
   } catch {
     // Fall through to seeded state.
   }
-  return buildInitialState()
+  return normalizeState(buildInitialState())
 }
 
 function createMockSignal(index: number): MvpSignal {
@@ -401,6 +418,12 @@ export function MvpStateProvider({ children }: { children: ReactNode }) {
     resolved: state.reviewQueue.filter((item) => !['pending', 'deferred'].includes(item.status)),
     highPriority: state.reviewQueue.filter((item) => item.priority === 'high'),
   }), [state.reviewQueue])
+
+  const stagingSummary = useMemo(() => ({
+    pending: state.stagingQueue.filter((item) => item.status === 'pending' || item.status === 'hold'),
+    strongFit: state.stagingQueue.filter((item) => item.fitBand === 'strong'),
+    reviewed: state.stagingQueue.filter((item) => item.status === 'promote' || item.status === 'reject'),
+  }), [state.stagingQueue])
 
   const setPersistedState = (updater: (current: MvpState) => MvpState) => {
     setState((current) => persist(updater(current)))
@@ -527,6 +550,33 @@ export function MvpStateProvider({ children }: { children: ReactNode }) {
     }
   })
 
+  const stagingCommand = (stagingId: string, command: 'Promote' | 'Hold' | 'Reject', notes?: string) => setPersistedState((current) => {
+    const now = new Date().toISOString()
+    const target = current.stagingQueue.find((item) => item.id === stagingId)
+    if (!target) return current
+
+    const status = command === 'Promote' ? 'promote' : command === 'Reject' ? 'reject' : 'hold'
+    const promotedJob: MvpJob | null = command === 'Promote' ? {
+      id: target.canonicalJobId || `job_${stagingId}`,
+      role: target.role,
+      company: target.company,
+      status: 'Reviewing',
+      source: `${target.source}_staged`,
+      priority: target.fitBand === 'strong' ? 'high' : target.fitBand === 'maybe' ? 'medium' : 'low',
+      dateFound: now,
+      nextAction: 'Confirm duplicate check and decide whether to apply',
+      link: target.link,
+      notes: [target.provenance, notes].filter(Boolean).join(' | '),
+    } : null
+
+    return {
+      ...current,
+      stagingQueue: current.stagingQueue.map((item) => item.id === stagingId ? { ...item, status, trustLevel: command === 'Promote' ? 'reviewed' : item.trustLevel, notes: notes ?? item.notes } : item),
+      jobs: promotedJob && !current.jobs.some((job) => job.id === promotedJob.id) ? [promotedJob, ...current.jobs] : current.jobs,
+      lastUpdated: now,
+    }
+  })
+
   const jobCommand = (jobId: string, command: string, value?: string) => setPersistedState((current) => {
     const now = new Date().toISOString()
     const job = current.jobs.find((item) => item.id === jobId)
@@ -590,6 +640,7 @@ export function MvpStateProvider({ children }: { children: ReactNode }) {
     if (type === 'recruiter') return { ...current, recruiters: current.recruiters.map((item) => item.id === id ? { ...item, notes: text } : item) }
     if (type === 'action') return { ...current, actions: current.actions.map((item) => item.id === id ? { ...item, note: text } : item) }
     if (type === 'review') return { ...current, reviewQueue: current.reviewQueue.map((item) => item.id === id ? { ...item, resolutionNotes: text } : item) }
+    if (type === 'staging') return { ...current, stagingQueue: current.stagingQueue.map((item) => item.id === id ? { ...item, notes: text } : item) }
     return current
   })
 
@@ -645,7 +696,7 @@ export function MvpStateProvider({ children }: { children: ReactNode }) {
   const refreshPlan = () => setPersistedState((current) => ({ ...current, lastUpdated: new Date().toISOString() }))
 
   return (
-    <MvpContext.Provider value={{ state, today, reviewSummary, runSweep, refreshPlan, openPanel, closePanel, actionCommand, signalCommand, reviewCommand, jobCommand, recruiterCommand, updatePanelNote }}>
+    <MvpContext.Provider value={{ state, today, reviewSummary, stagingSummary, runSweep, refreshPlan, openPanel, closePanel, actionCommand, signalCommand, reviewCommand, stagingCommand, jobCommand, recruiterCommand, updatePanelNote }}>
       {children}
     </MvpContext.Provider>
   )

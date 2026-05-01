@@ -1,6 +1,6 @@
 import type { CSSProperties, ReactNode } from 'react'
 import { useMvpState, type MvpAction, type MvpSignal } from '../../state/mvpState'
-import type { ReviewItem } from '../../domain/cockpit/types'
+import type { ReviewItem, StagedOpportunity } from '../../domain/cockpit/types'
 
 function SectionTitle({ title, count }: { title: string; count?: number }) {
   return <div style={styles.sectionHeader}><h2 style={styles.sectionTitle}>{title}</h2>{count !== undefined ? <span style={styles.countTag}>{count}</span> : null}</div>
@@ -94,6 +94,90 @@ export function ReviewQueuePage() {
                 ))}
               </ul>
             ) : <p style={styles.meta}>No review actions recorded yet.</p>}
+          </section>
+        </aside>
+      </div>
+    </section>
+  )
+}
+
+function FitTag({ value }: { value: StagedOpportunity['fitBand'] }) {
+  const color = value === 'strong' ? '#42be65' : value === 'maybe' ? '#f1c21b' : '#fa4d56'
+  return <span style={{ ...styles.tag, borderColor: color, color }}>{value}</span>
+}
+
+function StagingCard({ item }: { item: StagedOpportunity }) {
+  const { openPanel, stagingCommand } = useMvpState()
+  return (
+    <article style={styles.reviewCard}>
+      <div style={styles.rowBetween}>
+        <div style={styles.tagRow}>
+          <FitTag value={item.fitBand} />
+          <StatusTag value={item.status} />
+          <span style={styles.tag}>{item.sourceBoard}</span>
+          <span style={styles.tag}>{item.duplicateRisk} duplicate risk</span>
+        </div>
+        <button style={styles.linkButton} onClick={() => openPanel('staging', item.id)} type="button">Detail</button>
+      </div>
+      <h3 style={styles.actionTitle}>{item.role}</h3>
+      <p style={styles.meta}>{item.company} · {item.location}</p>
+      <p style={styles.copy}>{item.recommendedAction}</p>
+      <p style={styles.meta}>Why: {item.reasons.join(' · ')}</p>
+      <div style={styles.buttonRow}>
+        <button style={styles.primaryButton} onClick={() => stagingCommand(item.id, 'Promote')} type="button">Promote</button>
+        <button style={styles.secondaryButton} onClick={() => stagingCommand(item.id, 'Hold')} type="button">Hold</button>
+        <button style={styles.secondaryButton} onClick={() => stagingCommand(item.id, 'Reject')} type="button">Reject</button>
+      </div>
+    </article>
+  )
+}
+
+export function StagingIntakePage() {
+  const { stagingSummary, state, openPanel } = useMvpState()
+  return (
+    <section style={styles.page}>
+      <section style={styles.hero}>
+        <div>
+          <p style={styles.kicker}>Trust / Staging</p>
+          <h1 style={styles.title}>Staging Intake</h1>
+          <p style={styles.copy}>Broad board imports land here first. Nothing in this view is canonical tracker truth until it is intentionally promoted.</p>
+        </div>
+        <div>
+          <p style={styles.meta}>Pending staged</p>
+          <strong>{stagingSummary.pending.length}</strong>
+        </div>
+        <div>
+          <p style={styles.meta}>Strong fit</p>
+          <strong>{stagingSummary.strongFit.length}</strong>
+        </div>
+      </section>
+      <div style={styles.grid}>
+        <main style={styles.stack}>
+          <SectionTitle title="Pending staging review" count={stagingSummary.pending.length} />
+          <div style={styles.stack}>
+            {stagingSummary.pending.slice(0, 16).map((item) => <StagingCard key={item.id} item={item} />)}
+          </div>
+        </main>
+        <aside style={styles.stack}>
+          <section style={styles.tile}>
+            <SectionTitle title="Promotion candidates" count={stagingSummary.strongFit.length} />
+            <ul style={styles.cleanList}>
+              {stagingSummary.strongFit.slice(0, 8).map((item) => (
+                <li key={item.id} style={styles.listItem}>
+                  <button style={styles.linkButton} onClick={() => openPanel('staging', item.id)} type="button">{item.company} — {item.role}</button>
+                  <span style={styles.meta}>{item.location} · {item.sourceBoard}</span>
+                </li>
+              ))}
+            </ul>
+          </section>
+          <section style={styles.tile}>
+            <SectionTitle title="Trust boundary" />
+            <ul style={styles.cleanList}>
+              <li style={styles.listItem}>Canonical Jobs remain trusted tracker state.</li>
+              <li style={styles.listItem}>Staged imports keep board provenance and duplicate risk visible.</li>
+              <li style={styles.listItem}>Only explicit promotion should create or update tracker-facing jobs.</li>
+              <li style={styles.listItem}>Current staged corpus: {state.stagingQueue.length} imported roles.</li>
+            </ul>
           </section>
         </aside>
       </div>
@@ -209,8 +293,8 @@ export function WikiPage() {
 }
 
 export function ReportsPage() {
-  const { state, today, reviewSummary } = useMvpState()
-  return <SimpleIntelligence title="Reports" items={[`Pipeline health: ${state.jobs.length} jobs / ${state.recruiters.length} recruiters`, `Pending reviews: ${reviewSummary.pending.length}`, `Resolved reviews: ${reviewSummary.resolved.length}`, `Recruiter response trend: ${state.messages.filter((m) => m.direction === 'inbound').length} inbound messages`, `Completed actions: ${today.completedToday.length}`, `Weekly summary: ${today.latestRun?.summary ?? 'No run summary'}`]} />
+  const { state, today, reviewSummary, stagingSummary } = useMvpState()
+  return <SimpleIntelligence title="Reports" items={[`Pipeline health: ${state.jobs.length} jobs / ${state.recruiters.length} recruiters`, `Pending reviews: ${reviewSummary.pending.length}`, `Staged intake backlog: ${stagingSummary.pending.length}`, `Promotion candidates: ${stagingSummary.strongFit.length}`, `Recruiter response trend: ${state.messages.filter((m) => m.direction === 'inbound').length} inbound messages`, `Completed actions: ${today.completedToday.length}`, `Weekly summary: ${today.latestRun?.summary ?? 'No run summary'}`]} />
 }
 
 export function ComponentsPage() {
