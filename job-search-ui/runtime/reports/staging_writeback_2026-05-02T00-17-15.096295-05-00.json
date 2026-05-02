@@ -1,0 +1,84 @@
+{
+  "executedAt": "2026-05-02T00:17:15.096295-05:00",
+  "sheetId": "1acPkcUQFDIVNY0sgMo7ZsVzEnBKIbjU2veEjDFRu0Ks",
+  "staged": {
+    "staged_id": "staged_job_240",
+    "preview_index": "184",
+    "company": "Stripe",
+    "role": "Senior Staff Product Designer, Payments",
+    "location": "SF, Seattle, New York, Remote in the US",
+    "job_posting_link": "https://stripe.com/jobs/search?gh_jid=7202630",
+    "source": "greenhouse_direct"
+  },
+  "plan": {
+    "action": "merge",
+    "reason": "duplicate_match_found",
+    "staged_company": "Stripe",
+    "staged_role": "Senior Staff Product Designer, Payments",
+    "matched_job_id": "job_066",
+    "create_row": null,
+    "update_values": {
+      "job_id": "job_066",
+      "company": "Stripe",
+      "role": "Senior Staff Product Designer, Payments",
+      "location": "SF, Seattle, New York, Remote in the US",
+      "status": "Reviewing",
+      "contact": "",
+      "last_contact_date": "2026-05-02T00:17:15.096295-05:00",
+      "next_step": "Review refreshed staging evidence and decide whether to apply",
+      "interview_datetime": "",
+      "direct_application_link": "",
+      "job_posting_link": "https://stripe.com/jobs/search?gh_jid=7202630",
+      "fit_score": "",
+      "source": "greenhouse_direct",
+      "notes": "Imported from direct board scan (greenhouse) | board_token:stripe | job_board_id:7202630",
+      "row_index": "67"
+    }
+  },
+  "mode": "apply",
+  "result": "merged",
+  "mirror": {
+    "tabs_mirrored": [
+      "Jobs"
+    ],
+    "changed_csv": [
+      "/Users/jtemp/.openclaw/workspace/job-search-ui/data_mirror/Jobs.csv"
+    ],
+    "changed_json": [
+      "/Users/jtemp/.openclaw/workspace/job-search-ui/data_mirror/Jobs.json"
+    ],
+    "unchanged_tabs": [],
+    "tracker_tabs": {
+      "Jobs": {
+        "rows_total": 66,
+        "rows_created": 0,
+        "rows_updated": 0,
+        "rows_unchanged": 66,
+        "row_identifiers": [
+          "job_001",
+          "job_002",
+          "job_003",
+          "job_004",
+          "job_005"
+        ]
+      }
+    },
+    "before": {
+      "Jobs": {
+        "csv_exists": true,
+        "json_exists": true,
+        "csv_size": 18926,
+        "json_size": 25983
+      }
+    },
+    "after": {
+      "Jobs": {
+        "csv_exists": true,
+        "json_exists": true,
+        "csv_size": 18924,
+        "json_size": 25981
+      }
+    }
+  },
+  "merged_job_id": "job_066"
+}

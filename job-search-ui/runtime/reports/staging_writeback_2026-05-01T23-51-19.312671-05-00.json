@@ -1,0 +1,83 @@
+{
+  "executedAt": "2026-05-01T23:51:19.312671-05:00",
+  "sheetId": "1acPkcUQFDIVNY0sgMo7ZsVzEnBKIbjU2veEjDFRu0Ks",
+  "staged": {
+    "staged_id": "staged_job_235",
+    "preview_index": "179",
+    "company": "Dropbox",
+    "role": "Staff Product Designer",
+    "location": "Remote - US: Select locations",
+    "job_posting_link": "https://jobs.dropbox.com/listing/7558673?gh_jid=7558673",
+    "source": "greenhouse_direct"
+  },
+  "plan": {
+    "action": "create",
+    "reason": "no_duplicate_and_fit_passed",
+    "staged_company": "Dropbox",
+    "staged_role": "Staff Product Designer",
+    "matched_job_id": "",
+    "create_row": [
+      "job_064",
+      "Dropbox",
+      "Staff Product Designer",
+      "Remote - US: Select locations",
+      "Reviewing",
+      "",
+      "2026-05-01T23:51:19.312671-05:00",
+      "Review promoted staging opportunity and decide whether to apply",
+      "",
+      "",
+      "https://jobs.dropbox.com/listing/7558673?gh_jid=7558673",
+      "",
+      "greenhouse_direct",
+      "Imported from direct board scan (greenhouse) | board_token:dropbox | job_board_id:7558673"
+    ],
+    "update_values": null
+  },
+  "mode": "apply",
+  "result": "created",
+  "mirror": {
+    "tabs_mirrored": [
+      "Jobs"
+    ],
+    "changed_csv": [
+      "/Users/jtemp/.openclaw/workspace/job-search-ui/data_mirror/Jobs.csv"
+    ],
+    "changed_json": [
+      "/Users/jtemp/.openclaw/workspace/job-search-ui/data_mirror/Jobs.json"
+    ],
+    "unchanged_tabs": [],
+    "tracker_tabs": {
+      "Jobs": {
+        "rows_total": 64,
+        "rows_created": 0,
+        "rows_updated": 0,
+        "rows_unchanged": 64,
+        "row_identifiers": [
+          "job_001",
+          "job_002",
+          "job_003",
+          "job_004",
+          "job_005"
+        ]
+      }
+    },
+    "before": {
+      "Jobs": {
+        "csv_exists": true,
+        "json_exists": true,
+        "csv_size": 17847,
+        "json_size": 24597
+      }
+    },
+    "after": {
+      "Jobs": {
+        "csv_exists": true,
+        "json_exists": true,
+        "csv_size": 18192,
+        "json_size": 25047
+      }
+    }
+  },
+  "created_job_id": "job_064"
+}

@@ -1,9 +1,9 @@
 def collect_gmail_messages(query, gog_json):
-    return gog_json(['gog', 'gmail', 'messages', 'search', query, '--max', '100', '--json']).get('messages', [])
+    return gog_json(['gmail', 'messages', 'search', query, '--max', '100', '--json']).get('messages', [])
 
 
 def collect_gmail_threads(query, gog_json):
-    return gog_json(['gog', 'gmail', 'search', query, '--max', '100', '--json']).get('threads', [])
+    return gog_json(['gmail', 'search', query, '--max', '100', '--json']).get('threads', [])
 
 
 def build_thread_map(threads, messages):

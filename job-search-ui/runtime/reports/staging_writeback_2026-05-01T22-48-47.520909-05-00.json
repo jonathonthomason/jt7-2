@@ -1,0 +1,41 @@
+{
+  "executedAt": "2026-05-01T22:48:47.520909-05:00",
+  "sheetId": "1acPkcUQFDIVNY0sgMo7ZsVzEnBKIbjU2veEjDFRu0Ks",
+  "staged": {
+    "staged_id": "staged_job_083",
+    "preview_index": "27",
+    "company": "Ellevation Education",
+    "role": "Principal Product Designer",
+    "location": "Remote",
+    "job_posting_link": "https://builtin.com/job/principal-product-designer/8331914",
+    "source": "builtin_direct"
+  },
+  "plan": {
+    "action": "merge",
+    "reason": "duplicate_match_found",
+    "staged_company": "Ellevation Education",
+    "staged_role": "Principal Product Designer",
+    "matched_job_id": "job_060",
+    "create_row": null,
+    "update_values": {
+      "job_id": "job_060",
+      "company": "Ellevation Education",
+      "role": "Principal Product Designer",
+      "location": "Remote",
+      "status": "Reviewing",
+      "contact": "",
+      "last_contact_date": "2026-05-01T22:48:47.520909-05:00",
+      "next_step": "Review refreshed staging evidence and decide whether to apply",
+      "interview_datetime": "",
+      "direct_application_link": "",
+      "job_posting_link": "https://builtin.com/job/principal-product-designer/8331914",
+      "fit_score": "",
+      "source": "builtin_direct",
+      "notes": "Imported from direct board scan (builtin) | board_token:remote | job_board_id:8331914",
+      "row_index": "61"
+    }
+  },
+  "mode": "plan",
+  "result": "planned",
+  "mirror": null
+}

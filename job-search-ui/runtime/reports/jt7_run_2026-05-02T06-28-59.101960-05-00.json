@@ -1,0 +1,31 @@
+{
+  "runTimestamp": "2026-05-02T06:28:59.101960-05:00",
+  "scheduledFor": "2026-05-02T06:28:59.101960-05:00",
+  "triggerMode": "scheduled",
+  "missedSlotsCount": 0,
+  "chain": [
+    "EMAIL_SIGNAL_SCAN",
+    "CALENDAR_SIGNAL_SCAN",
+    "JOB_BOARD_SIGNAL_SCAN",
+    "SIGNAL_CLASSIFICATION",
+    "PIPELINE_STATE_SYNC",
+    "PIPELINE_UPDATE",
+    "LOCAL_MIRROR_SYNC",
+    "GIT_COMMIT_SYNC",
+    "ACTION_GENERATION",
+    "PRIORITY_SURFACING",
+    "PASS_LOGGER"
+  ],
+  "taskResults": [],
+  "status": "failed",
+  "summary": "gog command failed: ['/opt/homebrew/bin/gog', 'gog', 'gmail', 'messages', 'search', 'label:Folders/Jobs newer_than:3d', '--max', '100', '--json'] :: unexpected argument gog",
+  "sources_checked": [],
+  "tracker_crud": {},
+  "local_mirror": {},
+  "git": {},
+  "warnings": [],
+  "errors": [
+    "gog command failed: ['/opt/homebrew/bin/gog', 'gog', 'gmail', 'messages', 'search', 'label:Folders/Jobs newer_than:3d', '--max', '100', '--json'] :: unexpected argument gog"
+  ],
+  "assessment": "Chain failed. Inspect errors and partial outputs."
+}

@@ -1,0 +1,83 @@
+{
+  "executedAt": "2026-05-01T22:47:55.362555-05:00",
+  "sheetId": "1acPkcUQFDIVNY0sgMo7ZsVzEnBKIbjU2veEjDFRu0Ks",
+  "staged": {
+    "staged_id": "staged_job_083",
+    "preview_index": "27",
+    "company": "Ellevation Education",
+    "role": "Principal Product Designer",
+    "location": "Remote",
+    "job_posting_link": "https://builtin.com/job/principal-product-designer/8331914",
+    "source": "builtin_direct"
+  },
+  "plan": {
+    "action": "create",
+    "reason": "no_duplicate_and_fit_passed",
+    "staged_company": "Ellevation Education",
+    "staged_role": "Principal Product Designer",
+    "matched_job_id": "",
+    "create_row": [
+      "job_061",
+      "Ellevation Education",
+      "Principal Product Designer",
+      "Remote",
+      "Reviewing",
+      "",
+      "2026-05-01T22:47:55.362555-05:00",
+      "Review promoted staging opportunity and decide whether to apply",
+      "",
+      "",
+      "https://builtin.com/job/principal-product-designer/8331914",
+      "",
+      "builtin_direct",
+      "Imported from direct board scan (builtin) | board_token:remote | job_board_id:8331914"
+    ],
+    "update_values": null
+  },
+  "mode": "apply",
+  "result": "created",
+  "mirror": {
+    "tabs_mirrored": [
+      "Jobs"
+    ],
+    "changed_csv": [
+      "/Users/jtemp/.openclaw/workspace/job-search-ui/data_mirror/Jobs.csv"
+    ],
+    "changed_json": [
+      "/Users/jtemp/.openclaw/workspace/job-search-ui/data_mirror/Jobs.json"
+    ],
+    "unchanged_tabs": [],
+    "tracker_tabs": {
+      "Jobs": {
+        "rows_total": 61,
+        "rows_created": 0,
+        "rows_updated": 0,
+        "rows_unchanged": 61,
+        "row_identifiers": [
+          "job_001",
+          "job_002",
+          "job_003",
+          "job_004",
+          "job_005"
+        ]
+      }
+    },
+    "before": {
+      "Jobs": {
+        "csv_exists": true,
+        "json_exists": true,
+        "csv_size": 16742,
+        "json_size": 23177
+      }
+    },
+    "after": {
+      "Jobs": {
+        "csv_exists": true,
+        "json_exists": true,
+        "csv_size": 17077,
+        "json_size": 23617
+      }
+    }
+  },
+  "created_job_id": "job_061"
+}

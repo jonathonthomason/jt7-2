@@ -1,7 +1,7 @@
 def calendar_scan_and_update(run_at, gog_json, rows_to_dicts, ensure_action, action_ids, actions_rows, new_actions, append_rows, mirror_dir, write_csv, sheets_append, iso, timedelta, normalize_company, normalize_text, update_row):
     from_iso = iso(run_at - timedelta(days=2))
     to_iso = iso(run_at + timedelta(days=14))
-    events = gog_json(['gog', 'calendar', 'events', 'primary', '--from', from_iso, '--to', to_iso, '--json']).get('events', [])
+    events = gog_json(['calendar', 'events', 'primary', '--from', from_iso, '--to', to_iso, '--json']).get('events', [])
     state_jobs_header, jobs_rows = rows_to_dicts('Jobs')
     matched_jobs = 0
     updates_written = 0

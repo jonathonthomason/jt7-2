@@ -1,0 +1,83 @@
+{
+  "executedAt": "2026-05-02T00:16:42.045009-05:00",
+  "sheetId": "1acPkcUQFDIVNY0sgMo7ZsVzEnBKIbjU2veEjDFRu0Ks",
+  "staged": {
+    "staged_id": "staged_job_240",
+    "preview_index": "184",
+    "company": "Stripe",
+    "role": "Senior Staff Product Designer, Payments",
+    "location": "SF, Seattle, New York, Remote in the US",
+    "job_posting_link": "https://stripe.com/jobs/search?gh_jid=7202630",
+    "source": "greenhouse_direct"
+  },
+  "plan": {
+    "action": "create",
+    "reason": "no_duplicate_and_fit_passed",
+    "staged_company": "Stripe",
+    "staged_role": "Senior Staff Product Designer, Payments",
+    "matched_job_id": "",
+    "create_row": [
+      "job_066",
+      "Stripe",
+      "Senior Staff Product Designer, Payments",
+      "SF, Seattle, New York, Remote in the US",
+      "Reviewing",
+      "",
+      "2026-05-02T00:16:42.045009-05:00",
+      "Review promoted staging opportunity and decide whether to apply",
+      "",
+      "",
+      "https://stripe.com/jobs/search?gh_jid=7202630",
+      "",
+      "greenhouse_direct",
+      "Imported from direct board scan (greenhouse) | board_token:stripe | job_board_id:7202630"
+    ],
+    "update_values": null
+  },
+  "mode": "apply",
+  "result": "created",
+  "mirror": {
+    "tabs_mirrored": [
+      "Jobs"
+    ],
+    "changed_csv": [
+      "/Users/jtemp/.openclaw/workspace/job-search-ui/data_mirror/Jobs.csv"
+    ],
+    "changed_json": [
+      "/Users/jtemp/.openclaw/workspace/job-search-ui/data_mirror/Jobs.json"
+    ],
+    "unchanged_tabs": [],
+    "tracker_tabs": {
+      "Jobs": {
+        "rows_total": 66,
+        "rows_created": 0,
+        "rows_updated": 0,
+        "rows_unchanged": 66,
+        "row_identifiers": [
+          "job_001",
+          "job_002",
+          "job_003",
+          "job_004",
+          "job_005"
+        ]
+      }
+    },
+    "before": {
+      "Jobs": {
+        "csv_exists": true,
+        "json_exists": true,
+        "csv_size": 18562,
+        "json_size": 25518
+      }
+    },
+    "after": {
+      "Jobs": {
+        "csv_exists": true,
+        "json_exists": true,
+        "csv_size": 18926,
+        "json_size": 25983
+      }
+    }
+  },
+  "created_job_id": "job_066"
+}

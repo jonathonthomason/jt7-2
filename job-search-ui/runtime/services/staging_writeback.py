@@ -65,10 +65,20 @@ ALLOWED_LOCATION_TOKENS = [
 WEAK_ROLE_TOKENS = [
     'design system',
     'mobile',
-    'visual',
-    'brand',
-    'ui designer',
+]
+
+REJECT_ROLE_TOKENS = [
+    'graphic designer',
     'marketing designer',
+    'brand designer',
+    'visual designer',
+    'ux researcher',
+    'ux research',
+    'web designer',
+    'merchandising',
+    'junior ',
+    ' jr ',
+    'intern',
 ]
 
 
@@ -89,6 +99,11 @@ def target_role_match(role: str) -> bool:
 def weak_role_match(role: str) -> bool:
     text = norm(role)
     return any(token in text for token in WEAK_ROLE_TOKENS)
+
+
+def reject_role_match(role: str) -> bool:
+    text = f" {norm(role)} "
+    return any(token in text for token in REJECT_ROLE_TOKENS)
 
 
 def is_canonical_job(job: dict[str, str]) -> bool:
@@ -141,6 +156,19 @@ def build_create_row(staged: dict[str, str], existing_ids: list[str], now_iso: s
     ]
 
 
+def find_same_company_collision(staged: dict[str, str], jobs: list[dict[str, str]]) -> dict[str, str] | None:
+    staged_company = norm(staged.get('company', ''))
+    staged_role = norm(staged.get('role', ''))
+    if not staged_company:
+        return None
+    for job in jobs:
+        job_company = norm(job.get('company', ''))
+        job_role = norm(job.get('role', ''))
+        if staged_company == job_company and staged_role and staged_role != job_role:
+            return job
+    return None
+
+
 def build_merge_values(existing_job: dict[str, str], staged: dict[str, str], now_iso: str) -> dict[str, str]:
     merged = existing_job.copy()
     merged['status'] = 'Reviewing' if merged.get('status', '') in {'Cold', 'Found', 'Not Applied'} else merged.get('status', '')
@@ -164,6 +192,9 @@ def plan_staging_writeback(staged: dict[str, str], jobs: list[dict[str, str]], n
     company = staged.get('company', '')
     role = staged.get('role', '')
 
+    if reject_role_match(role):
+        return StagingWritebackPlan('reject', 'explicitly_off_target_role', company, role)
+
     if not target_role_match(role):
         return StagingWritebackPlan('reject', 'outside_target_role_set', company, role)
 
@@ -172,6 +203,9 @@ def plan_staging_writeback(staged: dict[str, str], jobs: list[dict[str, str]], n
 
     if not location_allowed(staged.get('location', '')):
         return StagingWritebackPlan('hold', 'outside_allowed_location_rule', company, role)
+
+    if not norm(staged.get('job_posting_link', '') or staged.get('direct_application_link', '')):
+        return StagingWritebackPlan('hold', 'missing_source_link_requires_manual_review', company, role)
 
     duplicate = find_duplicate_job(staged, jobs)
     if duplicate:
@@ -182,6 +216,16 @@ def plan_staging_writeback(staged: dict[str, str], jobs: list[dict[str, str]], n
             role,
             matched_job_id=duplicate.get('job_id', ''),
             update_values=build_merge_values(duplicate, staged, now_iso),
+        )
+
+    same_company_collision = find_same_company_collision(staged, jobs)
+    if same_company_collision:
+        return StagingWritebackPlan(
+            'hold',
+            f"same_company_collision:{same_company_collision.get('job_id', '')}",
+            company,
+            role,
+            matched_job_id=same_company_collision.get('job_id', ''),
         )
 
     existing_ids = [job.get('job_id', '') for job in all_jobs]

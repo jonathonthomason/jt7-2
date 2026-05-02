@@ -1,0 +1,31 @@
+{
+  "runTimestamp": "2026-05-02T05:56:33.959602-05:00",
+  "scheduledFor": "2026-05-01T12:30:00-05:00",
+  "triggerMode": "catch-up",
+  "missedSlotsCount": 2,
+  "chain": [
+    "EMAIL_SIGNAL_SCAN",
+    "CALENDAR_SIGNAL_SCAN",
+    "JOB_BOARD_SIGNAL_SCAN",
+    "SIGNAL_CLASSIFICATION",
+    "PIPELINE_STATE_SYNC",
+    "PIPELINE_UPDATE",
+    "LOCAL_MIRROR_SYNC",
+    "GIT_COMMIT_SYNC",
+    "ACTION_GENERATION",
+    "PRIORITY_SURFACING",
+    "PASS_LOGGER"
+  ],
+  "taskResults": [],
+  "status": "failed",
+  "summary": "gog command failed: ['/opt/homebrew/bin/gog', 'sheets', 'get', '1acPkcUQFDIVNY0sgMo7ZsVzEnBKIbjU2veEjDFRu0Ks', 'ReviewQueue!A1:Z1000', '--json', '--no-input', '--account', 'jonathon.thomason@gmail.com'] :: Google API error (400 badRequest): Unable to parse range: ReviewQueue!A1:Z1000",
+  "sources_checked": [],
+  "tracker_crud": {},
+  "local_mirror": {},
+  "git": {},
+  "warnings": [],
+  "errors": [
+    "gog command failed: ['/opt/homebrew/bin/gog', 'sheets', 'get', '1acPkcUQFDIVNY0sgMo7ZsVzEnBKIbjU2veEjDFRu0Ks', 'ReviewQueue!A1:Z1000', '--json', '--no-input', '--account', 'jonathon.thomason@gmail.com'] :: Google API error (400 badRequest): Unable to parse range: ReviewQueue!A1:Z1000"
+  ],
+  "assessment": "Chain failed. Inspect errors and partial outputs."
+}

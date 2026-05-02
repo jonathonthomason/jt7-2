@@ -1,0 +1,84 @@
+{
+  "executedAt": "2026-05-01T23:59:40.383421-05:00",
+  "sheetId": "1acPkcUQFDIVNY0sgMo7ZsVzEnBKIbjU2veEjDFRu0Ks",
+  "staged": {
+    "staged_id": "staged_job_083",
+    "preview_index": "27",
+    "company": "Ellevation Education",
+    "role": "Principal Product Designer",
+    "location": "Remote",
+    "job_posting_link": "https://builtin.com/job/principal-product-designer/8331914",
+    "source": "builtin_direct"
+  },
+  "plan": {
+    "action": "merge",
+    "reason": "duplicate_match_found",
+    "staged_company": "Ellevation Education",
+    "staged_role": "Principal Product Designer",
+    "matched_job_id": "job_060",
+    "create_row": null,
+    "update_values": {
+      "job_id": "job_060",
+      "company": "Ellevation Education",
+      "role": "Principal Product Designer",
+      "location": "Remote",
+      "status": "Reviewing",
+      "contact": "",
+      "last_contact_date": "2026-05-01T23:59:40.383421-05:00",
+      "next_step": "Review refreshed staging evidence and decide whether to apply",
+      "interview_datetime": "",
+      "direct_application_link": "",
+      "job_posting_link": "https://builtin.com/job/principal-product-designer/8331914",
+      "fit_score": "",
+      "source": "builtin_direct",
+      "notes": "Imported from direct board scan (builtin) | board_token:remote | job_board_id:8331914",
+      "row_index": "61"
+    }
+  },
+  "mode": "apply",
+  "result": "merged",
+  "mirror": {
+    "tabs_mirrored": [
+      "Jobs"
+    ],
+    "changed_csv": [
+      "/Users/jtemp/.openclaw/workspace/job-search-ui/data_mirror/Jobs.csv"
+    ],
+    "changed_json": [
+      "/Users/jtemp/.openclaw/workspace/job-search-ui/data_mirror/Jobs.json"
+    ],
+    "unchanged_tabs": [],
+    "tracker_tabs": {
+      "Jobs": {
+        "rows_total": 64,
+        "rows_created": 0,
+        "rows_updated": 0,
+        "rows_unchanged": 64,
+        "row_identifiers": [
+          "job_001",
+          "job_002",
+          "job_003",
+          "job_004",
+          "job_005"
+        ]
+      }
+    },
+    "before": {
+      "Jobs": {
+        "csv_exists": true,
+        "json_exists": true,
+        "csv_size": 18190,
+        "json_size": 25045
+      }
+    },
+    "after": {
+      "Jobs": {
+        "csv_exists": true,
+        "json_exists": true,
+        "csv_size": 18190,
+        "json_size": 25045
+      }
+    }
+  },
+  "merged_job_id": "job_060"
+}

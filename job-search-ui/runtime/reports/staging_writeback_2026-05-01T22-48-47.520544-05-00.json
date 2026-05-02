@@ -1,0 +1,41 @@
+{
+  "executedAt": "2026-05-01T22:48:47.520544-05:00",
+  "sheetId": "1acPkcUQFDIVNY0sgMo7ZsVzEnBKIbjU2veEjDFRu0Ks",
+  "staged": {
+    "staged_id": "staged_job_059",
+    "preview_index": "3",
+    "company": "Toast",
+    "role": "Senior Product Designer",
+    "location": "Remote",
+    "job_posting_link": "https://builtin.com/job/senior-product-designer-agentic-team-suite/9176207",
+    "source": "builtin_direct"
+  },
+  "plan": {
+    "action": "merge",
+    "reason": "duplicate_match_found",
+    "staged_company": "Toast",
+    "staged_role": "Senior Product Designer",
+    "matched_job_id": "job_059",
+    "create_row": null,
+    "update_values": {
+      "job_id": "job_059",
+      "company": "Toast",
+      "role": "Senior Product Designer",
+      "location": "Remote",
+      "status": "Reviewing",
+      "contact": "",
+      "last_contact_date": "2026-05-01T22:48:47.520544-05:00",
+      "next_step": "Review refreshed staging evidence and decide whether to apply",
+      "interview_datetime": "",
+      "direct_application_link": "",
+      "job_posting_link": "https://builtin.com/job/senior-product-designer-agentic-team-suite/9176207",
+      "fit_score": "",
+      "source": "builtin_direct",
+      "notes": "Imported from direct board scan (builtin) | board_token:remote | job_board_id:9176207",
+      "row_index": "60"
+    }
+  },
+  "mode": "plan",
+  "result": "planned",
+  "mirror": null
+}

@@ -1,0 +1,83 @@
+{
+  "executedAt": "2026-05-01T23:47:08.956957-05:00",
+  "sheetId": "1acPkcUQFDIVNY0sgMo7ZsVzEnBKIbjU2veEjDFRu0Ks",
+  "staged": {
+    "staged_id": "staged_job_233",
+    "preview_index": "177",
+    "company": "Coinbase",
+    "role": "Staff Product Designer - Financial Tools and Infrastructure",
+    "location": "Remote - USA",
+    "job_posting_link": "https://www.coinbase.com/careers/positions/7586690?gh_jid=7586690",
+    "source": "greenhouse_direct"
+  },
+  "plan": {
+    "action": "create",
+    "reason": "no_duplicate_and_fit_passed",
+    "staged_company": "Coinbase",
+    "staged_role": "Staff Product Designer - Financial Tools and Infrastructure",
+    "matched_job_id": "",
+    "create_row": [
+      "job_063",
+      "Coinbase",
+      "Staff Product Designer - Financial Tools and Infrastructure",
+      "Remote - USA",
+      "Reviewing",
+      "",
+      "2026-05-01T23:47:08.956957-05:00",
+      "Review promoted staging opportunity and decide whether to apply",
+      "",
+      "",
+      "https://www.coinbase.com/careers/positions/7586690?gh_jid=7586690",
+      "",
+      "greenhouse_direct",
+      "Imported from direct board scan (greenhouse) | board_token:coinbase | job_board_id:7586690"
+    ],
+    "update_values": null
+  },
+  "mode": "apply",
+  "result": "created",
+  "mirror": {
+    "tabs_mirrored": [
+      "Jobs"
+    ],
+    "changed_csv": [
+      "/Users/jtemp/.openclaw/workspace/job-search-ui/data_mirror/Jobs.csv"
+    ],
+    "changed_json": [
+      "/Users/jtemp/.openclaw/workspace/job-search-ui/data_mirror/Jobs.json"
+    ],
+    "unchanged_tabs": [],
+    "tracker_tabs": {
+      "Jobs": {
+        "rows_total": 63,
+        "rows_created": 0,
+        "rows_updated": 0,
+        "rows_unchanged": 63,
+        "row_identifiers": [
+          "job_001",
+          "job_002",
+          "job_003",
+          "job_004",
+          "job_005"
+        ]
+      }
+    },
+    "before": {
+      "Jobs": {
+        "csv_exists": true,
+        "json_exists": true,
+        "csv_size": 17472,
+        "json_size": 24117
+      }
+    },
+    "after": {
+      "Jobs": {
+        "csv_exists": true,
+        "json_exists": true,
+        "csv_size": 17849,
+        "json_size": 24599
+      }
+    }
+  },
+  "created_job_id": "job_063"
+}

@@ -35,14 +35,21 @@ def local_reviewqueue_rows(mirror_dir):
     return header, rows
 
 
+def _is_missing_reviewqueue_range_error(error):
+    detail = str(error)
+    return 'Unable to parse range: ReviewQueue!' in detail or 'Unable to parse range: \'ReviewQueue\'!' in detail
+
+
 def rows_to_dicts(tab, sheets_get, mirror_dir):
     try:
         data = sheets_get(f'{tab}!A1:Z1000').get('values', [])
-    except subprocess.CalledProcessError:
-        if tab == 'ReviewQueue':
+    except (RuntimeError, subprocess.CalledProcessError) as error:
+        if tab == 'ReviewQueue' and _is_missing_reviewqueue_range_error(error):
             return local_reviewqueue_rows(mirror_dir)
         raise
     if not data:
+        if tab == 'ReviewQueue':
+            return local_reviewqueue_rows(mirror_dir)
         return [], []
     header = data[0]
     rows = []

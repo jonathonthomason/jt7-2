@@ -1,9 +1,9 @@
 {
   "timezone": "America/Chicago",
   "catchUpPolicy": "single-pass-on-resume",
-  "lastTriggerMode": "failed-scheduled",
-  "lastExecutedAt": "2026-05-01T08:30:43.760075-05:00",
-  "lastScheduledFor": "2026-05-01T08:30:00-05:00",
+  "lastTriggerMode": "scheduled",
+  "lastExecutedAt": "2026-05-02T06:43:57.432509-05:00",
+  "lastScheduledFor": "2026-05-02T06:43:57.432509-05:00",
   "lastMissedSlots": [],
   "schedule": [
     {
@@ -24,10 +24,10 @@
         "PRIORITY_SURFACING",
         "PASS_LOGGER"
       ],
-      "lastRunAt": "2026-05-01T08:30:43.760075-05:00",
+      "lastRunAt": "2026-05-02T06:43:57.432509-05:00",
       "nextRunAt": "2026-05-02T08:30:00-05:00",
       "lastStatus": "failed",
-      "lastSummary": "Command '['/opt/homebrew/bin/gog', 'sheets', 'get', '1acPkcUQFDIVNY0sgMo7ZsVzEnBKIbjU2veEjDFRu0Ks', 'Jobs!A1:Z1000', '--json']' returned non-zero exit status 2."
+      "lastSummary": "gog command failed: ['/opt/homebrew/bin/gog', 'gog', 'calendar', 'events', 'primary', '--from', '2026-04-30T06:43:57.432509-05:00', '--to', '2026-05-16T06:43:57.432509-05:00', '--json'] :: unexpected argument gog"
     },
     {
       "runId": "midday_run",
@@ -47,10 +47,10 @@
         "PRIORITY_SURFACING",
         "PASS_LOGGER"
       ],
-      "lastRunAt": "2026-05-01T08:30:43.760075-05:00",
-      "nextRunAt": "2026-05-01T12:30:00-05:00",
+      "lastRunAt": "2026-05-02T06:43:57.432509-05:00",
+      "nextRunAt": "2026-05-02T12:30:00-05:00",
       "lastStatus": "failed",
-      "lastSummary": "Command '['/opt/homebrew/bin/gog', 'sheets', 'get', '1acPkcUQFDIVNY0sgMo7ZsVzEnBKIbjU2veEjDFRu0Ks', 'Jobs!A1:Z1000', '--json']' returned non-zero exit status 2."
+      "lastSummary": "gog command failed: ['/opt/homebrew/bin/gog', 'gog', 'calendar', 'events', 'primary', '--from', '2026-04-30T06:43:57.432509-05:00', '--to', '2026-05-16T06:43:57.432509-05:00', '--json'] :: unexpected argument gog"
     },
     {
       "runId": "evening_run",
@@ -70,10 +70,10 @@
         "PRIORITY_SURFACING",
         "PASS_LOGGER"
       ],
-      "lastRunAt": "2026-05-01T08:30:43.760075-05:00",
-      "nextRunAt": "2026-05-01T18:00:00-05:00",
+      "lastRunAt": "2026-05-02T06:43:57.432509-05:00",
+      "nextRunAt": "2026-05-02T18:00:00-05:00",
       "lastStatus": "failed",
-      "lastSummary": "Command '['/opt/homebrew/bin/gog', 'sheets', 'get', '1acPkcUQFDIVNY0sgMo7ZsVzEnBKIbjU2veEjDFRu0Ks', 'Jobs!A1:Z1000', '--json']' returned non-zero exit status 2."
+      "lastSummary": "gog command failed: ['/opt/homebrew/bin/gog', 'gog', 'calendar', 'events', 'primary', '--from', '2026-04-30T06:43:57.432509-05:00', '--to', '2026-05-16T06:43:57.432509-05:00', '--json'] :: unexpected argument gog"
     }
   ]
 }
