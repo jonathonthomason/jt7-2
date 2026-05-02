@@ -314,11 +314,60 @@ def cleanup_existing_signals():
                 signals_updated += 1
     return signals_updated
 
+GIT_SYNC_INCLUDE_PREFIXES = [
+    'data_mirror/',
+    'runtime/reports/',
+]
+
+GIT_SYNC_INCLUDE_FILES = {
+    'runtime/jt7_pass_log.jsonl',
+    'runtime/jt7_scheduler.json',
+    'runtime/jt7_tasks.json',
+}
+
+GIT_SYNC_EXCLUDE_PREFIXES = [
+    'runtime/browser_profiles/',
+]
+
+
+def _git_status_paths():
+    status = subprocess.run(
+        ['git', 'status', '--porcelain'],
+        cwd=ROOT,
+        capture_output=True,
+        text=True,
+        check=True,
+    )
+    paths = []
+    for line in status.stdout.splitlines():
+        if not line:
+            continue
+        path_part = line[3:]
+        if ' -> ' in path_part:
+            path_part = path_part.split(' -> ', 1)[1]
+        paths.append(path_part.strip())
+    return paths
+
+
+def _git_sync_candidates():
+    candidates = []
+    repo_prefix = f'{ROOT.name}/'
+    for path in _git_status_paths():
+        rel = Path(path).as_posix()
+        if rel.startswith(repo_prefix):
+            rel = rel[len(repo_prefix):]
+        if any(rel.startswith(prefix) for prefix in GIT_SYNC_EXCLUDE_PREFIXES):
+            continue
+        if rel in GIT_SYNC_INCLUDE_FILES or any(rel.startswith(prefix) for prefix in GIT_SYNC_INCLUDE_PREFIXES):
+            candidates.append(rel)
+    return sorted(dict.fromkeys(candidates))
+
+
 def maybe_git_commit(run_at):
-    status = subprocess.run(['git', 'status', '--porcelain', str(ROOT / 'data_mirror'), str(ROOT / 'runtime'), str(ROOT / 'scripts' / 'run_jt7_chain.py')], cwd=ROOT, capture_output=True, text=True, check=True)
-    if not status.stdout.strip():
+    candidates = _git_sync_candidates()
+    if not candidates:
         return {'committed': False, 'summary': 'No mirror changes to commit', 'commit': None}
-    subprocess.run(['git', 'add', str(ROOT / 'data_mirror'), str(ROOT / 'runtime'), str(ROOT / 'scripts' / 'run_jt7_chain.py')], cwd=ROOT, check=True)
+    subprocess.run(['git', 'add', '--', *candidates], cwd=ROOT, check=True)
     message = f"JT7 auto-sync {run_at.strftime('%Y-%m-%d %H:%M:%S %Z')} tracker mirror update"
     subprocess.run(['git', 'commit', '-m', message], cwd=ROOT, check=True)
     commit = subprocess.run(['git', 'rev-parse', '--short', 'HEAD'], cwd=ROOT, capture_output=True, text=True, check=True).stdout.strip()
