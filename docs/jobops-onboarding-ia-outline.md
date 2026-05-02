@@ -49,12 +49,15 @@ The onboarding experience should:
 2. target role family
 3. preferred industries / company types
 4. work setup / geography
-5. strengths to optimize for
-6. roles to avoid
-7. constraints / non-negotiables
+5. explicit eligible geos and hybrid tolerance
+6. strengths to optimize for
+7. roles to avoid
+8. constraints / non-negotiables
+9. exclusion patterns that should trigger application-readiness hold behavior
 
 **Outcome:**
 - search filters become evidence-based and operationally usable
+- location-match logic can be enforced explicitly at application point
 
 ### D. Fit Model Calibration
 **Goal:** define how the system should evaluate opportunities.
@@ -66,9 +69,13 @@ The onboarding experience should:
 4. same-company / duplicate rules
 5. confidence thresholds
 6. human-review triggers
+7. primary ATS keyword themes
+8. strategic signals that later become differentiation highlights
+9. measurable impact themes that can become resume bullet stubs
 
 **Outcome:**
 - JobOps can distinguish auto-rank, hold, reject, and escalate behavior
+- onboarding can seed the later ATS optimization and differentiation process with real evidence
 
 ### E. Operational Preferences
 **Goal:** define how work should be surfaced to the human operator.
@@ -94,9 +101,13 @@ The onboarding experience should:
 4. review-queue heuristics
 5. shortlist criteria
 6. dashboard defaults / human-review rules
+7. keyword bank for ATS optimization
+8. differentiation library for role-specific positioning
+9. screening guardrails for common knockout questions and risks
 
 **Outcome:**
 - onboarding becomes reusable system logic rather than a one-time conversation
+- the application-readiness gate has structured inputs instead of ad hoc interpretation
 
 ---
 
@@ -141,6 +152,7 @@ The onboarding experience should:
 - filter logic
 - exclusion logic
 - how JobOps will prioritize opportunities
+- the initial keyword bank, differentiation library, and location-match assumptions
 
 ---
 
@@ -165,7 +177,9 @@ The onboarding experience should:
 - preferred domains
 - preferred company types
 - preferred geography
+- eligible geos
 - preferred work mode
+- hybrid tolerance
 
 ### Section 4 — Strengths Profile
 - domain strengths
@@ -173,6 +187,9 @@ The onboarding experience should:
 - leadership / collaboration signals
 - measurable impact themes
 - strategic differentiation
+- ATS keyword themes
+- differentiation hooks
+- reusable impact bullet stubs
 
 ### Section 5 — Exclusion Criteria
 - off-target disciplines
@@ -180,6 +197,7 @@ The onboarding experience should:
 - bad-fit environments
 - location exclusions
 - role-pattern exclusions
+- mismatch-hold triggers
 
 ### Section 6 — Operating Preferences
 - shortlist format
@@ -242,6 +260,7 @@ This outline should be refined toward:
 - clearer dashboard handoff behavior
 - stronger mapping from onboarding evidence to intake filters and ranking logic
 - tighter alignment between onboarding outputs and staging / review / shortlist behavior
+- a canonical search profile that feeds location matching, ATS optimization, and differentiation at application point
 
 ## Related Files
 - `docs/jobops-new-user-onboarding.md`

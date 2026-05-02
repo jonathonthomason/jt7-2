@@ -63,6 +63,7 @@ Purpose: hold pre-trusted information until it is reviewed or promoted.
 - staged opportunities
 - duplicate / collision candidates
 - hold reasons
+- mismatch-hold state
 - source-link evidence
 - promotion recommendations
 
@@ -71,6 +72,7 @@ Purpose: hold pre-trusted information until it is reviewed or promoted.
 - prepare operator-safe review surfaces
 - preserve evidence and rationale
 - enforce one-item promotion discipline
+- block promotion when application-readiness gates fail
 
 ---
 
@@ -136,6 +138,15 @@ Purpose: execute scheduled or triggered work reliably.
 
 ## 2.2 Platform-Level Primary Use Cases
 
+### Core Validation Rule — Application Readiness
+No opportunity should move from staging into the trusted pipeline without a verified match across three canonical dimensions:
+1. location requirements
+2. ATS optimization basis
+3. differentiation highlights
+
+If any dimension fails or remains ambiguous, the item should move to `Mismatch Hold` instead of being labeled cleanly apply-ready.
+
+
 ### Use Case 1 — Ingest new signals
 **Goal:** convert external inputs into structured intake objects.
 
@@ -159,7 +170,9 @@ Purpose: execute scheduled or triggered work reliably.
 2. apply trust checks
 3. evaluate duplicate and same-company collision rules
 4. require evidence link presence
-5. allow promote / merge / hold / reject path
+5. validate location fit, ATS basis, and differentiation readiness
+6. allow promote / merge / hold / reject path
+7. send failed validation cases to `Mismatch Hold`
 
 **Output:**
 - only trusted opportunities mutate canonical state
@@ -295,7 +308,9 @@ Purpose: prepare a decision-ready set for the primary human.
 - recommended actions
 - risk / ambiguity notes
 - hold reasons
+- mismatch-hold items
 - unresolved edge cases
+- optimization brief
 
 ---
 
@@ -339,7 +354,9 @@ Purpose: prepare a decision-ready set for the primary human.
 2. validate source link and provenance
 3. compare against canonical jobs
 4. detect duplicate or same-company collision
-5. choose promote / merge / hold / reject
+5. validate location fit, ATS basis, and differentiation readiness
+6. choose promote / merge / hold / reject
+7. route strategy-gap cases into `Mismatch Hold`
 
 **Output:**
 - trusted opportunity mutation or safe non-promotion decision
@@ -372,7 +389,8 @@ Purpose: prepare a decision-ready set for the primary human.
 2. identify most urgent next actions
 3. update follow-up readiness
 4. monitor recruiter/interview status
-5. hand off action prompts or approvals to the human when needed
+5. maintain apply-ready vs submit-ready distinction
+6. hand off action prompts or approvals to the human when needed
 
 **Output:**
 - current, actionable pipeline state
@@ -447,6 +465,7 @@ Purpose: handle consequential or ambiguous cases.
 - unusual role fits
 - duplicate uncertainty
 - missing evidence edge cases
+- mismatch-hold items
 - application/outreach decisions
 - escalation items from JobOps
 
@@ -610,11 +629,12 @@ The system should reduce noise, compress context, and surface only the decisions
 
 **Sequence:**
 1. JobOps ranks and annotates opportunities
-2. JobOps prepares location fit, ATS basis, and differentiation highlights
+2. JobOps prepares location fit, ATS basis, differentiation highlights, and an optimization brief
 3. platform presents decision-ready set with matching structured fields
 4. human reviews rationale, evidence, and application-readiness context
 5. human approves / rejects / holds
-6. platform records decision and updates trusted state
+6. approved items become `Apply-Ready`
+7. platform records decision and updates trusted state
 
 ---
 
@@ -631,6 +651,29 @@ The system should reduce noise, compress context, and surface only the decisions
 5. momentum remains visible
 
 ---
+
+## Flow F — Resume optimization / transformation layer
+**System platform:** validates structured readiness and records artifact state
+**JobOps:** drafts tailored submission artifacts
+**Human:** approves final submission-ready materials
+
+**Sequence:**
+1. human approves an `Apply-Ready` opportunity from the decision dashboard
+2. JobOps compares the base resume against the job description
+3. JobOps generates a tailored artifact by aligning title/summary, ATS keywords, and role-specific differentiation highlights
+4. platform verifies that the tailored artifact still satisfies location, ATS, and differentiation requirements
+5. the role moves to `Submit-Ready` when the transformation completes cleanly
+
+---
+
+## 5.1 Structured State Model
+| State | Definition | Transition Trigger |
+| :--- | :--- | :--- |
+| **Review** | Raw signal, unverified. | Intake system. |
+| **Staging** | Processed, high-confidence opportunity candidate. | JobOps triage. |
+| **Mismatch Hold** | Valid opportunity, but one or more application-readiness dimensions do not match strategy or are incomplete. | Validation gate failure. |
+| **Apply-Ready** | Verified opportunity with matched location, ATS basis, differentiation highlights, and optimization brief. | Validation gate success + human decision readiness. |
+| **Submit-Ready** | Tailored submission artifact completed and re-verified. | Transformation completion. |
 
 # 6. Primary Screens / Surfaces Implied by the Current Model
 
