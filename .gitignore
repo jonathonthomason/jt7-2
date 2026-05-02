@@ -6,4 +6,6 @@
 __pycache__/
 *.pyc
 job-search-ui/runtime/*.png
+job-search-ui/runtime/browser_profiles/
+job-search-ui/runtime/indeed_browser_results.json
 logs/*.err
