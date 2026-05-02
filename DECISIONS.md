@@ -423,3 +423,28 @@
   - DECISIONS.md
 - **related_entity_ids:** []
 - **next_review_at:** null
+
+### decision_21
+- **id:** decision_application_readiness_gate_alignment
+- **title:** Enforce application-readiness through aligned location, ATS, and differentiation gates
+- **domain:** product
+- **status:** active
+- **decision_date:** 2026-05-02
+- **owner:** Jonathon
+- **summary:** JT7 Platform and JobOps must match at application point on three explicit dimensions — location fit, ATS optimization basis, and differentiation highlights — and items that fail or lack this match should move into `Mismatch Hold` rather than being treated as cleanly apply-ready.
+- **why:** Jonathon explicitly wants conceptual alignment to become structural enforcement so platform state, JobOps preparation, and human application handoff do not drift apart.
+- **implications:**
+  - application-readiness is now a formal validation gate rather than an implied fit judgment
+  - the state model should distinguish `Review`, `Staging`, `Mismatch Hold`, `Apply-Ready`, and `Submit-Ready`
+  - onboarding must seed location constraints, ATS inputs, and differentiation signals early enough to power downstream decisions
+  - the system should produce an optimization brief before tailored application artifacts are generated
+  - runtime and UI work should next convert these prose rules into canonical schema fields and enforced transitions
+- **related_files:**
+  - CURRENT.md
+  - docs/jobops-onboarding-ia-outline.md
+  - docs/jt7-ia-and-interaction-flows.md
+  - docs/jobops-platform-operating-spec.md
+  - docs/jt7-job-ops-bot-agent-spec.md
+  - agents/jobops/AGENTS.md
+- **related_entity_ids:** []
+- **next_review_at:** null
