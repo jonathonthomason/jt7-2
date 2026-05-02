@@ -1,0 +1,41 @@
+{
+  "executedAt": "2026-05-01T22:51:24.469016-05:00",
+  "sheetId": "1acPkcUQFDIVNY0sgMo7ZsVzEnBKIbjU2veEjDFRu0Ks",
+  "staged": {
+    "staged_id": "staged_job_137",
+    "preview_index": "81",
+    "company": "Affirm",
+    "role": "Staff Product Designer",
+    "location": "Remote",
+    "job_posting_link": "https://builtin.com/job/staff-product-designer/8393141",
+    "source": "builtin_direct"
+  },
+  "plan": {
+    "action": "merge",
+    "reason": "duplicate_match_found",
+    "staged_company": "Affirm",
+    "staged_role": "Staff Product Designer",
+    "matched_job_id": "job_062",
+    "create_row": null,
+    "update_values": {
+      "job_id": "job_062",
+      "company": "Affirm",
+      "role": "Staff Product Designer",
+      "location": "Remote",
+      "status": "Reviewing",
+      "contact": "",
+      "last_contact_date": "2026-05-01T22:51:24.469016-05:00",
+      "next_step": "Review refreshed staging evidence and decide whether to apply",
+      "interview_datetime": "",
+      "direct_application_link": "",
+      "job_posting_link": "https://builtin.com/job/staff-product-designer/8393141",
+      "fit_score": "",
+      "source": "builtin_direct",
+      "notes": "Imported from direct board scan (builtin) | board_token:remote | job_board_id:8393141",
+      "row_index": "63"
+    }
+  },
+  "mode": "plan",
+  "result": "planned",
+  "mirror": null
+}

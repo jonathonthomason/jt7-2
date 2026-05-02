@@ -92,13 +92,7 @@ def weak_role_match(role: str) -> bool:
 
 
 def is_canonical_job(job: dict[str, str]) -> bool:
-    source = norm(job.get('source', ''))
-    notes = norm(job.get('notes', ''))
-    if source.endswith('_direct'):
-        return False
-    if 'imported from direct board scan' in notes:
-        return False
-    return True
+    return bool(norm(job.get('job_id', '')) and norm(job.get('company', '')) and norm(job.get('role', '')))
 
 
 def canonical_jobs(jobs: list[dict[str, str]]) -> list[dict[str, str]]:

@@ -1,0 +1,83 @@
+{
+  "executedAt": "2026-05-01T22:49:56.583541-05:00",
+  "sheetId": "1acPkcUQFDIVNY0sgMo7ZsVzEnBKIbjU2veEjDFRu0Ks",
+  "staged": {
+    "staged_id": "staged_job_137",
+    "preview_index": "81",
+    "company": "Affirm",
+    "role": "Staff Product Designer",
+    "location": "Remote",
+    "job_posting_link": "https://builtin.com/job/staff-product-designer/8393141",
+    "source": "builtin_direct"
+  },
+  "plan": {
+    "action": "create",
+    "reason": "no_duplicate_and_fit_passed",
+    "staged_company": "Affirm",
+    "staged_role": "Staff Product Designer",
+    "matched_job_id": "",
+    "create_row": [
+      "job_062",
+      "Affirm",
+      "Staff Product Designer",
+      "Remote",
+      "Reviewing",
+      "",
+      "2026-05-01T22:49:56.583541-05:00",
+      "Review promoted staging opportunity and decide whether to apply",
+      "",
+      "",
+      "https://builtin.com/job/staff-product-designer/8393141",
+      "",
+      "builtin_direct",
+      "Imported from direct board scan (builtin) | board_token:remote | job_board_id:8393141"
+    ],
+    "update_values": null
+  },
+  "mode": "apply",
+  "result": "created",
+  "mirror": {
+    "tabs_mirrored": [
+      "Jobs"
+    ],
+    "changed_csv": [
+      "/Users/jtemp/.openclaw/workspace/job-search-ui/data_mirror/Jobs.csv"
+    ],
+    "changed_json": [
+      "/Users/jtemp/.openclaw/workspace/job-search-ui/data_mirror/Jobs.json"
+    ],
+    "unchanged_tabs": [],
+    "tracker_tabs": {
+      "Jobs": {
+        "rows_total": 62,
+        "rows_created": 0,
+        "rows_updated": 0,
+        "rows_unchanged": 62,
+        "row_identifiers": [
+          "job_001",
+          "job_002",
+          "job_003",
+          "job_004",
+          "job_005"
+        ]
+      }
+    },
+    "before": {
+      "Jobs": {
+        "csv_exists": true,
+        "json_exists": true,
+        "csv_size": 17077,
+        "json_size": 23617
+      }
+    },
+    "after": {
+      "Jobs": {
+        "csv_exists": true,
+        "json_exists": true,
+        "csv_size": 17390,
+        "json_size": 24035
+      }
+    }
+  },
+  "created_job_id": "job_062"
+}
