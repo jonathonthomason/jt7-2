@@ -156,9 +156,10 @@ function StagingCard({ item }: { item: StagedOpportunity }) {
 }
 
 export function StagingIntakePage() {
-  const { stagingSummary, state, openPanel } = useMvpState()
+  const { stagingSummary, state, openPanel, stagingCommand } = useMvpState()
   const promotedCount = state.stagingQueue.filter((item) => writebackState(item)?.tone === 'success').length
   const failedCount = state.stagingQueue.filter((item) => writebackState(item)?.tone === 'error' && (item.notes || '').includes('Writeback failed:')).length
+  const duplicateCandidates = state.stagingQueue.filter((item) => item.duplicateMatches?.length)
   return (
     <section style={styles.page}>
       <section style={styles.hero}>
@@ -199,6 +200,23 @@ export function StagingIntakePage() {
                 </li>
               ))}
             </ul>
+          </section>
+          <section style={styles.tile}>
+            <SectionTitle title="Duplicate candidates" count={duplicateCandidates.length} />
+            {duplicateCandidates.length ? (
+              <ul style={styles.cleanList}>
+                {duplicateCandidates.slice(0, 8).map((item) => (
+                  <li key={item.id} style={styles.listItem}>
+                    <button style={styles.linkButton} onClick={() => openPanel('staging', item.id)} type="button">{item.company} — {item.role}</button>
+                    <span style={styles.meta}>{item.duplicateMatches?.join(', ')} · score {item.fitScore ?? 0}</span>
+                    <div style={styles.buttonRow}>
+                      <button style={styles.primaryButton} onClick={() => stagingCommand(item.id, 'Merge')} type="button">Merge duplicate</button>
+                      <button style={styles.secondaryButton} onClick={() => openPanel('staging', item.id)} type="button">Inspect</button>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            ) : <p style={styles.meta}>No duplicate candidates currently surfaced.</p>}
           </section>
           <section style={styles.tile}>
             <SectionTitle title="Trust boundary" />

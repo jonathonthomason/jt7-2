@@ -2,14 +2,14 @@
 
 ## Current State Record
 - **id:** current_state_2026_04_30
-- **updated_at:** 2026-05-01T22:51:30-05:00
+- **updated_at:** 2026-05-02T00:18:00-05:00
 - **system_phase:** Cockpit + Runtime Hardening
 - **system_status:** IDLE
 - **current_step:** System is paused cleanly. Gateway health is confirmed on loopback, the active model is `openai-codex/gpt-5.4`, local UI/API execution processes have been stopped, no active subagents are running, and the workspace is safe to shut down.
 - **confidence_level:** high
 
 ## State Summary
-- **state_summary:** JT7 is still in `Cockpit + Runtime Hardening`, but the staging trust path is materially stronger than before. This session proved the staging UI→runtime path with a real browser-driven Playwright run against the local API, created live canonical `Jobs` rows for `Toast` (`job_059`) and `Affirm` (`job_062`), refreshed local mirrors, and generated fresh writeback audit artifacts. More importantly, that proof exposed a real integrity bug: already-promoted direct-board jobs were being excluded from duplicate detection, which allowed the same staged item to be promoted twice. The planner was patched so existing `Jobs` rows now count as canonical duplicates regardless of `source`/legacy staging provenance, and repeat promotions now plan as `merge` instead of `create`. One duplicate row introduced during verification (`job_061`) was immediately corrected by marking it `Archived` with an explicit note pointing to canonical row `job_060`. What still did not happen: no true root cause found for the 2026-05-01 08:30 scheduler failure, no real merge writeback proven through the browser path yet, and Drive mirroring still creates snapshot copies instead of updating a single canonical mirrored file in place.
+- **state_summary:** JT7 is still in `Cockpit + Runtime Hardening`, and the staging trust path is materially tighter. The browser/live UI merge branch is proven end-to-end, duplicate candidates are now surfaced directly in the staging UI, and the full staging writeback Playwright spec now passes cleanly. The create-path investigation showed two separate issues: (1) when runtime merged into a canonical job that was missing from the UI’s seeded local `jobs` state, `mvpState.tsx` failed to materialize that canonical row locally; this is now fixed by inserting merged writeback rows when the target job is absent; and (2) the lingering create-proof failure was amplified by a Playwright reset bug that wiped local MVP state on full-page navigation, making the Jobs view appear stale even after a successful writeback. The spec now preserves state across navigation and verifies canonical job visibility through the app shell. The scheduler root cause is still not solved, and Drive mirroring still creates snapshot copies instead of updating a single canonical mirrored file in place.
 
 ## Top Priorities
 - **top_priorities:**
@@ -27,7 +27,7 @@
   - gateway is healthy but still not loaded as a clean LaunchAgent service, so lifecycle transitions remain fragile
   - scheduler now has resume-time catch-up semantics, but the specific 2026-05-01 morning failure is still not root-caused; it is only narrowed to a transient or opaque `gog` exit-2 condition
   - Drive mirror behavior currently creates snapshot copies rather than refreshing a single canonical mirrored file, so mirror sprawl is growing
-  - the UI→runtime bridge is now proven through a browser-driven local test, but the merge branch is still not yet proven through the browser path
+  - the 2026-05-01 morning scheduler failure is still only narrowed, not root-caused, despite the staging trust path now testing cleanly
 
 ## Open Questions
 - **open_questions:**
@@ -39,8 +39,8 @@
 ## Required Next Moves
 - **required_next_moves:**
   - validate the hardened `gog` invocation and new single-pass-on-resume scheduler behavior against the next real resume/use cycle
-  - prove the staging writeback merge path through the browser path now that duplicate detection is fixed
-  - validate the new UI→runtime promotion bridge during normal operator use, not just controlled local browser automation
+  - validate the new UI→runtime promotion bridge during normal operator use now that both browser promote and merge proofs pass cleanly
+  - watch for any recurrence where runtime canonical state diverges from seeded local mirrors, especially after repeated live writeback runs
   - if another scheduler failure occurs, use the improved stderr capture to isolate exact `gog` failure cause immediately
   - connect the new staging writeback planner to real Sheets-side create/update behavior with safe dry-run and apply modes
   - convert the validated JobOps shortlist format into a standing durable JobOps instruction if it continues to prove useful

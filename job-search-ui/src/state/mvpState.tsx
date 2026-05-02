@@ -352,6 +352,21 @@ function buildJobFromUpdateValues(values: Record<string, string>, existing: MvpJ
   }
 }
 
+function buildJobFromMergedWriteback(values: Record<string, string>, fitBand: StagedOpportunity['fitBand']): MvpJob {
+  return {
+    id: values.job_id || `job_merged_${Date.now()}`,
+    company: values.company || 'Unknown company',
+    role: values.role || 'Unknown role',
+    status: jobStatus(values.status || 'Reviewing'),
+    source: values.source || 'staging_writeback',
+    priority: priorityForStagedFit(fitBand),
+    dateFound: values.last_contact_date || new Date().toISOString(),
+    nextAction: values.next_step || 'Review merged staging opportunity',
+    link: values.direct_application_link || values.job_posting_link || undefined,
+    notes: values.notes || undefined,
+  }
+}
+
 function buildInitialState(): MvpState {
   const recruiters = recruiterRows.map((row) => ({
     id: row.recruiter_id,
@@ -685,7 +700,9 @@ export function MvpStateProvider({ children }: { children: ReactNode }) {
               ? current.jobs
               : [buildJobFromCreateRow(response.plan.create_row, target.fitBand), ...current.jobs]
             : response.result === 'merged' && response.plan.update_values && response.merged_job_id
-              ? current.jobs.map((job) => job.id === response.merged_job_id ? buildJobFromUpdateValues(response.plan.update_values as Record<string, string>, job) : job)
+              ? current.jobs.some((job) => job.id === response.merged_job_id)
+                ? current.jobs.map((job) => job.id === response.merged_job_id ? buildJobFromUpdateValues(response.plan.update_values as Record<string, string>, job) : job)
+                : [buildJobFromMergedWriteback(response.plan.update_values as Record<string, string>, target.fitBand), ...current.jobs]
               : current.jobs
 
           const nextStaging = current.stagingQueue.map((item) => item.id === stagingId

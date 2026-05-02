@@ -6,10 +6,18 @@ export default defineConfig({
     baseURL: 'http://127.0.0.1:4173',
     headless: true,
   },
-  webServer: {
-    command: 'npm run preview -- --host 127.0.0.1 --port 4173',
-    port: 4173,
-    reuseExistingServer: true,
-    timeout: 120_000,
-  },
+  webServer: [
+    {
+      command: 'npm run api',
+      port: 8787,
+      reuseExistingServer: true,
+      timeout: 120_000,
+    },
+    {
+      command: 'npm run build && npm run preview -- --host 127.0.0.1 --port 4173',
+      port: 4173,
+      reuseExistingServer: true,
+      timeout: 120_000,
+    },
+  ],
 })
