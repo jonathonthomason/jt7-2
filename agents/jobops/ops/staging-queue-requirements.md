@@ -33,6 +33,9 @@ Operational search requirements should be derived from the active persona/profil
 Only the strongest currently actionable items should enter the active queue.
 The queue should favor quality over volume.
 
+### BR-03a — Queue output should support human dashboard review
+Prepared JobOps output should be shaped for a human decision dashboard where the operator reviews QA’d items and takes final action.
+
 ### BR-04 — Same-company role collisions need explicit handling
 When multiple staged roles exist for the same company, JobOps should:
 - select a primary candidate when one is clearly stronger
@@ -50,6 +53,16 @@ Every surfaced lead should carry a short inclusion reason, exclusion risk, and n
 
 ### BR-08 — Weak or ambiguous items should be held, not forced forward
 If fit, distinctness, or actionability is weak, JobOps should keep the item out of the active queue.
+
+### BR-09 — New-user onboarding should collect persona evidence
+For new users, JobOps should explicitly request grounding documents early in onboarding when they are not already available.
+Requested artifacts should include, when possible:
+- resume or work-history document
+- portfolio, case-study, or work-sample document
+- dossier/persona brief summarizing target roles, strengths, constraints, and preferences
+
+JobOps should encourage users to generate the dossier/persona brief with tools they already use (for example GPT, Claude, Grok, or similar AI tools) and then attach it for use as search-context input.
+The goal is to build stronger persona context so search criteria and ranking are evidence-based rather than inferred loosely.
 
 ## Technical Requirements
 
@@ -127,6 +140,7 @@ Own here when the requirement needs persistent fields, normalized state, or cros
 - **BR-06** — requires normalized source-trust metadata.
 - **BR-07** — requires persistent inclusion reason, exclusion risk, and next action fields.
 - **BR-08** — requires hold-worthy ambiguity/distinctness state, not just UI labels.
+- **BR-09** — requires visible onboarding-context inputs or a documented absence of them so persona grounding is explicit.
 - **TR-01** — source, subtype, posting URL, notes, and board/company identifiers belong in the staged record.
 - **TR-02** — `direct_application_link` must be stored distinctly from `job_posting_link`.
 - **TR-03** — duplicate keys and cluster metadata belong in the model.
@@ -145,6 +159,7 @@ Own here when the requirement changes operator review behavior before queue entr
 - **BR-06** — display source quality/trust cues during staging review.
 - **BR-07** — show reason to include, reason not to include, and next operator action.
 - **BR-08** — make hold the default for ambiguous rows rather than forcing binary promote/reject behavior.
+- **BR-09** — make onboarding prompts/requested artifacts visible enough that persona grounding is not skipped silently.
 - **TR-02** — show posting-link vs direct-apply completeness distinctly.
 - **TR-04** — surface lifecycle state transitions clearly.
 - **TR-06** — show company grouping/collision context inline.
@@ -169,6 +184,7 @@ Own here when the requirement affects what is captured, normalized, deduplicated
 - **BR-04** — same-company collision candidates should be pre-clustered at ingest time.
 - **BR-06** — source quality should influence default confidence and ranking.
 - **BR-08** — weak/ambiguous items should be pre-held or down-ranked before surfacing.
+- **BR-09** — onboarding/runtime should capture whether resume, portfolio, and dossier/persona inputs exist so criteria lineage is interpretable.
 - **TR-01** — ingestion must capture and normalize provenance at import time.
 - **TR-02** — ingestion must preserve direct-apply link separately when available.
 - **TR-03** — ingestion must compute duplicate keys/clusters across source types.
@@ -200,3 +216,4 @@ Own here when the requirement affects what is captured, normalized, deduplicated
 3. duplicate clustering across source types
 4. visible staging lifecycle states
 5. queue-readiness fields for shortlist output
+6. new-user onboarding prompts for resume, portfolio, and dossier/persona grounding

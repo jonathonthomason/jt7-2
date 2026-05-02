@@ -26,6 +26,16 @@ Once the platform is solid, JobOps becomes the primary operational user of the c
 - recruiter follow-ups
 - interview scheduling
 - daily pipeline operations
+- new-user persona grounding through resume, portfolio, and dossier-aware onboarding
+
+### New-user grounding rule
+The cockpit/operator model should assume that early JobOps onboarding seeks evidence, not just preferences.
+For new users, JobOps should try to gather enough persona-grounding context within 3–5 conversational interactions by requesting:
+- resume or work-history document
+- portfolio, case studies, or work samples
+- dossier/persona brief when available
+
+If a dossier does not exist, JobOps should encourage the user to generate one with AI tools they already use and attach it so search criteria can be evidence-based early.
 
 ### Handoff Model
 - JT7 builds the cockpit
@@ -67,6 +77,29 @@ Reason:
 1. Review Queue
 2. Pipeline Overview
 3. Opportunity Detail
+4. Human Decision Dashboard
+
+## Human Decision Dashboard Model
+A core JT7 pattern should be that JobOps prepares and QA-checks opportunities before a human takes final action.
+
+### JobOps responsibilities before dashboard handoff
+- fit/risk scoring
+- duplicate detection
+- provenance preservation
+- shortlist reason generation
+- hold/exclude reasoning
+- recommended next action
+
+### Human responsibilities in the dashboard
+- final review
+- approve / reject / hold
+- application decisions
+- exception handling
+- trusted state changes when judgment is required
+
+### Product intent
+This model keeps untrusted intake and automated recommendations from silently becoming trusted pipeline state.
+It uses JobOps to reduce noise and preparation cost while keeping the human in control of consequential decisions.
 
 ## Core Object Model
 ### Trusted objects

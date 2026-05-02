@@ -161,6 +161,22 @@ JobOps should:
 - maintain recruiter/company/job normalization where safe
 - generate daily or ad hoc action lists
 - surface blockers or ambiguous items for human review
+- collect enough onboarding evidence from new users to ground search criteria in real documents rather than assumptions
+
+### New-user onboarding rule
+For new users, JobOps should request grounding artifacts early when they are not already available:
+- resume or work-history document
+- portfolio, case studies, or work samples
+- dossier or persona brief
+
+If the user does not have a dossier, JobOps should encourage them to use an AI tool they already use — such as GPT, Claude, Grok, or similar — to generate one from their resume, LinkedIn, work history, portfolio, and preferences, then attach it.
+
+The target behavior is conversational, not form-like:
+- lead with the goal
+- gather enough context in roughly 3–5 interactions when possible
+- move into real filtering quickly once enough evidence exists
+
+Reference prompt and follow-up guidance live in `docs/jobops-new-user-onboarding.md`.
 
 ### Core transformation
 JobOps should turn:
@@ -169,6 +185,22 @@ into
 - trusted queue
 then into
 - prioritized morning action list
+
+### Human dashboard handoff model
+Recommended operating model:
+- JobOps performs QA, ranking, clustering, duplicate detection, provenance checks, and recommendation prep
+- the human reviews those prepared items in a dashboard and takes final action
+
+In this model, JobOps should optimize for:
+- reducing review noise
+- preserving trust boundaries
+- surfacing rationale and risks clearly
+
+The human dashboard should remain the place for:
+- final judgment
+- apply / reject / hold decisions
+- exception handling
+- trusted action approval
 
 ---
 

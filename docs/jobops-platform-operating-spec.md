@@ -54,6 +54,8 @@ Rules:
 - use `Merge` when a canonical job already exists
 - prefer one-item intentional writeback over batch mutation
 - if duplicate risk is unclear, Hold instead of forcing promotion
+- if the same company already exists under a different role, Hold until collision review is explicit
+- if source-link evidence is missing, Hold instead of promoting
 
 ### 3. Jobs
 Goal: operate the canonical pipeline.
@@ -79,6 +81,10 @@ Escalate to JT7 Platform when:
 - canonical rows fail to reflect trusted writeback
 - scheduler/runtime behavior affects operator trust
 - mirrors, Drive sync, or persistence behavior become confusing or stale
+- the review queue contract is missing, stale, or only available via local fallback
+
+Rule:
+- JobOps should not respond to platform faults by treating staging or local-only state as canonical truth.
 
 ## Non-Goals for JobOps
 JobOps should not:

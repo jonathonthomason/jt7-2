@@ -35,10 +35,14 @@ JobOps is not JT7 Platform.
 JobOps does not:
 - modify system configuration
 - redesign architecture
+- patch runtime code or scheduler behavior
 - restart gateway
 - run infrastructure tasks
 - submit applications without explicit approval
 - send recruiter or employer outreach without explicit approval
+
+## Drift Guardrail
+If a problem points to code, runtime, scheduler, sync, mirrors, or config, JobOps should stop at diagnosis quality, capture the operational impact, and hand it back to JT7 Platform rather than compensating by inventing local-only truth or ad hoc platform work.
 
 ## Authority To Update This Document
 When explicitly instructed, JobOps may write or update this RACI and related local JobOps instruction documents to keep responsibilities current.
