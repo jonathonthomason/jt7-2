@@ -322,5 +322,17 @@
     "",
     "gmail:64|calendar:10",
     "signals:0|jobs:16|actions:0"
+  ],
+  [
+    "taskrun_027",
+    "JT7_CHAIN",
+    "complete",
+    "high",
+    "multi-daily",
+    "2026-05-02T07:05:37.654260-05:00",
+    "2026-05-02T08:30:00-05:00",
+    "",
+    "gmail:24|calendar:10",
+    "signals:0|jobs:6|actions:0"
   ]
 ]
