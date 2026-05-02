@@ -84,6 +84,7 @@ Purpose: store and expose clean job-search operating state.
 - Signals after accepted linkage
 - TaskRuns / audit-adjacent state
 - event history
+- application-readiness fields
 
 **Responsibilities:**
 - canonical workflow state
@@ -91,6 +92,7 @@ Purpose: store and expose clean job-search operating state.
 - action tracking
 - recruiter follow-through
 - dashboard-ready records
+- aligned application-point context for location, ATS, and differentiation
 
 ---
 
@@ -279,6 +281,9 @@ Purpose: operate confirmed opportunities.
 - follow-up state
 - notes
 - event trail
+- location fit state
+- ATS optimization notes
+- differentiation highlights
 
 ---
 
@@ -347,9 +352,12 @@ Purpose: prepare a decision-ready set for the primary human.
 **Flow:**
 1. rank reviewed opportunities
 2. add concise rationale
-3. flag risks or unknowns
-4. identify recommended next action
-5. surface only the items needing judgment
+3. check location fit explicitly
+4. prepare ATS optimization basis
+5. prepare differentiation highlights
+6. flag risks or unknowns
+7. identify recommended next action
+8. surface only the items needing judgment
 
 **Output:**
 - human decision set with low noise and clear tradeoffs
@@ -602,10 +610,11 @@ The system should reduce noise, compress context, and surface only the decisions
 
 **Sequence:**
 1. JobOps ranks and annotates opportunities
-2. platform presents decision-ready set
-3. human reviews rationale and evidence
-4. human approves / rejects / holds
-5. platform records decision and updates trusted state
+2. JobOps prepares location fit, ATS basis, and differentiation highlights
+3. platform presents decision-ready set with matching structured fields
+4. human reviews rationale, evidence, and application-readiness context
+5. human approves / rejects / holds
+6. platform records decision and updates trusted state
 
 ---
 

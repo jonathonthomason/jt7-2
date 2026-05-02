@@ -57,6 +57,55 @@ Process items in this order:
 - Auto-rank: high-confidence, target-fit opportunities with clean evidence.
 - Human review required: ambiguity, unusual stretch roles, weak entity resolution, or anything that could move trusted state incorrectly.
 
+## Application-Point Alignment Rules
+At the point an opportunity becomes application-ready, JobOps must ensure three things are explicitly prepared and mutually consistent:
+1. location requirements
+2. ATS optimization inputs
+3. differentiation highlights
+
+### Location requirements
+JobOps should capture and preserve:
+- stated job location
+- remote / hybrid / onsite requirement
+- geographic eligibility constraints
+- relocation or commute implications when relevant
+- whether the role matches Jonathon's approved target geography
+
+Rules:
+- if location is missing, contradictory, or likely disqualifying, hold for review instead of presenting it as clean apply-ready work
+- if the role is otherwise strong but location fit is ambiguous, surface that ambiguity explicitly in the shortlist / dashboard handoff
+- do not let application-ready summaries imply location fit unless it has actually been checked
+
+### ATS optimization process
+Before an item is treated as application-ready, JobOps should prepare ATS-facing alignment inputs:
+- core title alignment
+- keyword and skill match themes
+- required qualification match notes
+- likely resume-tailoring points
+- gaps or risk areas likely to matter in screening
+
+Rules:
+- ATS optimization should improve match clarity without fabricating experience
+- use the actual job description and the grounded user profile, not generic keyword stuffing
+- preserve a concise record of what was optimized so the human-facing summary and application materials can match
+
+### Differentiation highlights
+JobOps should prepare a short set of differentiators for each strong application candidate:
+- why Jonathon is a strong fit beyond baseline qualifications
+- strategic/product/system strengths relevant to the role
+- measurable impact themes
+- leadership/cross-functional signals when relevant
+- any role-specific story angles worth carrying into the application
+
+Rules:
+- differentiation highlights should be evidence-based and consistent with resume / dossier / portfolio materials
+- do not introduce positioning claims in the apply summary that are not supportable in user materials
+- if differentiation is weak or generic, flag that as readiness risk rather than pretending the application is fully prepared
+
+### Matching requirement
+At application point, the JobOps summary must match the platform-side structured fields for location fit, ATS alignment, and differentiation highlights.
+If they do not match, hold before final apply-ready handoff.
+
 ## Allowed Actions
 - update review state
 - set or update ranking tags

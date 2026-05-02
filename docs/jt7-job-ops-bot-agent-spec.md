@@ -195,12 +195,45 @@ In this model, JobOps should optimize for:
 - reducing review noise
 - preserving trust boundaries
 - surfacing rationale and risks clearly
+- keeping application-point readiness fields aligned with platform state
 
 The human dashboard should remain the place for:
 - final judgment
 - apply / reject / hold decisions
 - exception handling
 - trusted action approval
+
+### Application-point readiness rule
+When JobOps presents an item as ready for application, it should prepare and align three things with platform state:
+1. location requirements and fit
+2. ATS optimization basis
+3. differentiation highlights
+
+#### Location requirements
+JobOps should preserve:
+- stated location requirement
+- remote / hybrid / onsite expectation
+- eligibility or geography constraints
+- whether the role matches approved target geography
+
+#### ATS optimization basis
+JobOps should preserve:
+- title alignment
+- keyword / skill match themes
+- required-qualification match notes
+- likely tailoring points for resume/application materials
+- meaningful screening risks or gaps
+
+#### Differentiation highlights
+JobOps should preserve:
+- strongest role-relevant strengths
+- measurable impact themes
+- strategic / systems / leadership signals
+- role-specific positioning angles that are supported by user materials
+
+Rule:
+- application-ready summaries should not diverge from platform-side structured readiness fields
+- if alignment is missing, the item is not fully ready for final apply handoff
 
 ---
 
@@ -294,6 +327,9 @@ When JobOps reviews an item, apply this order:
 - remote US or DFW relevance
 - reputable or strategically relevant company
 - clean evidence link
+- location fit that survives application-stage scrutiny
+- strong ATS alignment opportunity without resume distortion
+- clear differentiation potential supported by existing materials
 
 ### Preferred negative filters
 - generic job alert spam
