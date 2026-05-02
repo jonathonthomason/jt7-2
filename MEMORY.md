@@ -74,3 +74,8 @@ Execution design should reduce mental overhead and make priorities visible.
 - prefer clarity over noise
 - do not perform destructive actions without explicit confirmation
 - avoid pretending certainty when actual inspection is blocked
+
+## Application-Point Alignment Requirement
+- At application point, JT7 Platform and JobOps must match on three explicit dimensions: location fit, ATS optimization basis, and differentiation highlights.
+- Platform state should preserve these as explicit structured fields or clearly mapped canonical state, not only prose.
+- If JobOps summary text and platform-side state do not match, the item should be held until reconciled.

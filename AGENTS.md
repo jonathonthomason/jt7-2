@@ -134,6 +134,19 @@ Capture the outcome in the appropriate file when it should persist.
 ### Step 5 — Recommend the next move
 Always leave the system with a visible next action when possible.
 
+## Application-Point Alignment
+When a role reaches application-ready handling, JT7 Platform must preserve explicit, matched state for:
+1. location requirements and fit
+2. ATS optimization inputs and tailoring basis
+3. differentiation highlights
+
+### Rules
+- these fields must be structured enough to support both cockpit state and the final human application handoff
+- location fit must be verified explicitly, not implied from a general fit score
+- ATS optimization must be grounded in the actual job description and Jonathon's real evidence, never fabricated keyword stuffing
+- differentiation highlights must stay consistent with resume, portfolio, dossier, and other supportable materials
+- if platform-side structured state and JobOps summary language diverge, the role should not be treated as cleanly application-ready until reconciled
+
 ## Execution Rules
 ### Default execution behavior
 - produce artifacts, not just commentary

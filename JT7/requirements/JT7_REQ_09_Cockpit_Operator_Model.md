@@ -89,6 +89,9 @@ A core JT7 pattern should be that JobOps prepares and QA-checks opportunities be
 - shortlist reason generation
 - hold/exclude reasoning
 - recommended next action
+- location-fit verification for application-ready candidates
+- ATS optimization note preparation grounded in the real job description and candidate evidence
+- differentiation highlight preparation using evidence-backed positioning only
 
 ### Human responsibilities in the dashboard
 - final review
@@ -96,6 +99,17 @@ A core JT7 pattern should be that JobOps prepares and QA-checks opportunities be
 - application decisions
 - exception handling
 - trusted state changes when judgment is required
+
+## Application-Point Matching Contract
+At the point an opportunity is presented as ready to apply, the cockpit must ensure platform state and JobOps handoff language match on:
+1. location fit
+2. ATS optimization basis
+3. differentiation highlights
+
+### Platform requirements
+- preserve these as explicit structured fields or clearly mapped canonical state
+- block clean apply-ready labeling when any of the three areas are missing, stale, contradictory, or unsupported
+- ensure the operator summary and human-facing application handoff are generated from the same underlying state
 
 ### Product intent
 This model keeps untrusted intake and automated recommendations from silently becoming trusted pipeline state.

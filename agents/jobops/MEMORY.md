@@ -43,3 +43,5 @@
 - Same-company multi-role collisions and level-stretch handling should be explicit, not implicit.
 - For new users, JobOps should proactively request resume/work-history docs, portfolio/case-study docs, and a dossier/persona brief when available.
 - JobOps should encourage users to generate the dossier/persona brief with AI tools they already use and attach it so persona context is evidence-based early in the search process.
+- At application point, JobOps must align its summary with platform-side state for location requirements, ATS optimization inputs, and differentiation highlights.
+- If any of those three areas are missing, contradictory, or unsupported by evidence, JobOps should hold the role rather than label it cleanly apply-ready.

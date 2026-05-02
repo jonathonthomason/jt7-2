@@ -1,0 +1,31 @@
+{
+  "runTimestamp": "2026-05-02T12:30:00.820562-05:00",
+  "scheduledFor": "2026-05-02T08:30:00-05:00",
+  "triggerMode": "catch-up",
+  "missedSlotsCount": 2,
+  "chain": [
+    "EMAIL_SIGNAL_SCAN",
+    "CALENDAR_SIGNAL_SCAN",
+    "JOB_BOARD_SIGNAL_SCAN",
+    "SIGNAL_CLASSIFICATION",
+    "PIPELINE_STATE_SYNC",
+    "PIPELINE_UPDATE",
+    "LOCAL_MIRROR_SYNC",
+    "GIT_COMMIT_SYNC",
+    "ACTION_GENERATION",
+    "PRIORITY_SURFACING",
+    "PASS_LOGGER"
+  ],
+  "taskResults": [],
+  "status": "failed",
+  "summary": "gog command failed: ['/opt/homebrew/bin/gog', 'sheets', 'get', '1acPkcUQFDIVNY0sgMo7ZsVzEnBKIbjU2veEjDFRu0Ks', 'Jobs!A1:Z1000', '--json', '--no-input', '--account', 'jonathon.thomason@gmail.com'] :: No auth for sheets jonathon.thomason@gmail.com.\n\nOAuth (browser flow):\n  gog auth add jonathon.thomason@gmail.com --services sheets\n\nWorkspace service account (domain-wide delegation):\n  gog auth service-account set jonathon.thomason@gmail.com --key <service-account.json>",
+  "sources_checked": [],
+  "tracker_crud": {},
+  "local_mirror": {},
+  "git": {},
+  "warnings": [],
+  "errors": [
+    "gog command failed: ['/opt/homebrew/bin/gog', 'sheets', 'get', '1acPkcUQFDIVNY0sgMo7ZsVzEnBKIbjU2veEjDFRu0Ks', 'Jobs!A1:Z1000', '--json', '--no-input', '--account', 'jonathon.thomason@gmail.com'] :: No auth for sheets jonathon.thomason@gmail.com.\n\nOAuth (browser flow):\n  gog auth add jonathon.thomason@gmail.com --services sheets\n\nWorkspace service account (domain-wide delegation):\n  gog auth service-account set jonathon.thomason@gmail.com --key <service-account.json>"
+  ],
+  "assessment": "Chain failed. Inspect errors and partial outputs."
+}

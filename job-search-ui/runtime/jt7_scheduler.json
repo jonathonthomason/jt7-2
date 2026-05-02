@@ -1,10 +1,13 @@
 {
   "timezone": "America/Chicago",
   "catchUpPolicy": "single-pass-on-resume",
-  "lastTriggerMode": "scheduled",
-  "lastExecutedAt": "2026-05-02T07:05:37.654260-05:00",
-  "lastScheduledFor": "2026-05-02T07:05:37.654260-05:00",
-  "lastMissedSlots": [],
+  "lastTriggerMode": "catch-up",
+  "lastExecutedAt": "2026-05-02T12:30:00.820562-05:00",
+  "lastScheduledFor": "2026-05-02T08:30:00-05:00",
+  "lastMissedSlots": [
+    "2026-05-02T08:30:00-05:00",
+    "2026-05-02T12:30:00-05:00"
+  ],
   "schedule": [
     {
       "runId": "morning_run",
@@ -24,10 +27,10 @@
         "PRIORITY_SURFACING",
         "PASS_LOGGER"
       ],
-      "lastRunAt": "2026-05-02T07:05:37.654260-05:00",
-      "nextRunAt": "2026-05-02T08:30:00-05:00",
-      "lastStatus": "complete",
-      "lastSummary": "Full JT7 chain completed"
+      "lastRunAt": "2026-05-02T12:30:00.820562-05:00",
+      "nextRunAt": "2026-05-03T08:30:00-05:00",
+      "lastStatus": "failed",
+      "lastSummary": "gog command failed: ['/opt/homebrew/bin/gog', 'sheets', 'get', '1acPkcUQFDIVNY0sgMo7ZsVzEnBKIbjU2veEjDFRu0Ks', 'Jobs!A1:Z1000', '--json', '--no-input', '--account', 'jonathon.thomason@gmail.com'] :: No auth for sheets jonathon.thomason@gmail.com.\n\nOAuth (browser flow):\n  gog auth add jonathon.thomason@gmail.com --services sheets\n\nWorkspace service account (domain-wide delegation):\n  gog auth service-account set jonathon.thomason@gmail.com --key <service-account.json>"
     },
     {
       "runId": "midday_run",
@@ -47,10 +50,10 @@
         "PRIORITY_SURFACING",
         "PASS_LOGGER"
       ],
-      "lastRunAt": "2026-05-02T07:05:37.654260-05:00",
-      "nextRunAt": "2026-05-02T12:30:00-05:00",
-      "lastStatus": "complete",
-      "lastSummary": "Full JT7 chain completed"
+      "lastRunAt": "2026-05-02T12:30:00.820562-05:00",
+      "nextRunAt": "2026-05-03T12:30:00-05:00",
+      "lastStatus": "failed",
+      "lastSummary": "gog command failed: ['/opt/homebrew/bin/gog', 'sheets', 'get', '1acPkcUQFDIVNY0sgMo7ZsVzEnBKIbjU2veEjDFRu0Ks', 'Jobs!A1:Z1000', '--json', '--no-input', '--account', 'jonathon.thomason@gmail.com'] :: No auth for sheets jonathon.thomason@gmail.com.\n\nOAuth (browser flow):\n  gog auth add jonathon.thomason@gmail.com --services sheets\n\nWorkspace service account (domain-wide delegation):\n  gog auth service-account set jonathon.thomason@gmail.com --key <service-account.json>"
     },
     {
       "runId": "evening_run",
@@ -70,10 +73,10 @@
         "PRIORITY_SURFACING",
         "PASS_LOGGER"
       ],
-      "lastRunAt": "2026-05-02T07:05:37.654260-05:00",
+      "lastRunAt": "2026-05-02T12:30:00.820562-05:00",
       "nextRunAt": "2026-05-02T18:00:00-05:00",
-      "lastStatus": "complete",
-      "lastSummary": "Full JT7 chain completed"
+      "lastStatus": "failed",
+      "lastSummary": "gog command failed: ['/opt/homebrew/bin/gog', 'sheets', 'get', '1acPkcUQFDIVNY0sgMo7ZsVzEnBKIbjU2veEjDFRu0Ks', 'Jobs!A1:Z1000', '--json', '--no-input', '--account', 'jonathon.thomason@gmail.com'] :: No auth for sheets jonathon.thomason@gmail.com.\n\nOAuth (browser flow):\n  gog auth add jonathon.thomason@gmail.com --services sheets\n\nWorkspace service account (domain-wide delegation):\n  gog auth service-account set jonathon.thomason@gmail.com --key <service-account.json>"
     }
   ]
 }

@@ -45,6 +45,21 @@ Actions:
 - Follow up
 - Log note
 
+## Application-Readiness Signal Requirements
+When a signal advances a role toward apply-ready status, the system must preserve enough explicit state to support a matched application handoff.
+
+Required dimensions:
+- location requirements and fit state
+- ATS optimization basis and tailoring notes
+- differentiation highlights tied to evidence
+
+Rules:
+- apply-ready status should not be inferred from a fit score or source quality alone
+- if location is missing, contradictory, or likely disqualifying, the role should stay in review/hold state
+- ATS notes must reflect the real job description and the grounded candidate profile
+- differentiation highlights must map to supportable resume, portfolio, dossier, or work-history evidence
+- if operator-facing summary text and structured system state diverge, the signal should not produce a clean apply-ready handoff
+
 ## Priority
 High:
 - recruiter reply
